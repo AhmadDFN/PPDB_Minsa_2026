@@ -1,0 +1,381 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* ===================================================
+   PPDB Minsatama — Official Design Token System
+   =================================================== */
+
+@theme {
+    /* Typography */
+    --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Brand Primary: #0F7FA3 (Teal/Cyan) */
+    --color-primary-50: #f0f8fa;
+    --color-primary-100: #d9eef4;
+    --color-primary-200: #b7dee9;
+    --color-primary-300: #83c5d8;
+    --color-primary-400: #47a5c1;
+    --color-primary-500: #268aa8;
+    --color-primary-600: #0F7FA3;
+    --color-primary-700: #125e79;
+    --color-primary-800: #154e63;
+    --color-primary-900: #164253;
+    --color-primary-950: #0a2b38;
+
+    /* Brand Secondary: #0B6E3F (Islamic Green) */
+    --color-secondary-50: #f0f9f4;
+    --color-secondary-100: #daf2e3;
+    --color-secondary-200: #b7e5ca;
+    --color-secondary-300: #85d1a8;
+    --color-secondary-400: #4eb581;
+    --color-secondary-500: #269760;
+    --color-secondary-600: #0B6E3F;
+    --color-secondary-700: #106039;
+    --color-secondary-800: #104c2f;
+    --color-secondary-900: #0f3f28;
+    --color-secondary-950: #062315;
+
+    /* Brand Accent: #F2C94C (Academic Gold) */
+    --color-accent-50: #fefbf2;
+    --color-accent-100: #fdf6de;
+    --color-accent-200: #fbebbb;
+    --color-accent-300: #f8dc8d;
+    --color-accent-400: #f4cb59;
+    --color-accent-500: #F2C94C;
+    --color-accent-600: #d8a729;
+    --color-accent-700: #b47f20;
+    --color-accent-800: #916321;
+    --color-accent-900: #77511f;
+    --color-accent-950: #442b0d;
+
+    /* Brand Body Text & Neutral */
+    --color-brand-text: #1F2933;
+    --color-brand-bg: #FFFFFF;
+}
+
+/* ===================================================
+   Base Layer — Global Defaults
+   =================================================== */
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5.5rem;
+    }
+
+    body {
+        color: #1F2933;
+        background-color: #f8fafc;
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    :focus-visible {
+        outline: 2px solid #0F7FA3;
+        outline-offset: 2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="url"],
+    select,
+    textarea {
+        width: 100%;
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        padding: 0.625rem 1rem;
+        color: #1F2933;
+        background-color: #ffffff;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    input[type="tel"]:focus,
+    input[type="date"]:focus,
+    input[type="url"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #0F7FA3;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(15, 127, 163, 0.15);
+    }
+
+    select {
+        padding-right: 2.5rem;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.25em 1.25em;
+    }
+
+    label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.375rem;
+    }
+}
+
+/* ===================================================
+   Component Layer — Core UI Patterns
+   =================================================== */
+
+@layer components {
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: 0.5rem;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        letter-spacing: 0.015em;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        border: 1px solid transparent;
+        text-decoration: none;
+    }
+
+    .btn:disabled,
+    .btn[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background-color: #0F7FA3;
+        color: #ffffff;
+    }
+    .btn-primary:hover:not(:disabled) {
+        background-color: #125e79;
+    }
+    .btn-primary:active:not(:disabled) {
+        background-color: #154e63;
+    }
+
+    .btn-secondary {
+        background-color: #0B6E3F;
+        color: #ffffff;
+    }
+    .btn-secondary:hover:not(:disabled) {
+        background-color: #106039;
+    }
+    .btn-secondary:active:not(:disabled) {
+        background-color: #104c2f;
+    }
+
+    .btn-accent {
+        background-color: #F2C94C;
+        color: #1F2933;
+    }
+    .btn-accent:hover:not(:disabled) {
+        background-color: #d8a729;
+    }
+
+    .btn-outline {
+        border-color: #0F7FA3;
+        color: #0F7FA3;
+        background-color: transparent;
+    }
+    .btn-outline:hover:not(:disabled) {
+        background-color: #f0f8fa;
+    }
+
+    .btn-danger {
+        background-color: #dc2626;
+        color: #ffffff;
+    }
+    .btn-danger:hover:not(:disabled) {
+        background-color: #b91c1c;
+    }
+
+    .btn-ghost {
+        background-color: transparent;
+        color: #4b5563;
+    }
+    .btn-ghost:hover:not(:disabled) {
+        background-color: #f3f4f6;
+        color: #1f2937;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+        line-height: 1rem;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    /* Cards */
+    .card {
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .card-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #f3f4f6;
+        background-color: #f9fafb;
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+    }
+
+    /* Badges */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        border-radius: 9999px;
+        padding: 0.125rem 0.625rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1rem;
+    }
+
+    .badge-primary {
+        background-color: #d9eef4;
+        color: #125e79;
+    }
+
+    .badge-secondary {
+        background-color: #daf2e3;
+        color: #106039;
+    }
+
+    .badge-accent {
+        background-color: #fdf6de;
+        color: #77511f;
+    }
+
+    .badge-success {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .badge-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .badge-info {
+        background-color: #e0f2fe;
+        color: #075985;
+    }
+
+    .badge-gray {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    /* Alerts */
+    .alert {
+        border-radius: 0.5rem;
+        border-width: 1px;
+        padding: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+
+    .alert-success {
+        background-color: #f0fdf4;
+        border-color: #bbf7d0;
+        color: #166534;
+    }
+
+    .alert-warning {
+        background-color: #fffbeb;
+        border-color: #fde68a;
+        color: #92400e;
+    }
+
+    .alert-danger {
+        background-color: #fef2f2;
+        border-color: #fecaca;
+        color: #991b1b;
+    }
+
+    .alert-info {
+        background-color: #f0f9ff;
+        border-color: #bae6fd;
+        color: #075985;
+    }
+
+    /* Step Progress Indicator */
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .step-circle {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: 2px solid;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .step-circle-active {
+        background-color: #0F7FA3;
+        border-color: #0F7FA3;
+        color: #ffffff;
+    }
+
+    .step-circle-complete {
+        background-color: #0B6E3F;
+        border-color: #0B6E3F;
+        color: #ffffff;
+    }
+
+    .step-circle-pending {
+        background-color: #ffffff;
+        border-color: #d1d5db;
+        color: #9ca3af;
+    }
+}

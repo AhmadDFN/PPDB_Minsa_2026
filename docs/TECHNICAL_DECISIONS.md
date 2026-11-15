@@ -1,0 +1,84 @@
+# TECHNICAL DECISIONS — ARCHITECTURE DECISION RECORDS (ADR)
+## Log Keputusan Arsitektur dan Pilihan Desain PPDB Minsatama
+
+---
+
+### ADR-001: Pemilihan Single Guard & Single Users Table
+- **Tanggal**: 15 November 2026
+- **Status**: DISETUJUI (APPROVED)
+- **Konteks**:
+  Aplikasi memiliki dua jenis aktor: Calon Siswa (masuk via NIK) dan Administrator (masuk via Email). Laravel mendukung multi-guard autentikasi atau single-guard dengan pembedaan tipe akun.
+- **Opsi yang Dipertimbangkan**:
+  1. *Multi-guard*: Membuat guard `applicant` dan guard `admin` dengan dua model/tabel terpisah (`applicants` dan `admins`).
+  2. *Single-guard*: Satu tabel `users`, satu model `User`, satu guard `web`, dibedakan oleh kolom `account_type` (`applicant`, `admin`).
+- **Solusi yang Dipilih**: Opsi 2 (Single-guard `web` dengan kolom `account_type`).
+- **Alasan**:
+  Menghindari kompleksitas sesi multi-guard, masalah state session cookie ganda, dan kompatibilitas native penuh dengan Spatie Laravel Permission tanpa modifikasi guard rumit.
+- **Konsekuensi**:
+  Kolom `email` pada tabel `users` dijadikan `nullable` (karena siswa login dengan NIK), dan logika autentikasi serta middleware wajib memeriksa `account_type`.
+
+---
+
+### ADR-002: Arsitektur Kriptografi NIK (Enkripsi Reversibel + Hash Deterministik)
+- **Tanggal**: 15 November 2026
+- **Status**: DISETUJUI (APPROVED)
+- **Konteks**:
+  NIK adalah data kependudukan pribadi sensitif (UU PDP). NIK harus dapat dicetak kembali pada lembar bukti pendaftaran PDF (membutuhkan enkripsi reversibel), namun sistem juga memerlukan verifikasi keunikan akun cepat tanpa mendekripsi seluruh baris database.
+- **Opsi yang Dipertimbangkan**:
+  1. *Plaintext NIK*: Menyimpan NIK secara terbuka.
+  2. *Blind Indexing Tradisional*: Menggunakan salt dinamis pada setiap record.
+  3. *Enkripsi AES-256 + HMAC-SHA256 Deterministik*: Menyimpan `nik_encrypted` via AES-256-CBC dan `nik_lookup_hash` via HMAC-SHA256 ber-kunci rahasia mandiri dengan unique index.
+- **Solusi yang Dipilih**: Opsi 3 (`nik_encrypted` + `nik_lookup_hash`).
+- **Alasan**:
+  Menghadirkan performa lookup $O(1)$, perlindungan kebocoran basis data, dan kemampuan mendekripsi NIK hanya saat pembuatan dokumen PDF resmi.
+- **Konsekuensi**:
+  Diperlukan pengelolaan dua kunci rahasia: `APP_KEY` untuk enkripsi dan `NIK_HMAC_KEY` untuk lookup hash.
+
+---
+
+### ADR-003: Keamanan Kriptografi OTP (HMAC-SHA256 Context Binding)
+- **Tanggal**: 15 November 2026
+- **Status**: DISETUJUI (APPROVED)
+- **Konteks**:
+  Kode OTP numerik 6 digit hanya memiliki 1.000.000 kemungkinan nilai. Menggunakan plain SHA-256 membuka risiko serangan *rainbow table* jika basis data bocor.
+- **Opsi yang Dipertimbangkan**:
+  1. *Plain SHA-256 Hash*.
+  2. *Bcrypt Hash*: Menggunakan `Hash::make()` (lambat dan membutuhkan CPU tinggi untuk token berumur pendek).
+  3. *HMAC-SHA256 dengan Kunci Mandiri & Context Binding*: Mengikat `user_id`, `purpose`, `plain_otp`, dan nomor telepon menggunakan `OTP_HMAC_KEY`.
+- **Solusi yang Dipilih**: Opsi 3 (HMAC-SHA256 Context Binding).
+- **Alasan**:
+  Komputasi cepat, mencegah *rainbow table* karena terikat kunci berentropi tinggi dan konteks pengguna, serta verifikasi aman dengan `hash_equals()`.
+- **Konsekuensi**:
+  Diperlukan kunci `OTP_HMAC_KEY` mandiri di `.env` yang wajib berbeda dari `APP_KEY` dan `NIK_HMAC_KEY`.
+
+---
+
+### ADR-004: Penanganan Perhitungan Umur Dinamis (Runtime Calculation)
+- **Tanggal**: 15 November 2026
+- **Status**: DISETUJUI (APPROVED)
+- **Konteks**:
+  Pendaftaran madrasah memerlukan informasi usia siswa per tanggal acuan tahun ajaran baru (misal: per 1 Juli).
+- **Opsi yang Dipertimbangkan**:
+  1. *Menyimpan Usia di Kolom Basis Data*: Kolom `age_years`, `age_months`, `age_days`.
+  2. *Runtime Calculation*: Menghitung umur secara dinamis saat data dibaca berdasarkan tanggal lahir siswa dan `age_reference_date` pada tabel `admission_periods`.
+- **Solusi yang Dipilih**: Opsi 2 (Runtime Calculation via `Applicant::calculateAgeAt($refDate)`).
+- **Alasan**:
+  Usia berubah seiring waktu. Menyimpan umur statis di basis data menyebabkan redundansi dan inkonsistensi data historis.
+- **Konsekuensi**:
+  Tidak ada kolom umur di database. Umur dihitung saat tampilan/PDF diproses.
+
+---
+
+### ADR-005: Larangan Penggunaan Frontend SPA & Pembatasan Framework
+- **Tanggal**: 15 November 2026
+- **Status**: DISETUJUI (APPROVED)
+- **Konteks**:
+  Menentukan arsitektur antarmuka pengguna yang sesuai dengan profil wali murid dan kebutuhan perawatan jangka panjang madrasah.
+- **Opsi yang Dipertimbangkan**:
+  1. *Single Page Application (SPA)*: Inertia.js, Vue, React, atau Svelte.
+  2. *Server-Side Rendered (SSR) Blade*: Blade Templates + Tailwind CSS v4 + Vanilla JS murni.
+- **Solusi yang Dipilih**: Opsi 2 (Blade + Tailwind CSS v4 + Vanilla JS).
+- **Alasan**:
+  Memastikan aksesibilitas ringan bagi seluruh perangkat ponsel orang tua, tidak memerlukan runtime JavaScript berat, SEO bersahabat, pemuatan halaman cepat, dan kemudahan pemeliharaan oleh tim internal madrasah tanpa kompilasi bundler yang rumit.
+- **Konsekuensi**:
+  Interaktivitas UI (modal, drawer menu, show/hide password) ditulis menggunakan Vanilla JS murni yang modular dan teruji.
