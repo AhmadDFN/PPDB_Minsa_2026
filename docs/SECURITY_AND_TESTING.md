@@ -15,6 +15,7 @@
 | **Session Fixation & Hijacking** | Penggunaan session ID lama setelah berhasil login. | Pembajakan sesi pendaftar/admin. | **Session Regeneration**: Panggilan `$request->session()->regenerate()` seketika saat autentikasi berhasil. |
 | **Kebocoran Dokumen Sensitif / IDOR** | Mengakses berkas Akta/KK dengan URL publik atau ID dokumen milik pendaftar lain. | Pelanggaran UU Perlindungan Data Pribadi (UU PDP). | **Private Disk + ownership query**: Berkas berada di `storage/app/private/ppdb/documents`; preview, unduh, dan revisi hanya dilayani setelah pemeriksaan pemilik. Tidak ada URL publik. |
 | **Upload Berkas Berbahaya / Besar** | Ekstensi palsu, MIME spoofing, atau unggahan melebihi kebijakan. | Eksekusi/penyimpanan konten berbahaya atau konsumsi resource. | **Validasi server-side**: allowlist ekstensi + MIME Fileinfo, SHA-256, maksimum global/default 5120 KB, serta limit efektif per dokumen. |
+| **Pemalsuan / Kebocoran PDF Pendaftaran** | Mengganti file, menebak ID versi, atau membuka URL file secara langsung. | Kebocoran data pendaftar atau penggunaan bukti yang tidak valid. | **Penyimpanan privat + ownership + SHA-256**: download memeriksa pemilik, MIME, ukuran, dan checksum. QR menggunakan token acak yang disimpan sebagai hash dan hanya membuka halaman verifikasi data-minimal. |
 
 ---
 
@@ -83,13 +84,15 @@ Sistem menggunakan piramida pengujian berlapis:
 5. **Feature Tests Submit Pendaftaran (`tests/Feature/Applicant/RegistrationWorkflowTest.php`)**:
    - Menguji kelengkapan pra-submit termasuk field wajib ayah/ibu, konfigurasi dokumen wajib/opsional, consent, status dan nomor, idempotensi, sequence per tahun ajaran-program lintas periode, periode/program tidak aktif, ownership, masking NIK, audit revisi tanpa nilai pribadi, kunci edit setelah periode ditutup, dan preservasi revisi dokumen.
    - Pengujian terpisah menjalankan submit multi-process di MariaDB/InnoDB; suite SQLite tetap tidak dianggap sebagai bukti semantik lock MySQL.
+6. **Feature Tests PDF (`tests/Feature/Applicant/RegistrationPdfTest.php` dan `tests/Feature/RegistrationPdfVerificationTest.php`)**:
+   - Menguji draft privat ber-watermark, masking NIK draft/full NIK pada data final, consent historis, foto JPG, kebutuhan GD untuk foto PNG, integritas SHA-256, preservasi versi lama, unduhan berotorisasi, penolakan cross-applicant, cleanup file setelah kegagalan DB, token QR, dan verifikasi publik tanpa PII.
 
 ### Status Gate Verifikasi Fase 6
 
 - **Lulus pada MariaDB 10.4.32/InnoDB** melalui database khusus `ppdb_phase6_test`: migrasi lengkap, tabel InnoDB, foreign key dan indeks reopen, serta default `max_size_kb=5120`.
 - Empat tes konkurensi fisik menjalankan worker PHP terpisah untuk submit ulang pada pendaftaran yang sama, submit dua calon siswa pada periode-program yang sama, submit lintas periode dengan tahun ajaran/program sama, dan rollback/retry setelah kegagalan audit.
 - Nomor registrasi menggunakan transaksi serta lock pada periode, pendaftaran, program, dan satu row counter global. Unique key tahun ajaran-program dan `lockForUpdate()` pada row yang sama menjaga urutan lintas periode secara atomik di InnoDB. Migration additive mem-backfill counter dari tabel per-periode lama.
-- Fase 6 CLOSED setelah keputusan format nomor, consent, dan admin reopen diterapkan. Fase 7 belum dimulai dan menunggu otorisasi tertulis pemilik.
+- Fase 6 CLOSED setelah keputusan format nomor, consent, dan admin reopen diterapkan. Fase 7 telah diotorisasi dan CLOSED; Fase 8 belum dimulai dan menunggu otorisasi tertulis pemilik.
 - MySQL 8.x target produksi belum diuji terpisah; hasil MariaDB tidak diklaim sebagai verifikasi fisik MySQL 8.x.
 
 ### Konfigurasi Consent Submit
@@ -104,6 +107,16 @@ Sistem menggunakan piramida pengujian berlapis:
 - Permission `reopen_registration` membatasi endpoint admin; hanya pendaftaran berstatus `SUBMITTED` pada periode tertutup yang dapat dibuka kembali.
 - Alasan dan waktu kedaluwarsa wajib; penutupan dini juga memerlukan alasan. Server memeriksa expiry pada setiap operasi, tanpa cron.
 - Pembukaan/penutupan dicatat dalam `registration_logs` dengan aktor, alasan, waktu, dan pendaftaran terkait. Status, nomor, dan timestamp submit tidak berubah.
+
+### PDF Pendaftaran (Fase 7)
+
+- Draft hanya dapat dibuat untuk status `DRAFT`, ber-watermark pada setiap halaman, dan memasker NIK calon siswa.
+- PDF final hanya dapat dibuat setelah submit serta lulus pemeriksaan kelengkapan ulang. Snapshot memuat NIK calon siswa lengkap, consent historis, dan tidak mencetak NIK orang tua/wali.
+- File disimpan di disk privat, diberi SHA-256, MIME, ukuran, revisi data, serta nomor versi. Unduhan pendaftar dibatasi ownership; perubahan data membuat versi final lama berstatus outdated tanpa menghapus file historis.
+- Token QR 256-bit hanya disimpan sebagai SHA-256. Endpoint publik mensyaratkan token dan nomor registrasi cocok serta hanya menampilkan nomor, tanggal, fingerprint, dan status; akses file tetap tidak publik.
+- Tes PDF terarah: 13 passed, 101 assertions. Suite lengkap SQLite: 192 passed, 0 failed, 0 skipped, 924 assertions. Migration Fase 7 belum diuji fisik pada MySQL 8.
+- Dompdf dapat merender foto JPG pada lingkungan lokal tanpa GD/Imagick. Foto PNG memerlukan ekstensi PHP GD; tanpa GD sistem mengembalikan pesan validasi yang menyarankan mengaktifkan GD atau menggunakan JPG.
+- Pada production, `APP_URL` harus HTTPS publik agar QR final berisi URL verifikasi yang dapat digunakan.
 
 ---
 

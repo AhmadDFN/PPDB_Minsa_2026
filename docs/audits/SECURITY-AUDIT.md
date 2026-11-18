@@ -3,7 +3,7 @@
 
 **Tanggal Audit**: 18 November 2026
 **Auditor**: Senior Security Engineer & Laravel Specialist  
-**Status Audit**: FASE 6 CLOSED; TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; UPLOAD LIVE 5 MB PERLU KONFIGURASI PHP
+**Status Audit**: FASE 7 CLOSED; TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; APP_URL/GD DAN ASET BRANDING MENJADI PRASYARAT OPERASIONAL
 
 ---
 
@@ -92,12 +92,24 @@
 - Tidak ada PDF, seleksi siswa, persetujuan dokumen, atau pelaporan administrator yang diimplementasikan pada fase ini.
 - Sembilan tes fisik pada database khusus `ppdb_phase6_test` lulus untuk migrasi/backfill counter, skema, default kolom 5120 KB, submit multi-proses pada pendaftaran sama dan lintas periode, rollback, serta retry. Migrasi tabel dokumen kini memakai nama indeks MariaDB yang pendek dan dapat memulihkan tabel parsial tanpa menghapus data.
 - **Batas verifikasi**: MariaDB 10.4.32/InnoDB telah diuji; MySQL 8.x target produksi belum diuji terpisah. Nilai PHP lokal `upload_max_filesize=2M` masih di bawah kebijakan 5 MB; `post_max_size=8M`.
-- **Status fase**: Fase 6 CLOSED. Fase 7 belum dimulai dan tetap menunggu otorisasi tertulis pemilik.
+- **Status fase**: Fase 6 dan Fase 7 CLOSED. Fase 7 menyelesaikan PDF draft/final privat, versioning, integritas SHA-256, token QR, dan pemeriksaan ownership.
 
-## 6. KESIMPULAN & REKOMENDASI AUDIT
+## 6. AUDIT FASE 7 — PDF DAN VERIFIKASI PUBLIK
+
+- Draft dibatasi pada pendaftaran `DRAFT`, memakai watermark dan NIK termasker. PDF final hanya tersedia setelah submit dan pemeriksaan kelengkapan; final memakai consent historis, NIK calon siswa lengkap, dan tidak mencetak NIK orang tua/wali.
+- File PDF disimpan di disk privat, bukan URL publik. Download mengecek ownership, MIME, ukuran, header PDF, dan SHA-256 serta mengirim `no-store` dan `nosniff`.
+- Setiap final menggunakan token acak 256-bit; hanya hash token disimpan. Endpoint verifikasi membandingkan token serta nomor pendaftaran dan hanya menampilkan nomor, tanggal terbit, fingerprint, dan status versi.
+- Versi lama dipertahankan. Perubahan data membuat versi final terdahulu outdated; generation baru tidak menghapus arsip.
+- Regression tests Fase 7: 13 tes terarah lulus; suite SQLite lengkap 192 tes lulus, 924 asersi, tanpa skip. Migration metadata baru diverifikasi oleh SQLite test suite, bukan MySQL 8 fisik.
+- Pengujian foto menunjukkan JPG dapat dirender tanpa GD/Imagick. PNG memerlukan PHP GD; jika extension tidak tersedia, request ditolak dengan instruksi untuk mengaktifkan GD atau menggunakan JPG.
+- URL QR final di production memerlukan `APP_URL` HTTPS publik. Logo/alamat resmi tidak ditambahkan karena belum ada sumber terverifikasi; kop PDF hanya menggunakan nama institusi yang terdokumentasi.
+
+## 7. KESIMPULAN & REKOMENDASI AUDIT
 
 1. **Status risiko**: audit ini tidak menyatakan seluruh stack bebas risiko; terdapat enam temuan NPM high pada dependency build/development yang menunggu patch kompatibel.
 2. **Rekomendasi Operasional Produksi**:
    - Pastikan variabel `APP_KEY`, `NIK_HMAC_KEY`, dan `OTP_HMAC_KEY` pada server produksi digenerate menggunakan random string berentropi tinggi (minimal 64 karakter hex/base64) dan disimpan secara aman.
    - Aktifkan HTTPS/SSL penuh dan pastikan cookie diset dengan atribut `Secure` dan `HttpOnly`.
    - Sebelum menerima upload 5 MB secara live, atur `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, serta request limit web server yang mencakup multipart overhead; uji juga terhadap MySQL 8.x target produksi.
+   - Atur `APP_URL` ke host HTTPS publik sebelum menerbitkan PDF final. Pasang PHP GD jika format pas foto PNG harus dapat dirender; format JPG telah terverifikasi pada lingkungan tanpa GD/Imagick.
+   - Minta logo dan alamat resmi dari pemilik sebelum menambahkannya pada kop dokumen; jangan menggunakan aset atau data alamat yang belum terverifikasi.

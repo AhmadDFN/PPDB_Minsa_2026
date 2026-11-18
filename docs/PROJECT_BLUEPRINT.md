@@ -173,6 +173,6 @@ erDiagram
 | **Fase 4** | Profil Calon Siswa, Biodata Orang Tua & Pilihan Program | **Selesai** | Multi-step form, kalkulasi umur otomatis dari tanggal acuan. |
 | **Fase 5** | Manajemen Berkas & Dokumen Pendaftaran | **Selesai** | Upload privat, validasi MIME/ukuran, pratinjau dan revisi terotorisasi. |
 | **Fase 6** | Alur Pendaftaran (Draft, Validasi, Submit Final) | **CLOSED** | Keputusan nomor/consent dan admin reopen diterapkan; 179 tes lulus, termasuk 9 tes MariaDB/InnoDB. |
-| **Fase 7** | Pembuatan Dokumen Bukti Pendaftaran (PDF Generator) | **BLOCKED** | Menunggu gate Fase 6 lulus dan otorisasi tertulis pemilik. |
-| **Fase 8** | Dasbor Panitia, Verifikasi Berkas & Rekapitulasi | *Terjadwal* | Panel loket PTSP, verifikasi fisik, ekspor Excel/PDF. |
+| **Fase 7** | Pembuatan Dokumen Bukti Pendaftaran (PDF Generator) | **CLOSED** | Draft/final PDF privat, versioning, integritas SHA-256, QR verifikasi; 192 tes lulus. |
+| **Fase 8** | Dasbor Panitia, Verifikasi Berkas & Rekapitulasi | *Menunggu otorisasi* | Panel loket PTSP, verifikasi fisik, ekspor Excel/PDF; jangan mulai tanpa persetujuan pemilik. |
 | **Fase 9** | Pengujian Mutu (QA), Audit Keamanan Final & Rilis | *Terjadwal* | Uji beban, uji kompatibilitas browser, panduan operasional. |

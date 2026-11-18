@@ -24,8 +24,12 @@ class RegistrationPdfVersionFactory extends Factory
             'document_type' => PdfDocumentType::FINAL,
             'version_number' => 1,
             'data_revision' => 1,
-            'file_path' => 'private/ppdb/pdfs/'.fake()->uuid().'.pdf',
+            'file_path' => 'ppdb/pdfs/'.fake()->uuid().'.pdf',
             'file_hash' => hash('sha256', fake()->text()),
+            'storage_disk' => 'ppdb_private',
+            'mime_type' => 'application/pdf',
+            'file_size_bytes' => 1024,
+            'verification_token_hash' => null,
             'generated_by' => User::factory(),
             'generated_at' => now(),
         ];

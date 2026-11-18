@@ -142,3 +142,20 @@
   Gunakan nama indeks eksplisit yang pendek dan pulihkan tabel parsial secara idempotent dengan menambahkan unique index yang belum ada. Tidak ada tabel/data yang dihapus.
 - **Konsekuensi**:
   Uji migrasi terhadap database khusus `ppdb_phase6_test` dapat dilanjutkan dan lulus pada MariaDB 10.4.32/InnoDB.
+
+### ADR-011: PDF Bukti Pendaftaran Privat, Bertoken, dan Berversi
+- **Tanggal**: 18 November 2026
+- **Status**: DIIMPLEMENTASIKAN PADA FASE 7
+- **Konteks**:
+  Pendaftar memerlukan pratinjau sebelum submit dan bukti pengiriman setelah submit, tanpa memperluas sistem menjadi seleksi atau pengumuman penerimaan.
+- **Keputusan**:
+  - Render PDF dengan Blade/Dompdf tanpa remote resource atau eksekusi PHP di HTML; QR dibuat sebagai SVG.
+  - Simpan file pada disk privat `ppdb_private`, dengan metadata MIME/ukuran/checksum SHA-256 dan revisi data pada `registration_pdf_versions`.
+  - Draft hanya untuk status `DRAFT`, memakai watermark dan NIK termasker. Final hanya sesudah submit dan pemeriksaan kelengkapan, memakai consent historis serta NIK calon siswa lengkap; NIK orang tua/wali tidak dicetak.
+  - Gunakan token verifikasi acak 256-bit pada QR, simpan hanya SHA-256 token, dan sediakan halaman publik yang menampilkan informasi minimum tanpa file download atau PII.
+  - Jangan menghapus versi lama. Bila revisi data berubah, versi final lama ditandai outdated dan pendaftar dapat menerbitkan versi baru.
+- **Konsekuensi Operasional**:
+  - `APP_URL` produksi harus HTTPS dan host publik untuk menghasilkan QR yang dapat digunakan.
+  - Pas foto JPG telah diuji pada PHP tanpa GD/Imagick. Foto PNG memerlukan ekstensi GD; tanpa GD sistem mengembalikan validasi yang menyarankan mengaktifkan ekstensi atau menggunakan JPG.
+  - Logo dan alamat resmi belum tersedia dalam sumber proyek; layout saat ini hanya menggunakan nama institusi yang terdokumentasi dan tidak mengarang identitas tambahan.
+  - Migration metadata bersifat additive. Suite SQLite lulus; kompatibilitas fisik migration Fase 7 pada MySQL 8 belum diverifikasi.

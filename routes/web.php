@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Applicant\DashboardController;
 use App\Http\Controllers\Applicant\DocumentController;
 use App\Http\Controllers\Applicant\RegistrationFormController;
+use App\Http\Controllers\Applicant\RegistrationPdfController;
 use App\Http\Controllers\Applicant\RegistrationReviewController;
 use App\Http\Controllers\Applicant\RegistrationSubmissionController;
+use App\Http\Controllers\RegistrationPdfVerificationController;
 use App\Models\AdmissionPeriod;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -52,6 +54,11 @@ Route::middleware(['auth', 'active'])->get('/dashboard', function () {
     return redirect()->route('applicant.dashboard');
 })->name('dashboard');
 
+Route::get('/verifikasi/bukti-pendaftaran/{token}', [RegistrationPdfVerificationController::class, 'show'])
+    ->middleware('throttle:10,1')
+    ->where('token', '[a-fA-F0-9]{64}')
+    ->name('public.registration-pdfs.verify');
+
 // Protected Applicant Area
 Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('applicant.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -74,6 +81,9 @@ Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('a
 
     Route::get('/pendaftaran/tinjau', [RegistrationReviewController::class, 'show'])->name('registration.review');
     Route::post('/pendaftaran/kirim', [RegistrationSubmissionController::class, 'store'])->name('registration.submit');
+    Route::post('/pendaftaran/pdf/draft', [RegistrationPdfController::class, 'storeDraft'])->middleware('throttle:5,1')->name('registration.pdf.draft');
+    Route::post('/pendaftaran/pdf/final', [RegistrationPdfController::class, 'storeFinal'])->middleware('throttle:5,1')->name('registration.pdf.final');
+    Route::get('/pendaftaran/pdf/{pdfVersion}/unduh', [RegistrationPdfController::class, 'download'])->name('registration.pdf.download');
 
     Route::get('/dokumen', [DocumentController::class, 'index'])->name('documents.index');
     Route::post('/dokumen/{requirementId}', [DocumentController::class, 'upload'])->name('documents.upload');

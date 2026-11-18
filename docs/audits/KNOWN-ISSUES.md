@@ -18,7 +18,7 @@
 ### 1.2 Batasan Verifikasi Database Produksi
 - **Status**: TERBUKA — MySQL 8.x BELUM DIUJI TERPISAH
 - **Deskripsi**:
-  Sembilan tes migrasi/backfill counter, skema, default 5120 KB, submit konkuren, rollback, dan retry lulus pada MariaDB 10.4.32/InnoDB menggunakan database disposable `ppdb_phase6_test`. Hasil ini tidak diklaim sebagai verifikasi fisik MySQL 8.x.
+  Sembilan tes migrasi/backfill counter, skema, default 5120 KB, submit konkuren, rollback, dan retry lulus pada MariaDB 10.4.32/InnoDB menggunakan database disposable `ppdb_phase6_test`. Migration metadata PDF Fase 7 baru dijalankan pada SQLite in-memory. Hasil MariaDB tersebut tidak diklaim sebagai verifikasi fisik MySQL 8.x.
 - **Mitigasi**:
   Jalankan suite yang sama terhadap versi MySQL produksi sebelum rilis. Jangan arahkan tes ke database produksi atau data pendaftar.
 
@@ -72,14 +72,28 @@
 ### 1.10 Penutupan Fase 6
 - **Status**: SELESAI
 - **Deskripsi**:
-  Seluruh gate Fase 6 lulus dengan 179 tes, 0 gagal/skip, dan verifikasi MariaDB fisik. Fase 7 belum dimulai dan masih memerlukan otorisasi tertulis pemilik.
+  Seluruh gate Fase 6 lulus dengan 179 tes, 0 gagal/skip, dan verifikasi MariaDB fisik. Fase 7 telah diotorisasi dan diselesaikan.
 
-### 1.11 PDF Bukti Pendaftaran Belum Diimplementasikan
-- **Status**: MENUNGGU FASE 7
+### 1.11 Aset Branding PDF Resmi Belum Tersedia
+- **Status**: MENUNGGU SUMBER TERVERIFIKASI DARI PEMILIK
 - **Deskripsi**:
-  Fase 6 mencatat status `SUBMITTED` dan nomor registrasi, tetapi belum menghasilkan PDF final atau draft.
+  Logo resmi dan alamat lengkap madrasah belum ditemukan pada sumber proyek. PDF saat ini memakai nama Kementerian Agama dan MIN 1 Kota Madiun yang terdokumentasi, tanpa logo/alamat yang belum terverifikasi.
 - **Mitigasi**:
-  Fitur ini berada di luar lingkup Fase 6 dan tidak boleh dianggap tersedia sebelum Fase 7 diotorisasi dan diselesaikan.
+  Jangan menggunakan aset atau alamat hasil tebakan. Tambahkan hanya setelah pemilik memberikan sumber resmi.
+
+### 1.12 Rendering Pas Foto PNG Memerlukan PHP GD
+- **Status**: PRASYARAT OPERASIONAL
+- **Deskripsi**:
+  Lingkungan lokal tidak memiliki ekstensi GD maupun Imagick. Pas foto JPG telah berhasil dirender pada PDF; Dompdf memerlukan GD untuk menanam PNG. Bila PNG dipilih tanpa GD, aplikasi mengembalikan validasi yang menyarankan mengaktifkan GD atau menggunakan JPG.
+- **Mitigasi**:
+  Pasang ekstensi PHP GD pada server yang harus memproses pas foto PNG, atau gunakan format JPG.
+
+### 1.13 APP_URL Publik HTTPS untuk QR Final
+- **Status**: PRASYARAT OPERASIONAL PRODUKSI
+- **Deskripsi**:
+  Pembuatan PDF final di production menolak `APP_URL` non-HTTPS atau host lokal/private agar QR verifikasi tidak mengarah ke endpoint yang tidak dapat diakses publik.
+- **Mitigasi**:
+  Konfigurasikan `APP_URL` dengan host publik HTTPS sebelum menerbitkan PDF final.
 
 ---
 

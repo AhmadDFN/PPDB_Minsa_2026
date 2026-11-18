@@ -47,8 +47,14 @@ return [
     'documents' => [
         'disk' => 'ppdb_private',
         'base_path' => 'ppdb/documents',
-        'pdf_path' => 'private/ppdb/pdfs',
+        'pdf_path' => 'ppdb/pdfs',
         'global_max_size_kb' => 5120,
+    ],
+
+    'pdf' => [
+        'ministry_name' => 'Kementerian Agama Republik Indonesia',
+        'school_name' => 'MIN 1 Kota Madiun',
+        'collection_instruction' => 'Cetak bukti pendaftaran ini dan serahkan ke loket PTSP MIN 1 Kota Madiun.',
     ],
 
     /*

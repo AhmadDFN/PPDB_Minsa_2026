@@ -4,25 +4,33 @@
 **Eksekusi Regresi Terbaru**: 18 November 2026
 **Framework Pengujian**: PHPUnit 12.5.44 / Laravel Test Runner
 **Lingkungan**: SQLite in-memory (`:memory:`)  
-**Total Pengujian Terbaru**: 179 tes
-**Status Terbaru**: **179 LULUS, 0 DILEWATI, 0 GAGAL**
-**Total Asersi Terbaru**: 823
+**Total Pengujian Terbaru**: 192 tes
+**Status Terbaru**: **192 LULUS, 0 DILEWATI, 0 GAGAL**
+**Total Asersi Terbaru**: 924
 **Durasi Terbaru**: dicatat oleh runner pada verifikasi final
 
-## 1. HASIL TERBARU — FASE 6
+## 1. HASIL REGRESI TERBARU — FASE 7
 
-- `php artisan test --compact`: 179 tests, 179 passed, 0 skipped, 0 failed; 823 assertions.
+- `php artisan test --compact`: 192 tests, 192 passed, 0 skipped, 0 failed; 924 assertions.
+- `php artisan test tests/Feature/Applicant/RegistrationPdfTest.php tests/Feature/RegistrationPdfVerificationTest.php --compact`: 13 tests passed; 101 assertions.
+- PDF coverage: draft watermark and masked-NIK data, final full-NIK/historical-consent snapshot, JPG rendering, actionable PNG/GD limitation, private storage, SHA-256 integrity, preserved revisions, cross-applicant denial, orphan cleanup on DB failure, and minimal public QR verification.
+- Fase 7 migration metadata berjalan dalam suite SQLite in-memory. MySQL 8 fisik belum diuji untuk migration baru; sembilan tes MariaDB/InnoDB yang tercatat merupakan verifikasi Fase 6.
 - `php artisan test --compact tests/Feature/Applicant/RegistrationWorkflowTest.php`: 21 tests passed; 128 assertions.
-- Sembilan tes fisik MySQL/MariaDB lulus pada MariaDB 10.4.32/InnoDB dan database khusus `ppdb_phase6_test`: migrasi/backfill counter, skema, default 5120 KB, submit bersamaan, penomoran unik lintas periode, rollback dan retry.
+- Sembilan tes fisik MariaDB lulus pada MariaDB 10.4.32/InnoDB dan database khusus `ppdb_phase6_test` untuk gate Fase 6: migrasi/backfill counter, skema, default 5120 KB, submit bersamaan, penomoran unik lintas periode, rollback dan retry.
 - Cakupan Fase 6: kelengkapan, consent resmi, submit atomik/idempoten, sequence tahun ajaran-program, periode/program tidak aktif, ownership, masking, audit revisi, reopen dengan expiry/penutupan dini, serta akses edit pendaftar.
 - Form ayah/ibu dan pemeriksaan pra-submit mewajibkan field sesuai Business Requirements: NIK, status, pendidikan, pekerjaan, penghasilan, dan telepon.
 - Batas pengujian: integrasi fisik diverifikasi pada MariaDB 10.4.32/InnoDB, bukan MySQL 8.x target produksi. SQLite tetap digunakan untuk sebagian besar suite.
 - `vendor/bin/pint --dirty --format agent`: PASS.
-- `npm.cmd run build`: PASS (Vite 8.3.8; 3 modules transformed; CSS 86.56 kB, JS 1.72 kB).
+- `npm.cmd run build`: PASS (Vite 8.3.8; 3 modules transformed; CSS 86.96 kB, JS 1.72 kB).
 - `composer audit`: 0 advisories. `npm.cmd audit --json`: 6 high temuan pada rantai `picomatch`; `npm.cmd audit --omit=dev`: 0 temuan.
-- `php artisan test` dijalankan setelah Pint. Migrasi hanya dijalankan pada database terisolasi `ppdb_phase6_test`; database aplikasi tidak digunakan.
+- `php artisan test` dijalankan setelah Pint. Migration Fase 7 hanya dieksekusi melalui suite SQLite in-memory; database aplikasi dan database produksi tidak digunakan.
 
-## 2. HASIL FASE 5 — MANAJEMEN DOKUMEN
+## 2. HASIL PENUTUPAN FASE 6
+
+- Baseline Fase 6 tetap 179 tests passed, 0 skipped, 0 failed; 823 assertions.
+- Sembilan tes fisik pada MariaDB 10.4.32/InnoDB dilakukan terhadap database disposable `ppdb_phase6_test`; hasil ini tidak menyatakan kompatibilitas fisik MySQL 8.
+
+## 3. HASIL FASE 5 — MANAJEMEN DOKUMEN
 
 - Regresi pada akhir Fase 5: 143 tests, 141 passed, 2 skipped, 0 failed; 494 assertions.
 - `php artisan test --filter=DocumentManagementTest`: 12 tests passed, 54 assertions.
@@ -31,7 +39,7 @@
 
 ---
 
-## 3. RINCIAN HISTORIS PENGUJIAN — BASELINE 15 NOVEMBER 2026
+## 4. RINCIAN HISTORIS PENGUJIAN — BASELINE 15 NOVEMBER 2026
 
 Rincian berikut mempertahankan laporan sebelum Fase 5 (93 tes, 91 lulus, 2 dilewati); gunakan hasil terbaru di atas sebagai status regresi saat ini.
 
@@ -118,7 +126,7 @@ Rincian berikut mempertahankan laporan sebelum Fase 5 (93 tes, 91 lulus, 2 dilew
 
 ---
 
-## 3. KEPATUHAN GAYA KODE (LINTING & CODE STYLE)
+## 5. KEPATUHAN GAYA KODE (LINTING & CODE STYLE)
 
 - **Alat**: Laravel Pint v1.27
 - **Perintah**: `vendor/bin/pint --dirty --format agent`

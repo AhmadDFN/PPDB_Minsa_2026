@@ -338,6 +338,86 @@
                 </div>
             </div>
 
+            <section class="mt-8 rounded-xl border border-blue-200 bg-blue-50/40 p-4 sm:p-5" aria-labelledby="registration-pdf-heading">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <h2 id="registration-pdf-heading" class="text-base font-bold text-neutral-800">Dokumen PDF Pendaftaran</h2>
+                        <p class="mt-1 text-xs leading-5 text-neutral-600">
+                            PDF disimpan secara privat. Draf bukan bukti resmi; bukti final tersedia setelah pendaftaran dikirim.
+                        </p>
+                    </div>
+
+                    @if ($registration?->isDraft())
+                        <form method="POST" action="{{ route('applicant.registration.pdf.draft') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-primary w-full text-xs font-semibold sm:w-auto">
+                                Buat PDF Draf
+                            </button>
+                        </form>
+                    @elseif ($registration?->isSubmitted())
+                        @php
+                            $latestFinalPdf = $pdfVersions
+                                ->filter(fn ($version) => $version->document_type->value === 'final')
+                                ->first();
+                            $latestFinalStatus = $latestFinalPdf ? $pdfVersionStatuses[$latestFinalPdf->id] : null;
+                        @endphp
+
+                        @if ($latestFinalStatus !== 'current')
+                            <form method="POST" action="{{ route('applicant.registration.pdf.final') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-full text-xs font-semibold sm:w-auto">
+                                    {{ $latestFinalPdf ? 'Perbarui PDF Final' : 'Buat Bukti PDF Final' }}
+                                </button>
+                            </form>
+                        @endif
+                    @endif
+                </div>
+
+                @if (! $registration)
+                    <p class="mt-3 text-xs text-neutral-600">
+                        Pilih program pada periode pendaftaran agar sistem dapat mencatat dan membuat versi PDF draf.
+                    </p>
+                @elseif ($registration->isSubmitted())
+                    <p class="mt-3 text-xs text-neutral-600">
+                        Pendaftaran telah dikirim. Dokumen ini hanya bukti pengiriman dan bukan keputusan seleksi.
+                    </p>
+                @else
+                    <p class="mt-3 text-xs text-neutral-600">
+                        Draf dapat dibuat meskipun data belum lengkap dan akan menampilkan bagian yang belum diisi.
+                    </p>
+                @endif
+
+                @if ($pdfVersions->isNotEmpty())
+                    <div class="mt-4 border-t border-blue-100 pt-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wide text-neutral-700">Riwayat versi PDF</h3>
+                        <ul class="mt-2 divide-y divide-blue-100">
+                            @foreach ($pdfVersions as $pdfVersion)
+                                @php
+                                    $pdfStatusLabels = [
+                                        'current' => 'Versi terbaru sesuai data',
+                                        'outdated' => 'Data berubah - perlu diperbarui',
+                                        'superseded' => 'Versi terdahulu',
+                                        'archived' => 'Arsip draf sebelum pengiriman',
+                                    ];
+                                @endphp
+                                <li class="flex flex-col gap-2 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
+                                    <span class="text-neutral-700">
+                                        {{ $pdfVersion->document_type->label() }} v{{ $pdfVersion->version_number }}
+                                        <span class="text-neutral-500">- {{ $pdfStatusLabels[$pdfVersionStatuses[$pdfVersion->id]] }}</span>
+                                    </span>
+                                    <a
+                                        href="{{ route('applicant.registration.pdf.download', $pdfVersion) }}"
+                                        class="font-semibold text-blue-800 underline"
+                                    >
+                                        Unduh PDF
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </section>
+
             <!-- CTA Button -->
             <div class="mt-8 pt-6 border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="text-xs text-neutral-500">

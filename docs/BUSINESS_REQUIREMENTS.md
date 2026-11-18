@@ -144,13 +144,19 @@ Dokumen ini berisi seluruh aturan bisnis resmi yang telah disetujui oleh Pemilik
 ## 8. ATURAN BUKTI PENDAFTARAN PDF (PDF GENERATION)
 
 1. **Dokumen Sementara (Draft PDF)**:
-   - Jika formulir pendaftaran masih berstatus `DRAFT`, pendaftar dapat mengunduh pratinjau bukti pendaftaran yang memuat **Watermark Transparan Besar "DRAFT - BUKAN BUKTI RESMI"**.
+   - Jika formulir pendaftaran masih berstatus `DRAFT`, pendaftar dapat membuat dan mengunduh pratinjau yang memuat watermark **"DRAFT - BUKAN BUKTI RESMI"**.
+   - NIK calon siswa pada PDF draft harus dimasker.
 2. **Dokumen Resmi (Final PDF)**:
    - Diterbitkan setelah pendaftaran berstatus `SUBMITTED`.
    - Memuat Nomor Registrasi Resmi, Barcode/QR Verifikasi, Pas Foto, Biodata Lengkap, dan Kolom Tanda Tangan Orang Tua.
+   - NIK calon siswa pada bukti final boleh ditampilkan lengkap untuk keperluan verifikasi dokumen yang diserahkan ke PTSP; NIK orang tua/wali tidak dicetak.
    - Dicatat penomoran versinya pada tabel `registration_pdf_versions`.
+   - Setiap PDF terikat pada revisi data. Jika data berubah, PDF final sebelumnya tetap tersimpan sebagai arsip/outdated dan pendaftar harus membuat versi baru.
 3. **Bukan Surat Kelulusan**:
    - Lembar PDF secara eksplisit menyatakan bahwa dokumen ini adalah **Tanda Bukti Pendaftaran**, bukan tanda bukti diterima sebagai siswa.
+4. **Privasi dan Verifikasi**:
+   - File PDF disimpan privat dan hanya dapat diunduh oleh pemilik pendaftaran terautentikasi; tidak ada URL file publik.
+   - QR mengarah ke halaman verifikasi publik dengan token acak. Halaman hanya menampilkan nomor pendaftaran, waktu terbit, fingerprint SHA-256, dan status versi; tidak menampilkan nama/NIK atau menyediakan unduhan PDF.
 
 ---
 

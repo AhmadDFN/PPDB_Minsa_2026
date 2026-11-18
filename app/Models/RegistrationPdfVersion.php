@@ -22,6 +22,10 @@ class RegistrationPdfVersion extends Model
         'data_revision',
         'file_path',
         'file_hash',
+        'storage_disk',
+        'mime_type',
+        'file_size_bytes',
+        'verification_token_hash',
         'generated_by',
         'generated_at',
     ];
@@ -32,6 +36,7 @@ class RegistrationPdfVersion extends Model
             'document_type' => PdfDocumentType::class,
             'version_number' => 'integer',
             'data_revision' => 'integer',
+            'file_size_bytes' => 'integer',
             'generated_at' => 'datetime',
         ];
     }
@@ -51,6 +56,6 @@ class RegistrationPdfVersion extends Model
      */
     public function isOutdated(): bool
     {
-        return $this->data_revision < $this->registration->data_revision;
+        return $this->data_revision !== $this->registration->data_revision;
     }
 }

@@ -26,8 +26,12 @@ class RegistrationReadinessService
      *     blocking_messages: list<string>
      * }
      */
-    public function assess(Applicant $applicant, ?Registration $registration, bool $consentAccepted = false): array
-    {
+    public function assess(
+        Applicant $applicant,
+        ?Registration $registration,
+        bool $consentAccepted = false,
+        bool $forPdf = false
+    ): array {
         $applicant->loadMissing(['user', 'address', 'father', 'mother', 'guardian', 'education']);
 
         $biodataMissing = $this->missingFields($applicant, [
@@ -96,7 +100,7 @@ class RegistrationReadinessService
         $periodMissing = [];
         if ($registration !== null && $registration->applicant_id !== $applicant->id) {
             $periodMissing[] = 'Pendaftaran tidak terikat pada akun ini';
-        } elseif ($period === null || ! $period->isOpen()) {
+        } elseif ($period === null || (! $forPdf && ! $period->isOpen())) {
             $periodMissing[] = 'Periode pendaftaran tidak sedang dibuka';
         }
 
@@ -119,8 +123,7 @@ class RegistrationReadinessService
             $periodProgram === null
             || $period === null
             || $periodProgram->admission_period_id !== $period->id
-            || ! $periodProgram->is_active
-            || ! $periodProgram->program?->is_active
+            || (! $forPdf && (! $periodProgram->is_active || ! $periodProgram->program?->is_active))
             || ! $programCodeIsAllowed
         ) {
             $programMissing[] = 'Program tidak tersedia pada periode aktif';
@@ -137,11 +140,13 @@ class RegistrationReadinessService
         $consentConfigured = trim((string) config('ppdb.registration.consent_statement')) !== ''
             && trim((string) config('ppdb.registration.consent_version')) !== '';
         $consentExists = $registration?->consent?->is_agreed === true;
-        $consentMissing = ! $consentConfigured
-            ? ['Pernyataan persetujuan belum dikonfigurasi oleh madrasah']
-            : ($consentAccepted || $consentExists
-                ? []
-                : ['Pernyataan kebenaran data dan nama orang tua/wali']);
+        $consentMissing = $forPdf
+            ? ($consentExists ? [] : ['Pernyataan persetujuan historis tidak ditemukan'])
+            : (! $consentConfigured
+                ? ['Pernyataan persetujuan belum dikonfigurasi oleh madrasah']
+                : ($consentAccepted || $consentExists
+                    ? []
+                    : ['Pernyataan kebenaran data dan nama orang tua/wali']));
 
         $sections = [
             'biodata' => $this->section('Biodata calon siswa', $biodataMissing),

@@ -155,36 +155,32 @@ class RegistrationEditService
                     ]);
                 }
 
-                $before = $registration?->isSubmitted()
-                    ? $this->snapshot($applicant, $registration)
-                    : null;
+                $before = $this->snapshot($applicant, $registration);
 
                 $result = $operation();
 
-                if ($registration !== null && $before !== null) {
-                    $registration->refresh();
-                    $changedFields = $this->changedFields(
-                        $before,
-                        $this->snapshot($applicant, $registration),
-                    );
+                $registration->refresh();
+                $changedFields = $this->changedFields(
+                    $before,
+                    $this->snapshot($applicant, $registration),
+                );
 
-                    if ($changedFields !== []) {
-                        $fromRevision = (int) $registration->data_revision;
-                        $toRevision = $fromRevision + 1;
-                        $registration->data_revision = $toRevision;
-                        $registration->save();
+                if ($changedFields !== []) {
+                    $fromRevision = (int) $registration->data_revision;
+                    $toRevision = $fromRevision + 1;
+                    $registration->data_revision = $toRevision;
+                    $registration->save();
 
-                        $registration->logs()->create([
-                            'user_id' => $user->id,
-                            'action' => 'updated_after_submission',
-                            'from_revision' => $fromRevision,
-                            'to_revision' => $toRevision,
-                            'changes' => ['fields' => $changedFields],
-                            'ip_address' => $ipAddress,
-                            'user_agent' => $userAgent,
-                            'created_at' => now(),
-                        ]);
-                    }
+                    $registration->logs()->create([
+                        'user_id' => $user->id,
+                        'action' => $registration->isSubmitted() ? 'updated_after_submission' : 'updated_draft',
+                        'from_revision' => $fromRevision,
+                        'to_revision' => $toRevision,
+                        'changes' => ['fields' => $changedFields],
+                        'ip_address' => $ipAddress,
+                        'user_agent' => $userAgent,
+                        'created_at' => now(),
+                    ]);
                 }
 
                 return $result;

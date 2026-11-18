@@ -12,7 +12,7 @@
 ## 1. TUGAS SELESAI (COMPLETED TASKS)
 
 - [x] **[P0 - Kritis] Inisialisasi Struktur Dokumentasi Master**: Membuat berkas master `AGENTS.md`, `PROJECT_BLUEPRINT.md`, `PROJECT_STATUS.md`, `TODO_ROADMAP.md`, `BUSINESS_REQUIREMENTS.md`, `SYSTEM_ARCHITECTURE.md`, `DATABASE_DESIGN.md`, `SECURITY_AND_TESTING.md`, `TECHNICAL_DECISIONS.md`, `DEVELOPMENT_GUIDE.md`.
-- [x] **[P0 - Kritis] Audit Repositori & Test Suite Terkini**: Regresi penutupan Fase 6: 179 lulus, 823 asersi, 0 gagal/skip; 9 tes MariaDB/InnoDB lulus. Pint dan build lulus; Composer audit 0 temuan; NPM audit 6 high development/build, 0 temuan production-only.
+- [x] **[P0 - Kritis] Audit Repositori & Test Suite Fase 7**: Regresi Fase 7: 192 lulus, 924 asersi, 0 gagal/skip; 13 tes PDF terarah lulus. Pint, build, dan Composer audit lulus; NPM audit tetap 6 high development/build dan 0 temuan production-only. Verifikasi 9 tes MariaDB/InnoDB merupakan hasil Fase 6, bukan uji migration PDF.
 - [x] **[P1 - Tinggi] Service & Action Layer Biodata Siswa (Fase 4)**:
   - `app/Actions/Applicant/UpdateApplicantBiodataAction.php` untuk melengkapi data nama, tempat/tanggal lahir, jenis kelamin, NISN, anak ke-, jumlah saudara. NIK terkunci dan read-only.
 - [x] **[P1 - Tinggi] Form & Action Data Alamat Domisili (Fase 4)**:
@@ -70,25 +70,35 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P1 - Tinggi] Verifikasi Migrasi dan Submit Konkuren MariaDB/InnoDB**:
   - *Deskripsi*: Sembilan tes fisik mencakup migrasi/backfill counter, skema, default 5120 KB, submit multi-proses pada pendaftaran sama dan periode berbeda, serta rollback/retry.
 
-**Status Fase 6: CLOSED.** Seluruh keputusan bisnis telah diterapkan; 179 tes lulus, termasuk 9 tes MariaDB/InnoDB. Lihat `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`. Fase 7 tetap menunggu otorisasi tertulis pemilik.
+**Status Fase 6: CLOSED.** Seluruh keputusan bisnis telah diterapkan; 179 tes lulus, termasuk 9 tes MariaDB/InnoDB. Lihat `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`.
 
 ### Fase 7 — Pembuatan Dokumen Bukti Pendaftaran (PDF Generator)
-- [ ] **[BLOCKED — P1] Desain Layout PDF Bukti Pendaftaran**:
-  - *Deskripsi*: Desain lembar bukti resmi ukuran F4/A4 dengan kop madrasah resmi, logo Kemenag, pas foto pendaftar, tabel biodata, dan tanda tangan wali murid.
-- [ ] **[BLOCKED — P1] Watermark DRAFT Otomatis**:
+- [x] **[P1 - Tinggi] Desain Layout PDF Bukti Pendaftaran**:
+  - *Deskripsi*: PDF A4 dengan kop berbasis nama institusi terverifikasi, ringkasan biodata, foto bila tersedia, dan ruang tanda tangan. Logo/alamat resmi belum tersedia di repositori dan tidak direkayasa.
+- [x] **[P1 - Tinggi] Watermark DRAFT Otomatis**:
   - *Deskripsi*: Jika status masih DRAFT, PDF memuat watermark besar transparan bertuliskan "DRAFT - BUKAN BUKTI RESMI".
-- [ ] **[BLOCKED — P1] PDF Final & Versioning**:
-  - *Deskripsi*: Jika status SUBMITTED, PDF diterbitkan sebagai bukti sah registrasi dan dicatat pada tabel `registration_pdf_versions`.
+- [x] **[P1 - Tinggi] PDF Final & Versioning**:
+  - *Deskripsi*: Jika status SUBMITTED, PDF diterbitkan sebagai bukti pengiriman (bukan keputusan seleksi), dicatat pada `registration_pdf_versions`, dan versi lama dipertahankan.
+- [x] **[P1 - Tinggi] Penyimpanan Privat dan Akses PDF**:
+  - *Deskripsi*: File PDF disimpan tanpa URL publik; unduhan pendaftar memeriksa ownership, MIME, ukuran, dan SHA-256.
+- [x] **[P1 - Tinggi] QR Verifikasi Minimal**:
+  - *Deskripsi*: PDF final memuat token acak, hash token disimpan di basis data, dan halaman verifikasi publik hanya menampilkan nomor, tanggal, fingerprint, serta status.
+- [x] **[P1 - Tinggi] Dashboard dan Revisi PDF**:
+  - *Deskripsi*: Pendaftar dapat membuat PDF draft/final, melihat riwayat versi, dan mengetahui jika versi final tertinggal dari revisi data.
+- [x] **[P1 - Tinggi] Uji Regresi Fase 7**:
+  - *Deskripsi*: 13 tes PDF terarah dan regresi lengkap 192 tes lulus pada SQLite; MySQL 8 fisik belum diverifikasi.
 
-**Gate Fase 7: BLOCKED.** Tidak ada source, migration, atau dependency Fase 7 yang dibuat. Jangan mulai sebelum status closure Fase 6 menjadi CLOSED dan pemilik memberi otorisasi tertulis.
+**Status Fase 7: CLOSED.** Implementasi dan tes selesai setelah otorisasi pemilik. Operasional produksi memerlukan `APP_URL` HTTPS publik untuk QR; PNG memerlukan ekstensi GD, sementara JPG telah dirender pada lingkungan lokal tanpa GD/Imagick. Logo/alamat resmi menunggu sumber resmi dari pemilik. Laporan: `docs/phases/PHASE-7-IMPLEMENTATION-REPORT.md`.
 
-### Fase 8 — Panel Panitia PPDB & Loket PTSP
+### Fase 8 — Panel Panitia PPDB & Loket PTSP (Menunggu Otorisasi)
 - [ ] **[P1 - Tinggi] Antarmuka Verifikasi Berkas Fisik**:
   - *Deskripsi*: Memungkinkan panitia di loket PTSP memeriksa kecocokan berkas fisik asli dengan berkas digital yang diunggah.
 - [ ] **[P2 - Menengah] Modul Revisi Berkas oleh Panitia**:
   - *Deskripsi*: Panitia dapat menandai dokumen buram/salah dan memberikan catatan revisi yang tampil di dasbor wali murid.
 - [ ] **[P2 - Menengah] Rekapitulasi Data & Ekspor Laporan**:
   - *Deskripsi*: Filter data berdasarkan jalur (Reguler/Unggulan), jenis kelamin, asal sekolah TK, dan ekspor ke Excel/CSV.
+
+**Gate Fase 8**: Jangan mulai sebelum persetujuan eksplisit pemilik proyek.
 
 ### Fase 9 — Quality Assurance & Deployment
 - [ ] **[P1 - Tinggi] Uji Integrasi Menyeluruh (End-to-End Testing)**.

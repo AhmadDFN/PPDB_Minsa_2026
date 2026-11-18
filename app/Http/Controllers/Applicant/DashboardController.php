@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Applicant;
 
+use App\Enums\PdfDocumentType;
 use App\Http\Controllers\Controller;
 use App\Services\Applicant\ApplicantProfileService;
 use App\Services\Registration\RegistrationEditService;
@@ -33,6 +34,28 @@ class DashboardController extends Controller
         $completion = $this->profileService->getCompletionSummary($applicant, $completionPeriod);
         $age = $this->profileService->calculateAge($applicant, $activePeriod);
         $registration = $completion['registration'] ?? $registration;
+        $pdfVersions = $registration?->pdfVersions()
+            ->orderByDesc('version_number')
+            ->orderByDesc('id')
+            ->get() ?? collect();
+        $latestPdfVersionNumbers = $pdfVersions
+            ->groupBy(fn ($version): string => $version->document_type->value)
+            ->map(fn ($versions): int => (int) $versions->max('version_number'));
+        $pdfVersionStatuses = $pdfVersions->mapWithKeys(function ($version) use (
+            $registration,
+            $latestPdfVersionNumbers
+        ): array {
+            $type = $version->document_type->value;
+            $status = $type === PdfDocumentType::DRAFT->value && $registration?->isSubmitted()
+                ? 'archived'
+                : ($version->data_revision !== $registration?->data_revision
+                    ? 'outdated'
+                    : ($version->version_number === $latestPdfVersionNumbers->get($type)
+                        ? 'current'
+                        : 'superseded'));
+
+            return [$version->id => $status];
+        });
 
         return view('applicant.dashboard', [
             'user' => $user,
@@ -42,6 +65,8 @@ class DashboardController extends Controller
             'completion' => $completion,
             'age' => $age,
             'registration' => $registration,
+            'pdfVersions' => $pdfVersions,
+            'pdfVersionStatuses' => $pdfVersionStatuses,
             'canEdit' => $this->registrationEditService->canEdit($registration),
             'canEditProgram' => ($activePeriod?->isOpen() ?? false)
                 && ($registration === null || $registration->isDraft()),
