@@ -103,7 +103,7 @@
 
 ### ADR-007: Nomor Registrasi dan Persetujuan Submit (Sementara)
 - **Tanggal**: 18 November 2026
-- **Status**: IMPLEMENTASI SEMENTARA; MENUNGGU PENGESAHAN SEKOLAH
+- **Status**: PENDING OWNER APPROVAL; bukan keputusan resmi dan bukan untuk penerbitan produksi
 - **Konteks**:
   Fase 6 memerlukan nomor registrasi unik dan pencatatan persetujuan. Dokumen yang tersedia memberi contoh format nomor berbeda dan belum memuat redaksi/versi persetujuan yang disahkan sekolah.
 - **Pilihan Implementasi Sementara**:
@@ -114,3 +114,11 @@
   Pilihan ini bukan keputusan bisnis resmi. Aplikasi menolak submit ketika teks atau versi consent kosong; lingkungan production tidak diberi fallback redaksi sementara. Pemilik sekolah harus mengesahkan format nomor, ruang lingkup sequence, redaksi consent, dan versi sebelum produksi.
 - **Konsekuensi**:
   Tabel `registration_sequences` dan metadata consent additive mendukung rancangan ini. Jika keputusan resmi berbeda, konfigurasi dan/atau kebijakan sequence harus ditinjau sebelum nomor produksi diterbitkan; tidak ada nomor produksi yang diasumsikan telah terbit.
+
+### ADR-008: Gate Penutupan Fase 6 dan Admin Reopen
+- **Tanggal**: 18 November 2026
+- **Status**: BLOCKED / PENDING OWNER APPROVAL
+- **Temuan**:
+  Seeder mendefinisikan permission `reopen_registration` dan hanya role `superadmin` menerimanya. Tidak ditemukan policy, route, request, action, atau audit workflow untuk membuka kembali edit setelah periode berakhir. Dokumen Business Requirements saat ini hanya mengatur edit selama periode terbuka; target reopen (satu pendaftaran atau seluruh periode), masa berlaku, serta cara menutup kembali tidak tercatat.
+- **Keputusan**:
+  Tidak menambahkan implementasi reopen sampai pemilik mengesahkan target, cakupan waktu, role yang berwenang, alasan wajib, dan aturan pencatatan/penguncian kembali. Tindakan ini mencegah penciptaan aturan bisnis secara sepihak.

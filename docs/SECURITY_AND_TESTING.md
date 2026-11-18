@@ -84,6 +84,14 @@ Sistem menggunakan piramida pengujian berlapis:
    - Menguji kelengkapan pra-submit termasuk field wajib ayah/ibu, konfigurasi dokumen wajib/opsional, consent, status dan nomor, idempotensi, sequence per periode-program, periode/program tidak aktif, ownership, masking NIK, audit revisi tanpa nilai pribadi, kunci edit setelah periode ditutup, dan preservasi revisi dokumen.
    - Uji SQLite tidak membuktikan konkurensi row-lock InnoDB; verifikasi fisik MySQL masih pending.
 
+### Status Gate Verifikasi Fase 6
+
+- MySQL PDO extension tersedia, tetapi MySQL lokal pada `127.0.0.1:3306` tidak dapat dihubungi. Dua test `MySqlSchemaCompatibilityTest` diskip; tidak ada migration MySQL yang dijalankan.
+- Submit dan sequence memakai transaction serta `lockForUpdate`; unique constraint nomor dan pendaftaran ada pada migration. Hasil SQLite/sequential tidak membuktikan concurrency InnoDB.
+- Tidak ada test multi-connection/process concurrent submit yang dijalankan. Gate concurrency berstatus BLOCKED.
+- Admin reopen belum mempunyai endpoint/policy/action. Permission `reopen_registration` hanya diberikan ke `superadmin`; kebijakan target dan masa berlaku belum diputuskan.
+- Fase 6 tidak boleh dinyatakan CLOSED dan Fase 7 tetap BLOCKED sampai temuan tersebut dan persetujuan nomor/consent diselesaikan.
+
 ### Konfigurasi Consent Submit
 
 - Teks dan versi persetujuan harus disahkan sekolah sebelum produksi. Redaksi sementara hanya untuk lingkungan pengembangan/testing.

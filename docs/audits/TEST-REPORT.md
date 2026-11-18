@@ -2,24 +2,24 @@
 ## Laporan Hasil Pengujian Otomatis Sistem PPDB MIN 1 Kota Madiun
 
 **Eksekusi Regresi Terbaru**: 18 November 2026
-**Framework Pengujian**: PHPUnit 11.5 / Laravel Test Runner
+**Framework Pengujian**: PHPUnit 12.5.44 / Laravel Test Runner
 **Lingkungan**: SQLite in-memory (`:memory:`)  
 **Total Pengujian Terbaru**: 161 tes
 **Status Terbaru**: **159 LULUS, 2 DILEWATI, 0 GAGAL**
 **Total Asersi Terbaru**: 618
-**Durasi Terbaru**: 9.20 detik
+**Durasi Terbaru**: 8.72 detik
 
 ## 1. HASIL TERBARU — FASE 6
 
-- `php artisan test --compact`: 161 tests, 159 passed, 2 skipped, 0 failed; 618 assertions. Kedua skip adalah tes kompatibilitas MySQL karena service lokal tidak tersedia.
+- `php artisan test --compact`: 161 tests, 159 passed, 2 skipped, 0 failed; 618 assertions. Kedua skip adalah tes kompatibilitas MySQL karena MySQL pada `127.0.0.1:3306` tidak dapat dihubungi.
 - `php artisan test --compact tests/Feature/Applicant/RegistrationWorkflowTest.php`: 18 tests passed; 114 assertions.
 - Cakupan Fase 6: kelengkapan, consent, fail-closed konfigurasi consent kosong, submit atomik/idempoten, nomor dan sequence per periode-program, periode/program tidak aktif, ownership, masking, audit revisi, edit setelah submit/penutupan periode, dan preservasi revisi dokumen.
 - Form ayah/ibu dan pemeriksaan pra-submit mewajibkan field sesuai Business Requirements: NIK, status, pendidikan, pekerjaan, penghasilan, dan telepon.
-- Batas pengujian: tes isolasi berjalan di SQLite. Row locking dan konkurensi InnoDB belum diverifikasi karena layanan MySQL fisik tidak tersedia.
+- Batas pengujian: tes isolasi berjalan di SQLite. Ekstensi `pdo_mysql` tersedia, tetapi layanan MySQL fisik tidak tersedia. Tidak ada migration atau uji concurrency InnoDB yang dijalankan.
 - `vendor/bin/pint --dirty --format agent`: PASS.
 - `npm.cmd run build`: PASS (Vite 8.3.8; 3 modules transformed; CSS 85.88 kB, JS 1.72 kB).
 - `composer audit`: 0 advisories. `npm.cmd audit --json`: 6 high temuan pada rantai `picomatch`; `npm.cmd audit --omit=dev`: 0 temuan.
-- `php artisan test` dijalankan setelah Pint; tidak ada migration pada database MySQL/persisten.
+- `php artisan test` dijalankan setelah Pint; tidak ada migration pada database MySQL/persisten. Gate MySQL dan concurrency masih BLOCKED.
 
 ## 2. HASIL FASE 5 — MANAJEMEN DOKUMEN
 
@@ -120,5 +120,5 @@ Rincian berikut mempertahankan laporan sebelum Fase 5 (93 tes, 91 lulus, 2 dilew
 ## 3. KEPATUHAN GAYA KODE (LINTING & CODE STYLE)
 
 - **Alat**: Laravel Pint v1.27
-- **Perintah**: `vendor/bin/pint --test`
-- **Hasil**: `PASS` (100% PSR-12 & Laravel Coding Standards, 0 file diperbaiki, 0 pelanggaran).
+- **Perintah**: `vendor/bin/pint --dirty --format agent`
+- **Hasil**: `PASS` (tidak ada file PHP yang perlu diformat pada audit dokumentasi ini).

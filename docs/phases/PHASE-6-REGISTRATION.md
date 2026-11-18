@@ -1,7 +1,7 @@
 # PHASE 6 — ALUR PENDAFTARAN (DRAFT & SUBMIT FINAL)
 ## Rencana Kerja dan Desain Siklus Hidup Pendaftaran Siswa
 
-**Status**: IMPLEMENTASI SELESAI; MENUNGGU REVIEW PEMILIK
+**Status**: IMPLEMENTASI DIAUDIT; CLOSURE BLOCKED
 **Target Pelaksanaan**: Fase 6
 
 ---
@@ -38,3 +38,4 @@ Mengelola siklus hidup pendaftaran dari status `DRAFT` hingga `SUBMITTED`, memva
 - Redaksi consent dari fixture tes dan versi `v1.0` hanya asumsi sementara. Production menolak submit saat teks/versi belum diisi; sekolah harus mengesahkan keduanya sebelum rilis.
 - Dua migration additive menambahkan tabel sequence dan metadata consent. Pengujian memakai SQLite; MySQL/InnoDB dan perilaku konkurensi fisik belum diverifikasi.
 - Detail perubahan, hasil tes, dan isu terbuka dicatat di `PHASE-6-IMPLEMENTATION-REPORT.md`.
+- Penutupan final menunggu keputusan pemilik dan verifikasi MySQL/InnoDB. Lihat `PHASE-6-FINAL-CLOSURE-REPORT.md`; Fase 7 tidak dimulai.

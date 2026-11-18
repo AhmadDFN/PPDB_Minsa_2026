@@ -15,22 +15,22 @@
 - **Mitigasi**:
   Jangan gunakan `npm audit fix --force`; periksa advisory dan kompatibilitas setelah patch tersedia. Hindari build dari konfigurasi/glob yang dikendalikan pengguna tak tepercaya.
 
-### 1.2 Referensi Commit Lama Tidak Cocok dengan Git Aktual
-- **Status**: BELUM TERKLARIFIKASI
+### 1.2 Admin Reopen Belum Diimplementasikan dan Kebijakannya Belum Lengkap
+- **Status**: MENUNGGU KEPUTUSAN PEMILIK
 - **Deskripsi**:
-  Dokumen status merujuk `4c64724`, tetapi branch `main` dan `origin/main` saat ini menunjuk root commit `e2a8bb3`; remote `origin` adalah repository yang diharapkan. Git tidak cukup untuk menentukan apakah ini repository baru, history disquash, atau migrasi disengaja.
+  Seeder mendefinisikan permission `reopen_registration` dan hanya role `superadmin` yang menerimanya. Tidak ditemukan route, policy, controller, atau action untuk reopen. Dokumen Business Requirements tidak menetapkan apakah reopen berlaku untuk satu pendaftaran atau seluruh periode, durasinya, proses penutupan kembali, maupun alasan dan audit yang diwajibkan.
 - **Mitigasi**:
-  Tidak menulis ulang history. Minta konfirmasi pemilik sebelum mengoreksi referensi historis di laporan fase.
+  Jangan menganggap permission sebagai implementasi atau memberi akses melalui jalur lain. Pemilik perlu menetapkan cakupan, masa berlaku, role, alasan wajib, audit, dan cara akses ditutup kembali sebelum fitur dibuat.
 
 ### 1.3 Layanan Daemon MySQL Lokal Belum Aktif di Port 3306
-- **Status**: TERTUNDA (PENDING)
+- **Status**: BLOCKED — MYSQL TIDAK TERSEDIA
 - **Tingkat Keparahan**: Rendah (Lingkungan Pengembangan Lokal)
 - **Deskripsi**:
-  Service daemon MySQL lokal pada port 3306 pada mesin host Windows belum diaktifkan saat sesi pengujian berjalan. Akibatnya, pengujian migrasi fisik live pada database `ppdb_minsatama_test` diskip (`MySqlSchemaCompatibilityTest`, 2 tests skipped).
+  Ekstensi `pdo_mysql` aktif, tetapi service MySQL pada `127.0.0.1:3306` tidak dapat dihubungi. Akibatnya, kedua pengujian migrasi fisik live pada database uji disposable `ppdb_minsatama_test` diskip (`MySqlSchemaCompatibilityTest`, 2 tests skipped).
 - **Dampak**:
-  Pengujian live pada InnoDB fisik belum berjalan secara otomatis pada continuous test runner lokal, meskipun seluruh sintaks migrasi, tipe kolom, dan constraint telah sesuai standar MySQL 8.x dan lulus di SQLite.
+  Kompatibilitas migrasi dan concurrency InnoDB belum diverifikasi. SQLite tidak membuktikan semantik lock/constraint MySQL. Jangan menyatakan gate ini PASS berdasarkan tes SQLite.
 - **Rencana Mitigasi**:
-  Administrator lingkungan lokal cukup menyalakan layanan MySQL (misal: via Laragon, XAMPP, atau Windows Service `MySQL80`) saat siap menguji koneksi live. Aplikasi tidak mengalami gangguan karena pengujian otomatis default berjalan di SQLite in-memory yang terisolasi.
+  Saat MySQL tersedia, pastikan koneksi `mysql_test` menunjuk hanya ke database uji disposable dan bukan database produksi sebelum menjalankan migrasi. Aplikasi tidak mengalami gangguan karena pengujian otomatis default berjalan di SQLite in-memory yang terisolasi.
 
 ### 1.4 Batas Unggah PHP Lokal di Bawah Kebijakan Aplikasi
 - **Status**: MENUNGGU KONFIGURASI SERVER
@@ -68,13 +68,20 @@
   Konfigurasi teks/versi consent kosong membuat submit gagal tertutup; production tidak memakai fallback sementara. Pemilik sekolah harus mengesahkan format, lingkup sequence, redaksi, dan versi sebelum rilis atau nomor produksi diterbitkan.
 
 ### 1.9 Verifikasi Konkurensi Submit pada MySQL
-- **Status**: PENDING VERIFIKASI FISIK
+- **Status**: BLOCKED — MYSQL TIDAK TERSEDIA
 - **Deskripsi**:
   Submit mengunci row periode, pendaftaran, program, dan sequence dalam transaksi untuk idempotensi/penomoran. Pengujian SQLite tidak membuktikan semantik lock atau beban konkurensi InnoDB. Dua tes MySQL tetap skipped karena server tidak tersedia.
 - **Mitigasi**:
   Jalankan pengujian skema dan konkurensi terkontrol pada MySQL/InnoDB sebelum produksi; jangan menyatakan concurrency fisik telah tervalidasi.
 
-### 1.10 PDF Bukti Pendaftaran Belum Diimplementasikan
+### 1.10 Nomor Registrasi dan Consent Menunggu Persetujuan
+- **Status**: PENDING OWNER APPROVAL
+- **Deskripsi**:
+  Format nomor `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}` dan consent versi `v1.0` merupakan konfigurasi/fixture provisional. Tidak ditemukan persetujuan tertulis pemilik untuk format, cakupan/reset sequence, redaksi, dan versi consent.
+- **Mitigasi**:
+  Pertahankan submit production fail-closed bila consent belum dikonfigurasi. Jangan menerbitkan nomor produksi sebelum keputusan tersebut disahkan.
+
+### 1.11 PDF Bukti Pendaftaran Belum Diimplementasikan
 - **Status**: MENUNGGU FASE 7
 - **Deskripsi**:
   Fase 6 mencatat status `SUBMITTED` dan nomor registrasi, tetapi belum menghasilkan PDF final atau draft.

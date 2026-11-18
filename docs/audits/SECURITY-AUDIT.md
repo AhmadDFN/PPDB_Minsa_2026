@@ -3,7 +3,7 @@
 
 **Tanggal Audit**: 18 November 2026
 **Auditor**: Senior Security Engineer & Laravel Specialist  
-**Status Audit**: TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; FASE 6 TERUJI DI SQLITE
+**Status Audit**: TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; FASE 6 BELUM CLOSED (MYSQL/INNODB BELUM DIVERIFIKASI)
 
 ---
 
@@ -89,6 +89,9 @@
 - NIK siswa/orang tua dimasker pada halaman tinjauan; path penyimpanan privat tidak dikirim ke Blade. Log revisi hanya berisi nama field yang berubah, bukan nilai pribadi.
 - Konfigurasi consent kosong menyebabkan submit gagal. Redaksi dan format nomor saat ini provisional dan memerlukan persetujuan sekolah sebelum produksi.
 - Tidak ada PDF, seleksi siswa, persetujuan dokumen, atau pelaporan administrator yang diimplementasikan pada fase ini.
+- Review penutupan: izin `reopen_registration` hanya tersedia bagi `superadmin` di seeder; tidak ditemukan route/action/policy untuk menjalankan reopen. Ruang lingkup dan masa berlaku belum menjadi aturan tertulis, sehingga implementasi tidak boleh diasumsikan tersedia.
+- **Batas verifikasi**: MySQL PDO tersedia, tetapi server `127.0.0.1:3306` tidak dapat dihubungi. Dua test MySQL diskip; tidak ada bukti fisik migrasi maupun submit bersamaan di InnoDB. Status audit database/concurrency adalah BLOCKED, bukan PASS.
+- **Gerbang rilis**: format nomor dan redaksi/versi consent masih menunggu persetujuan pemilik. Fase 6 belum CLOSED; Fase 7 tetap BLOCKED sampai semua gate selesai dan ada otorisasi.
 
 ## 6. KESIMPULAN & REKOMENDASI AUDIT
 

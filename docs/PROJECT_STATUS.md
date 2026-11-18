@@ -11,44 +11,47 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **Fase 6 Selesai — Menunggu Review Pemilik Proyek** |
-| **Fase Terakhir Diselesaikan** | **Fase 6 — Alur Pendaftaran dan Submit Final** |
-| **Status Persetujuan Fase Terakhir** | **IMPLEMENTASI SELESAI; 159 PASSED, 0 FAILED, 2 SKIPPED; MENUNGGU REVIEW PEMILIK** |
-| **Commit Git Terakhir yang Diverifikasi** | `e2a8bb3` (`first commit`, `main` = `origin/main`) |
+| **Fase Berjalan Saat Ini** | **Penutupan Fase 6 TERHAMBAT — menunggu keputusan pemilik dan verifikasi MySQL** |
+| **Implementasi Fase Terakhir** | **Fase 6 — Alur Pendaftaran dan Submit Final (closure belum lulus)** |
+| **Status Persetujuan Fase Terakhir** | **IMPLEMENTASI DIAUDIT; FASE 6 BELUM CLOSED; 159 PASSED, 0 FAILED, 2 SKIPPED** |
+| **Commit Implementasi Fase 6** | `311e099` (`feat(registration): implement final submission workflow`) |
 | **Fase Berikutnya yang Diusulkan** | **Fase 7 — Pembuatan Dokumen Bukti Pendaftaran PDF** |
-| **Status Izin Fase 7** | **BELUM DIOTORISASI; berhenti setelah Fase 6 sesuai stop condition** |
+| **Status Fase 7** | **BLOCKED sampai seluruh gate Fase 6 lulus dan pemilik memberi otorisasi** |
 
 ---
 
 ## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR
 
-- **Perintah Pengujian**: `php artisan test`
+- **Perintah Pengujian**: `php artisan test --compact`
 - **Waktu Eksekusi**: 18 November 2026
 - **Total Pengujian**: 161 pengujian
 - **Lulus (Passed)**: **159 pengujian**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **2 pengujian** (Pengujian skema langsung pada MySQL fisik menunggu daemon MySQL lokal aktif)
 - **Total Asersi**: **618 asersi**
-- **Durasi Eksekusi**: 9.20 detik
-- **Kepatuhan Format Kode (Pint)**: **100% PSR-12 / Laravel Code Style PASSED** (`vendor/bin/pint --test`)
+- **Durasi Eksekusi**: 8.72 detik
+- **Kepatuhan Format Kode (Pint)**: **PASSED** (`vendor/bin/pint --dirty --format agent`)
 - **Audit Dependensi Composer**: **0 kerentanan** (`composer audit`)
 - **Audit Dependensi NPM**: **6 temuan high** pada rantai `picomatch` (development/build); `npm audit --omit=dev` **0 temuan**. Advisory belum menetapkan versi patched yang kompatibel.
-- **Asset Build Vite**: **3 modules transformed, 85.02 kB CSS, 1.72 kB JS PASSED** (`npm run build`)
+- **Asset Build Vite**: **3 modules transformed, 85.88 kB CSS, 1.72 kB JS PASSED** (`npm.cmd run build`)
 
 ### Pemeriksaan Teknis Terbaru (18 November 2026)
 
-- Branch `main` dan remote `origin` mengarah ke `AhmadDFN/PPDB_Minsa_2026`; commit pada branch adalah root commit `e2a8bb3`. Referensi `4c64724` yang tercantum di catatan lama tidak ditemukan pada branch/remote saat ini.
-- Sumber maksud perubahan riwayat tidak dapat dipastikan dari Git yang tersedia: riwayat aktual bisa merupakan repository baru atau history yang disquash/dipindahkan. Tidak ada perubahan history yang dilakukan.
-- `package-lock.json` memiliki perubahan lokal pada nama package root (`PPDB_2026` ke `PPDB_Minsa_2026`), selaras dengan nama pada `package.json`; perubahan dipertahankan.
+- Pada awal audit penutupan, branch `main` dan `origin/main` sama-sama menunjuk `311e099`; worktree bersih. Remote terkonfigurasi sebagai `AhmadDFN/PPDB_Minsa_2026`.
+- Commit `311e099` adalah commit implementasi Fase 6 yang diaudit. Tidak ada perubahan sejarah Git.
+- Worktree bersih pada awal audit; `package-lock.json` tidak diubah selama audit ini.
 - Setelah pemeriksaan agregat SQLite menunjukkan tidak ada applicant/NIK tersimpan, dua key HMAC lokal dibuat secara independen dan hanya disimpan di `.env` yang di-ignore; APP_KEY tidak diubah. Runtime memverifikasi keberadaan dan perbedaan key tanpa menampilkan nilai.
 - Kebijakan ukuran resmi adalah 5120 KB global/default; batas lebih rendah per dokumen diperbolehkan dan batas di atas 5120 KB ditolak. Migration tambahan telah diterapkan pada SQLite lokal.
 - Fase 5 mengimplementasikan penyimpanan privat, retrieval persyaratan, service kelengkapan, upload/replacement, revisi historis, preview/unduh terotorisasi, UI, dan integrasi dashboard.
 - Fase 6 mengimplementasikan tinjauan dan validasi kesiapan, submit transaksional/idempoten, nomor registrasi dengan sequence per periode-program, persetujuan tersimpan, serta audit perubahan pasca-submit. Laporan implementasi tersedia di `docs/phases/PHASE-6-IMPLEMENTATION-REPORT.md`.
 - Format nomor `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}` dan teks/versi persetujuan yang digunakan adalah asumsi implementasi sementara; belum menjadi keputusan resmi sekolah. Konfigurasi persetujuan kosong menyebabkan submit gagal tertutup, dan konfigurasi resmi wajib ditetapkan sebelum produksi.
-- Tes regresi Fase 6: 161 total, 159 lulus, 2 dilewati (MySQL), 0 gagal, 618 asersi. Perilaku row-lock dan konkurensi fisik InnoDB belum diverifikasi.
+- Tes regresi audit final: 161 total, 159 lulus, 2 dilewati (MySQL), 0 gagal, 618 asersi. Dua tes MySQL diskip karena server pada `127.0.0.1:3306` tidak dapat dihubungi; Perilaku row-lock dan konkurensi fisik InnoDB belum diverifikasi.
+- Review aturan reopen: hanya permission `reopen_registration` yang tersedia dan hanya diberikan ke `superadmin`; belum ada route/action/policy atau alur audit untuk reopen. Business Requirements tidak menetapkan target dan masa berlaku akses reopen. Perlu keputusan pemilik.
+- Tidak ditemukan persetujuan tertulis untuk format nomor maupun redaksi/versi consent. Keduanya masih provisional.
+- Laporan audit penutupan tersedia di `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`; status fase tetap BLOCKED dan Fase 7 tidak dimulai.
 - Nilai PHP lokal saat diuji: `upload_max_filesize=2M`, `post_max_size=8M`. Pengaturan `upload_max_filesize` harus dinaikkan ke 5M untuk unggahan live ukuran maksimum; test 5120 KB memakai file sintetis di runner Laravel.
 - Temuan NPM development/build tetap terbuka; verifikasi produksi (`npm audit --omit=dev`) bersih. MySQL fisik masih pending.
-- Referensi commit lama `4c64724` belum dapat direkonsiliasi dengan riwayat aktual yang dimulai dari `e2a8bb3`; tidak ada rewrite history.
+- Riwayat yang tersedia berisi `e2a8bb3` → `4e70b5d` → `d970b33` → `311e099`; `main` dan `origin/main` sama-sama menunjuk `311e099` pada awal audit. Referensi historis `4c64724` tidak ditemukan; penyebab perbedaan tidak dapat dipastikan dari bukti Git yang tersedia. Tidak ada rewrite history.
 
 ---
 
@@ -61,10 +64,10 @@
 | 2 | **Database & Model** | 16 Migrasi tabel, Model Eloquent, Relasi, PHP Enums, Seeders | **SELESAI** | Relasi normal & integritas foreign keys |
 | 2.1 | **Audit Keamanan & DB** | Hash NIK HMAC-SHA256, enkripsi NIK, isolasi koneksi MySQL | **SELESAI BERSYARAT** | Audit kriptografi selesai; verifikasi fisik MySQL masih pending |
 | 3 | **Autentikasi & OTP** | Login NIK/Email, OTP HMAC kontekstual, aktivasi bertahap, rate limiting | **SELESAI** | 91 tes lulus, 302 asersi |
-| 4 | **Formulir & Profil Pendaftar** | Biodata siswa, ayah, ibu, wali, riwayat TK, pilih program, hitung umur | **SELESAI** | 129 tes lulus, 440 asersi, 2 skip (MySQL), Pint lulus |
+| 4 | **Formulir & Profil Pendaftar** | Biodata siswa, ayah, ibu, wali, riwayat TK, pilih program, hitung umur | **SELESAI** | 128 tes lulus, 438 asersi, 2 skip (MySQL), Pint lulus |
 | 5 | **Manajemen Dokumen** | Upload privat berkas pendaftaran, validasi MIME/ukuran, revisi berkas | **SELESAI** | 141 tes lulus, 2 skip MySQL; laporan implementasi Fase 5 tersedia |
-| 6 | **Alur Pendaftaran PPDB** | Validasi kesiapan, consent, submit idempoten, nomor, audit revisi | **SELESAI** | 159 passed, 2 skip MySQL; format nomor dan redaksi consent provisional |
-| 7 | **Mesin PDF Pendaftaran** | Cetak draft ber-watermark DRAFT, bukti registrasi resmi, versioning PDF | *Terjadwal* | Menunggu review dan otorisasi Fase 6 |
+| 6 | **Alur Pendaftaran PPDB** | Validasi kesiapan, consent, submit idempoten, nomor, audit revisi | **IMPLEMENTASI DIAUDIT; CLOSURE BLOCKED** | 159 passed; keputusan nomor/consent dan MySQL/reopen belum tuntas |
+| 7 | **Mesin PDF Pendaftaran** | Cetak draft ber-watermark DRAFT, bukti registrasi resmi, versioning PDF | **BLOCKED** | Tidak dimulai sebelum seluruh gate Fase 6 lulus dan ada otorisasi pemilik |
 | 8 | **Panel Panitia & PTSP** | Verifikasi fisik di loket, rekapitulasi jalur pendaftaran, ekspor laporan | *Terjadwal* | Menunggu Fase 7 selesai |
 | 9 | **Quality Assurance & Rilis** | End-to-end testing, audit keamanan menyeluruh, panduan pengguna | *Terjadwal* | Final stage sebelum go-live |
 
@@ -118,4 +121,4 @@
 
 ## 6. PROTOKOL STOP CONDITION
 
-Fase 6 telah diimplementasikan dan diuji. Agen **BERHENTI** pada batas Fase 6 dan menunggu review serta persetujuan eksplisit Pemilik Proyek sebelum memulai Fase 7. Pembuatan PDF, seleksi, persetujuan dokumen, dan pelaporan administrator tidak diimplementasikan pada Fase 6.
+Implementasi Fase 6 telah diaudit, tetapi fase **BELUM CLOSED**. Gate persetujuan format nomor/consent dan kebijakan reopen menunggu pemilik; migrasi dan concurrency MySQL/InnoDB terhambat karena MySQL tidak tersedia. Agen **BERHENTI** di sini dan tidak memulai Fase 7. Lihat `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`.

@@ -1,7 +1,7 @@
 # LAPORAN IMPLEMENTASI FASE 6 — ALUR PENDAFTARAN
 
 **Tanggal**: 18 November 2026
-**Status**: Implementasi selesai; menunggu review pemilik proyek
+**Status**: Implementasi diaudit; penutupan Fase 6 BLOCKED
 **Basis pengujian**: SQLite in-memory
 **Cakupan**: Validasi kesiapan, tinjauan, persetujuan, submit final, nomor registrasi, serta audit perubahan pasca-submit.
 
@@ -51,7 +51,8 @@ Fase ini tidak membuat PDF draft/final, tidak melakukan seleksi atau keputusan p
 ## 6. Isu dan Langkah Berikutnya
 
 1. Pemilik sekolah mengesahkan format/lingkup nomor dan teks/versi consent sebelum produksi.
-2. Jalankan verifikasi migration dan konkurensi pada MySQL/InnoDB ketika server tersedia; hasil SQLite tidak menggantikannya.
-3. Pertahankan pemantauan enam temuan NPM high dan evaluasi ulang setelah patch kompatibel tersedia.
-4. Konfigurasi server unggahan 5 MB yang dicatat pada laporan Fase 5 tetap harus diterapkan sebelum menerima file maksimum.
-5. Berhenti setelah Fase 6 dan tunggu review/otorisasi eksplisit sebelum memulai Fase 7.
+2. Tentukan kebijakan admin reopen; permission yang ada belum terhubung ke workflow dan cakupan/durasi belum ditetapkan.
+3. Jalankan verifikasi migration dan konkurensi pada MySQL/InnoDB ketika server tersedia; hasil SQLite tidak menggantikannya.
+4. Pertahankan pemantauan enam temuan NPM high dan evaluasi ulang setelah patch kompatibel tersedia.
+5. Konfigurasi server unggahan 5 MB yang dicatat pada laporan Fase 5 tetap harus diterapkan sebelum menerima file maksimum.
+6. Jangan memulai Fase 7 sebelum semua gerbang ini lulus serta pemilik memberi otorisasi tertulis.

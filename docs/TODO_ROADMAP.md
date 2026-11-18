@@ -64,15 +64,17 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P1 - Tinggi] Halaman Tinjauan dan Integrasi Dasbor**:
   - *Deskripsi*: Menampilkan ringkasan aman, NIK termasker, kesiapan pendaftaran, nomor dan status setelah submit.
 
-**Status Fase 6**: Implementasi dan regresi selesai; menunggu review pemilik. Teks/versi consent dan format nomor bersifat sementara dan wajib disahkan sebelum produksi. Lihat `docs/phases/PHASE-6-IMPLEMENTATION-REPORT.md`.
+**Status Fase 6**: Implementasi dan regresi tersedia, tetapi fase **belum CLOSED**. Persetujuan format nomor/consent dan kebijakan reopen menunggu pemilik; migrasi/concurrency MySQL terhambat oleh server yang tidak tersedia. Lihat `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`.
 
 ### Fase 7 — Pembuatan Dokumen Bukti Pendaftaran (PDF Generator)
-- [ ] **[P1 - Tinggi] Desain Layout PDF Bukti Pendaftaran**:
+- [ ] **[BLOCKED — P1] Desain Layout PDF Bukti Pendaftaran**:
   - *Deskripsi*: Desain lembar bukti resmi ukuran F4/A4 dengan kop madrasah resmi, logo Kemenag, pas foto pendaftar, tabel biodata, dan tanda tangan wali murid.
-- [ ] **[P1 - Tinggi] Watermark DRAFT Otomatis**:
+- [ ] **[BLOCKED — P1] Watermark DRAFT Otomatis**:
   - *Deskripsi*: Jika status masih DRAFT, PDF memuat watermark besar transparan bertuliskan "DRAFT - BUKAN BUKTI RESMI".
-- [ ] **[P1 - Tinggi] PDF Final & Versioning**:
+- [ ] **[BLOCKED — P1] PDF Final & Versioning**:
   - *Deskripsi*: Jika status SUBMITTED, PDF diterbitkan sebagai bukti sah registrasi dan dicatat pada tabel `registration_pdf_versions`.
+
+**Gate Fase 7: BLOCKED.** Tidak ada source, migration, atau dependency Fase 7 yang dibuat. Jangan mulai sebelum status closure Fase 6 menjadi CLOSED dan pemilik memberi otorisasi tertulis.
 
 ### Fase 8 — Panel Panitia PPDB & Loket PTSP
 - [ ] **[P1 - Tinggi] Antarmuka Verifikasi Berkas Fisik**:
@@ -99,6 +101,7 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [ ] **[P0 - Berkala] Pantau advisory `picomatch`**: Enam temuan high tetap terbuka pada dependency build/development; advisory belum menyatakan patched version. Hindari downgrade lintas major tanpa kajian kompatibilitas.
 - [ ] **[P1 - Operasional] Atur batas unggah server**: PHP produksi wajib `upload_max_filesize=5M`, `post_max_size` > 5M, dan request limit web server mencakup overhead multipart. Lingkungan lokal saat ini masih `2M`.
 - [ ] **[P1 - Operasional] Verifikasi MySQL fisik**: Dua tes kompatibilitas MySQL tetap pending sampai server tersedia.
-- [ ] **[P2 - Dokumentasi] Rekonsiliasi referensi riwayat Git**: `4c64724` tidak ditemukan pada branch `main`; tidak ada rewrite history.
+- [ ] **[P1 - Kebijakan] Penetapan kebijakan admin reopen**: Permission `reopen_registration` tersedia bagi superadmin, tetapi implementasi dan ruang lingkup reopen menunggu keputusan pemilik.
+- [x] **[P2 - Dokumentasi] Verifikasi referensi riwayat Git**: Riwayat saat audit diverifikasi (`e2a8bb3` → `4e70b5d` → `d970b33` → `311e099`); referensi historis `4c64724` tidak ditemukan dan penyebabnya belum dapat dipastikan. Tidak ada rewrite history.
 - [ ] **[P2 - Berkala] Rotasi Kunci HMAC & Manajemen Secret**: Prosedur pembaruan kunci rahasia jika terjadi insiden keamanan.
 - [ ] **[P2 - Berkala] Audit Log Pembersihan Token OTP Kedaluwarsa**: Scheduled task pembersihan otomatis record OTP yang telah kedaluwarsa lebih dari 30 hari.
