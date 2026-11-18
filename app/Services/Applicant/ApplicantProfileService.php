@@ -9,10 +9,15 @@ use App\Enums\PreviousEducationLevel;
 use App\Models\AdmissionPeriod;
 use App\Models\Applicant;
 use App\Models\Registration;
+use App\Services\Document\DocumentCompletenessService;
 use Carbon\Carbon;
 
 class ApplicantProfileService
 {
+    public function __construct(
+        protected DocumentCompletenessService $documentCompletenessService
+    ) {}
+
     /**
      * Retrieve current active admission period.
      */
@@ -53,6 +58,7 @@ class ApplicantProfileService
      *     guardian: array{status: string, label: string, is_complete: bool, has_guardian: bool},
      *     education: array{status: string, label: string, is_complete: bool},
      *     program: array{status: string, label: string, is_complete: bool, selected_program: ?string},
+     *     documents: array{required_count: int, uploaded_count: int, missing: list<string>, percentage: int, is_complete: bool},
      *     overall_percentage: int,
      *     is_all_complete: bool,
      *     registration: ?Registration
@@ -145,7 +151,9 @@ class ApplicantProfileService
             'selected_program' => $selectedProgramName,
         ];
 
-        // Calculate Overall Progress (6 mandatory components: Bio, Address, Father, Mother, Education, Program)
+        $documentStatus = $this->documentCompletenessService->summarize($registration);
+
+        // Calculate overall progress across profile, program, and required documents.
         $mandatoryItems = [
             $biodataStatus['is_complete'],
             $addressStatus['is_complete'],
@@ -153,6 +161,7 @@ class ApplicantProfileService
             $motherStatus['is_complete'],
             $educationStatus['is_complete'],
             $programStatus['is_complete'],
+            $documentStatus['is_complete'],
         ];
 
         $completedCount = count(array_filter($mandatoryItems));
@@ -167,6 +176,7 @@ class ApplicantProfileService
             'guardian' => $guardianStatus,
             'education' => $educationStatus,
             'program' => $programStatus,
+            'documents' => $documentStatus,
             'overall_percentage' => $percentage,
             'is_all_complete' => $completedCount === $totalMandatory,
             'registration' => $registration,

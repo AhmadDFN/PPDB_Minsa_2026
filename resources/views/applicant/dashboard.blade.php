@@ -144,7 +144,7 @@
                 <div>
                     <h2 class="text-base sm:text-lg font-bold text-neutral-800">Kemajuan Pengisian Formulir Pendaftaran</h2>
                     <p class="text-xs text-neutral-500 mt-0.5">
-                        Lengkapi kelima bagian data di bawah ini untuk dapat melanjutkan ke tahap unggah berkas.
+                        Lengkapi lima bagian data dan unggah seluruh dokumen yang diwajibkan.
                     </p>
                 </div>
                 <div class="text-right shrink-0">
@@ -274,6 +274,34 @@
                         {{ $completion['program']['is_complete'] ? 'Ubah Program' : 'Pilih Program' }}
                     </a>
                 </div>
+
+                <!-- Step 6: Dokumen Persyaratan -->
+                <div class="p-4 rounded-xl border md:col-span-2 {{ $completion['documents']['is_complete'] ? 'border-green-200 bg-green-50/20' : 'border-neutral-200 bg-white' }} flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg {{ $completion['documents']['is_complete'] ? 'bg-green-100 text-green-700' : 'bg-neutral-100 text-neutral-500' }} flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                            6
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-neutral-800">Dokumen Persyaratan</h4>
+                            <p class="text-xs text-neutral-500 mt-0.5">
+                                @if (! $completion['program']['is_complete'])
+                                    Pilih program pada periode aktif untuk melihat persyaratan dokumen.
+                                @elseif ($completion['documents']['required_count'] === 0)
+                                    Persyaratan dokumen belum tersedia untuk periode ini.
+                                @else
+                                    {{ $completion['documents']['uploaded_count'] }} dari {{ $completion['documents']['required_count'] }} dokumen wajib telah diunggah.
+                                @endif
+                            </p>
+                            <span class="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold {{ $completion['documents']['is_complete'] ? 'text-green-700' : 'text-amber-700' }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $completion['documents']['is_complete'] ? 'bg-green-500' : 'bg-amber-500' }}"></span>
+                                {{ $completion['documents']['is_complete'] ? 'Lengkap' : 'Belum Lengkap' }}
+                            </span>
+                        </div>
+                    </div>
+                    <a href="{{ route('applicant.documents.index') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                        Kelola Dokumen
+                    </a>
+                </div>
             </div>
 
             <!-- CTA Button -->
@@ -284,10 +312,10 @@
                             <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                             </svg>
-                            Seluruh data profil telah terisi lengkap. Menunggu tahap unggah dokumen.
+                            Data profil dan seluruh dokumen wajib telah lengkap.
                         </span>
                     @else
-                        <span>Masih ada bagian data formulir yang belum diisi. Silakan lengkapi segera.</span>
+                        <span>Masih ada data formulir atau dokumen wajib yang belum lengkap.</span>
                     @endif
                 </div>
 

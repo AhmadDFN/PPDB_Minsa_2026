@@ -1,9 +1,9 @@
 # SECURITY AUDIT REPORT — PPDB MINSATAMA
 ## Laporan Hasil Audit Keamanan Sistem Informasi PPDB MIN 1 Kota Madiun
 
-**Tanggal Audit**: 15 November 2026  
+**Tanggal Audit**: 18 November 2026
 **Auditor**: Senior Security Engineer & Laravel Specialist  
-**Status Audit**: TERVERIFIKASI AMAN (NO CRITICAL VULNERABILITIES)
+**Status Audit**: TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; FASE 5 TERUJI
 
 ---
 
@@ -12,12 +12,26 @@
 ### 1.1 Backend Dependencies (Composer)
 - **Perintah**: `composer audit`
 - **Hasil**: `No security vulnerability advisories found.`
-- **Jumlah Paket**: 82 paket produksi dan pengembangan. Seluruh paket terdaftar pada versi stabil terbaru yang bebas dari advisory keamanan CVE publik.
+- **Hasil pemeriksaan terbaru**: Tidak ada security vulnerability advisories yang dilaporkan Composer.
 
 ### 1.2 Frontend Dependencies (NPM)
 - **Perintah**: `npm audit`
-- **Hasil**: `found 0 vulnerabilities`
-- **Jumlah Paket**: 40 paket npm (Vite 8, Tailwind CSS v4, plugin). Tidak ada celah keamanan yang terdeteksi.
+- **Hasil aktual**: `npm audit --json` melaporkan 6 temuan high pada 6 paket (`picomatch`, `fdir`, `tinyglobby`, `vite-plugin-full-reload`, `laravel-vite-plugin`, dan `vite`) yang terhubung ke advisory `GHSA-fc5q-39xc-vjpf` / `CVE-2026-112366`. `npm audit --omit=dev` melaporkan 0 temuan.
+- **Versi dan dependency path**:
+  - `picomatch` 4.0.7 (root) dan 2.3.2 (`vite-plugin-full-reload` nested): advisory menyatakan affected `<=4.0.7`; audit package range `*`.
+  - `fdir` 6.5.0 (`fdir -> tinyglobby -> Vite / Laravel Vite plugin`), audit range `>=5.2.1`.
+  - `tinyglobby` 0.2.17 (`tinyglobby -> Vite / Laravel Vite plugin`), audit range `*`.
+  - `vite-plugin-full-reload` 1.2.0 (`laravel-vite-plugin -> vite-plugin-full-reload`), audit range `>=0.2.0`.
+  - `vite` 8.3.8 (direct dev dependency), audit range `>=6.3.0-beta.0`.
+  - `laravel-vite-plugin` 3.2.1 (direct dev dependency), audit range `>=0.3.0`; finding is propagated through `tinyglobby`, Vite, and full-reload plugin.
+- **Dampak**: seluruh paket terpasang sebagai development/build tools, bukan runtime production dependencies. Risiko berfokus pada proses build/CI yang memproses pola glob yang tidak tepercaya.
+- **Perbaikan dan kompatibilitas**: Advisory belum menetapkan patched version. Audit menyarankan downgrade lintas major untuk beberapa dependency; tidak diterapkan. Lockfile dipertahankan dan tidak menjalankan `npm audit fix --force`.
+- **Status**: isu terbuka; audit ulang setelah rilis patch upstream.
+
+### 1.3 Secret Configuration Readiness
+- `.env.example` berisi placeholder kosong. Key lokal telah dibuat dengan CSPRNG hanya pada `.env` yang di-ignore setelah pemeriksaan agregat database menunjukkan tidak ada applicant/NIK tersimpan. Nilai tidak ditampilkan.
+- Runtime mendeteksi APP_KEY, NIK_HMAC_KEY, dan OTP_HMAC_KEY; kedua key HMAC independen satu sama lain dan berbeda dari APP_KEY. APP_KEY tidak diubah. Test suite memakai key test-only dari `phpunit.xml`.
+- Operasi NIK/OTP gagal tertutup bila key kosong atau saling sama. Jangan mengganti APP_KEY atau NIK_HMAC_KEY pada instalasi yang memiliki data tergantung key tersebut tanpa rencana migrasi.
 
 ---
 
@@ -59,11 +73,19 @@
    - Panggilan `$request->session()->regenerate()` dilakukan setiap kali login berhasil untuk menangkal serangan fiksasi sesi (*session fixation*).
    - Seluruh rute formulir terlindungi oleh token CSRF bawaan Laravel.
 
+   ## 4. AUDIT FASE 5 — PENGELOLAAN DOKUMEN
+
+   - Disk `ppdb_private` menggunakan root `storage/app/private` dengan base path `ppdb/documents`; tidak ada route `storage` publik untuk dokumen.
+   - Upload membatasi format PDF/JPG/JPEG/PNG, membandingkan ekstensi dengan MIME Fileinfo aktual, menerapkan nilai minimum global/per-persyaratan, dan menyimpan SHA-256.
+   - Route preview, unduh, dan revisi membatasi query pada applicant pemilik; feature test cross-applicant memperoleh 404.
+   - Replacement menulis metadata/path berkas lama ke riwayat tanpa menghapus file historis. Jika transaksi database gagal setelah file baru tersimpan, action menghapus file baru dan mengembalikan error.
+   - Risiko konfigurasi operasional: PHP lokal masih `upload_max_filesize=2M` (di bawah kebijakan 5 MB), sementara `post_max_size=8M`. Atur `upload_max_filesize=5M`, `post_max_size` >5M, dan request limit web server yang mencakup multipart overhead sebelum menerima berkas 5 MB.
+
 ---
 
-## 4. KESIMPULAN & REKOMENDASI AUDIT
+## 5. KESIMPULAN & REKOMENDASI AUDIT
 
-1. **Tingkat Risiko Keseluruhan**: **RENDAH (LOW RISK)**.
+1. **Status risiko**: audit ini tidak menyatakan seluruh stack bebas risiko; terdapat enam temuan NPM high pada dependency build/development yang menunggu patch kompatibel.
 2. **Rekomendasi Operasional Produksi**:
    - Pastikan variabel `APP_KEY`, `NIK_HMAC_KEY`, dan `OTP_HMAC_KEY` pada server produksi digenerate menggunakan random string berentropi tinggi (minimal 64 karakter hex/base64) dan disimpan secara aman.
    - Aktifkan HTTPS/SSL penuh dan pastikan cookie diset dengan atribut `Secure` dan `HttpOnly`.

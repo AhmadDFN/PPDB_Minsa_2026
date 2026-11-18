@@ -12,7 +12,7 @@
 ## 1. TUGAS SELESAI (COMPLETED TASKS)
 
 - [x] **[P0 - Kritis] Inisialisasi Struktur Dokumentasi Master**: Membuat berkas master `AGENTS.md`, `PROJECT_BLUEPRINT.md`, `PROJECT_STATUS.md`, `TODO_ROADMAP.md`, `BUSINESS_REQUIREMENTS.md`, `SYSTEM_ARCHITECTURE.md`, `DATABASE_DESIGN.md`, `SECURITY_AND_TESTING.md`, `TECHNICAL_DECISIONS.md`, `DEVELOPMENT_GUIDE.md`.
-- [x] **[P0 - Kritis] Audit Repositori & Test Suite Terkini**: Menjalankan pengujian otomatis independen (`php artisan test`, `composer audit`, `npm audit`, `vendor/bin/pint --test`). 128 tes lulus, 0 error Pint, 0 celah keamanan dependensi.
+- [x] **[P0 - Kritis] Audit Repositori & Test Suite Terkini**: Regresi terbaru 141 lulus, 494 asersi, 2 skip MySQL; Pint lulus, Composer audit 0 advisory, NPM audit 6 high development-only dan 0 temuan production-only.
 - [x] **[P1 - Tinggi] Service & Action Layer Biodata Siswa (Fase 4)**:
   - `app/Actions/Applicant/UpdateApplicantBiodataAction.php` untuk melengkapi data nama, tempat/tanggal lahir, jenis kelamin, NISN, anak ke-, jumlah saudara. NIK terkunci dan read-only.
 - [x] **[P1 - Tinggi] Form & Action Data Alamat Domisili (Fase 4)**:
@@ -27,21 +27,24 @@
   - Menggunakan metode `Applicant::calculateAgeAt($admissionPeriod->age_reference_date)` untuk menampilkan usia siswa (Tahun, Bulan, Hari) pada UI tanpa kolom usia permanen di database.
 - [x] **[P1 - Tinggi] Dasbor Pendaftar dengan Progress Bar Dinamis (Fase 4)**:
   - `ApplicantProfileService::getCompletionSummary()` menghitung persentase kelengkapan 0-100%, status per modul (Lengkap / Belum Lengkap / Belum Diisi), dan banner periode aktif.
+- [x] **[P1 - Tinggi] Manajemen Dokumen Privat (Fase 5)**:
+  - Persyaratan per periode/program, kelengkapan, validasi 5120 KB/per-dokumen, SHA-256, upload/replacement, revisi historis, dan preview/download terotorisasi.
 
 ---
 
-## 2. TUGAS FASE BERIKUTNYA (FASE 5: MANAJEMEN BERKAS & DOKUMEN PENDAFTARAN)
+## 2. HASIL FASE 5 — MANAJEMEN BERKAS & DOKUMEN PENDAFTARAN
 
-*Catatan: Tugas di bawah ini HANYA boleh dieksekusi setelah mendapatkan persetujuan tertulis dari Pemilik Proyek.*
+Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/PHASE-5-IMPLEMENTATION-REPORT.md`.
 
-- [ ] **[P1 - Tinggi] Konfigurasi Penyimpanan Privat**:
-  - *Deskripsi*: Memastikan disk `private/ppdb/documents` aman dari akses publik langsung melalui web server.
-- [ ] **[P1 - Tinggi] Service Unggah Dokumen Mandiri**:
-  - *Deskripsi*: `app/Services/Document/DocumentUploadService.php` dengan validasi ekstensi (PDF, JPG, PNG), deteksi MIME type asli (bukan ekstensi palsu), batas ukuran maks. 2MB.
-- [ ] **[P1 - Tinggi] Penggantian Dokumen & Riwayat Revisi**:
-  - *Deskripsi*: Menyimpan dokumen pengganti ke tabel `registration_document_revisions` sebelum menimpa berkas aktif pada `registration_documents`.
-- [ ] **[P1 - Tinggi] Antarmuka Unggah Berkas Pendaftar**:
-  - *Deskripsi*: Halaman unggah berkas berdasarkan persyaratan dokumen aktif pada `document_requirements`.
+- [x] Disk privat tanpa URL publik dan route pemilik untuk preview/unduh.
+- [x] Retrieval persyaratan per periode/program dan service kelengkapan dokumen.
+- [x] Upload/replacement dengan validasi MIME aktual, ekstensi, batas efektif, dan SHA-256.
+- [x] Riwayat revisi tanpa menghapus berkas lama; cleanup berkas baru saat persistensi database gagal.
+- [x] Antarmuka dokumen pendaftar dan integrasi progress dashboard.
+- [x] Maksimum global/default 5120 KB; batas lebih rendah per dokumen; migration tambahan untuk default kolom.
+- [x] Uji batas unggah, format/MIME, IDOR, replacement, cleanup, dan dashboard.
+
+**Di luar cakupan Fase 5**: submit final, nomor registrasi, PDF, seleksi, persetujuan dokumen, dan pelaporan administrator.
 
 ---
 
@@ -84,5 +87,10 @@
 - [x] **[P0 - Selesai] Pengamanan Kriptografi OTP Binding**: Terimplementasi via `OtpService` dengan kunci rahasia terpisah dan context binding.
 - [x] **[P0 - Selesai] Proteksi Brute-Force Rate Limiting**: Batas 5 percobaan login per menit dan batas permintaan OTP.
 - [x] **[P0 - Selesai] IDOR Prevention pada Form Profil**: Seluruh aksi pembaruan profil diikat ketat pada `$request->user()->applicant`, mengabaikan ID yang dikirim melalui request.
+- [x] **[P1 - Selesai] Otorisasi Dokumen Pendaftar**: Preview, unduh, dan riwayat revisi dibatasi ke dokumen milik pendaftar yang sedang masuk.
+- [ ] **[P0 - Berkala] Pantau advisory `picomatch`**: Enam temuan high tetap terbuka pada dependency build/development; advisory belum menyatakan patched version. Hindari downgrade lintas major tanpa kajian kompatibilitas.
+- [ ] **[P1 - Operasional] Atur batas unggah server**: PHP produksi wajib `upload_max_filesize=5M`, `post_max_size` > 5M, dan request limit web server mencakup overhead multipart. Lingkungan lokal saat ini masih `2M`.
+- [ ] **[P1 - Operasional] Verifikasi MySQL fisik**: Dua tes kompatibilitas MySQL tetap pending sampai server tersedia.
+- [ ] **[P2 - Dokumentasi] Rekonsiliasi referensi riwayat Git**: `4c64724` tidak ditemukan pada branch `main`; tidak ada rewrite history.
 - [ ] **[P2 - Berkala] Rotasi Kunci HMAC & Manajemen Secret**: Prosedur pembaruan kunci rahasia jika terjadi insiden keamanan.
 - [ ] **[P2 - Berkala] Audit Log Pembersihan Token OTP Kedaluwarsa**: Scheduled task pembersihan otomatis record OTP yang telah kedaluwarsa lebih dari 30 hari.

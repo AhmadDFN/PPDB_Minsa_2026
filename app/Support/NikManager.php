@@ -48,6 +48,11 @@ class NikManager
             throw new RuntimeException('NIK_HMAC_KEY tidak boleh identik dengan APP_KEY. Gunakan kunci rahasia terpisah.');
         }
 
+        $otpKey = config('ppdb.otp.hmac_key');
+        if (! empty($otpKey) && $key === $otpKey) {
+            throw new RuntimeException('NIK_HMAC_KEY tidak boleh identik dengan OTP_HMAC_KEY. Gunakan kunci rahasia terpisah.');
+        }
+
         return hash_hmac('sha256', $normalized, $key);
     }
 

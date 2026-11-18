@@ -133,7 +133,7 @@ erDiagram
         text description "NULL"
         boolean is_required "default true"
         string allowed_formats "VARCHAR(100)"
-        smallint max_size_kb "default 2048"
+        smallint max_size_kb "default 5120; max 5120"
         timestamps created_at_updated_at
     }
 

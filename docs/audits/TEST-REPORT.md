@@ -1,17 +1,29 @@
 # AUTOMATED TEST EXECUTION REPORT — PPDB MINSATAMA
 ## Laporan Hasil Pengujian Otomatis Sistem PPDB MIN 1 Kota Madiun
 
-**Tanggal Eksekusi Terakhir**: 15 November 2026, 21:49 WIB  
-**Framework Pengujian**: PHPUnit 11.5 / Pest / Laravel Test Runner  
+**Eksekusi Regresi Terbaru**: 18 November 2026
+**Framework Pengujian**: PHPUnit 11.5 / Laravel Test Runner
 **Lingkungan**: SQLite in-memory (`:memory:`)  
-**Total Pengujian**: 93 Tes  
-**Status**: **91 LULUS (PASSED), 2 DILEWATI (SKIPPED), 0 GAGAL (FAILED)**  
-**Total Asersi**: 302 Asersi  
-**Durasi Rata-rata**: ~9.9 Detik  
+**Total Pengujian Terbaru**: 143 tes
+**Status Terbaru**: **141 LULUS, 2 DILEWATI, 0 GAGAL**
+**Total Asersi Terbaru**: 494
+**Durasi Terbaru**: 7.64 detik
+
+## 1. HASIL TERBARU — FASE 5
+
+- `php artisan test`: 143 tests, 141 passed, 2 skipped, 0 failed; 494 assertions. Kedua skip adalah tes kompatibilitas MySQL karena service lokal tidak tersedia.
+- `php artisan test --filter=DocumentManagementTest`: 12 tests passed, 54 assertions.
+- Cakupan dokumen: UI persyaratan, file di bawah/tepat/di atas 5120 KB, limit per dokumen, penolakan konfigurasi >5120 KB, ekstensi/MIME spoofing, ownership/IDOR, revisi dan persistensi berkas lama, escaping konten riwayat, cleanup setelah kegagalan DB, dan progress dashboard.
+- `vendor/bin/pint --test`: PASS.
+- `npm run build`: PASS (3 modules transformed; CSS 85.02 kB, JS 1.72 kB).
+- `composer audit`: 0 advisories. `npm audit`: 6 high temuan pada dependencies development/build; `npm audit --omit=dev`: 0 temuan.
+- Batas pengujian: file 5120 KB diuji menggunakan upload sintetis Laravel. PHP lokal masih `upload_max_filesize=2M`, jadi live upload 5 MB memerlukan konfigurasi server sesuai kebijakan.
 
 ---
 
-## 1. RINCIAN PENGUJIAN PER KELAS SUITE
+## 2. RINCIAN HISTORIS PENGUJIAN — BASELINE 15 NOVEMBER 2026
+
+Rincian berikut mempertahankan laporan sebelum Fase 5 (93 tes, 91 lulus, 2 dilewati); gunakan hasil terbaru di atas sebagai status regresi saat ini.
 
 ### 1.1 Tests\Unit\OtpServiceSecurityTest (10 Tes - 28 Asersi) — LULUS
 - `✓ compute hash produces deterministic hmac sha256`: Menjamin hash HMAC deterministik 64 karakter.
@@ -96,7 +108,7 @@
 
 ---
 
-## 2. KEPATUHAN GAYA KODE (LINTING & CODE STYLE)
+## 3. KEPATUHAN GAYA KODE (LINTING & CODE STYLE)
 
 - **Alat**: Laravel Pint v1.27
 - **Perintah**: `vendor/bin/pint --test`

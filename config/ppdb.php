@@ -42,9 +42,9 @@ return [
     |--------------------------------------------------------------------------
     */
     'documents' => [
-        'disk' => 'local', // Must be private local storage, never public
-        'base_path' => 'private/ppdb/documents',
+        'disk' => 'ppdb_private',
+        'base_path' => 'ppdb/documents',
         'pdf_path' => 'private/ppdb/pdfs',
-        'max_file_size_kb' => 5120, // 5MB default max
+        'global_max_size_kb' => 5120,
     ],
 ];

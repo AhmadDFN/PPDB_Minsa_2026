@@ -82,3 +82,19 @@
   Memastikan aksesibilitas ringan bagi seluruh perangkat ponsel orang tua, tidak memerlukan runtime JavaScript berat, SEO bersahabat, pemuatan halaman cepat, dan kemudahan pemeliharaan oleh tim internal madrasah tanpa kompilasi bundler yang rumit.
 - **Konsekuensi**:
   Interaktivitas UI (modal, drawer menu, show/hide password) ditulis menggunakan Vanilla JS murni yang modular dan teruji.
+
+---
+
+### ADR-006: Batas Ukuran Dokumen dan Penyimpanan Privat
+- **Tanggal**: 18 November 2026
+- **Status**: DISETUJUI PEMILIK (APPROVED)
+- **Konteks**:
+  Dokumen rancangan awal memuat 2048 KB, sedangkan konfigurasi global telah menetapkan 5120 KB. Pemilik proyek menetapkan maksimum resmi 5 MB per berkas.
+- **Solusi yang Dipilih**:
+  `config/ppdb.php` menetapkan maksimum global 5120 KB dan default per dokumen 5120 KB. Batas khusus dokumen dapat lebih kecil, dengan limit efektif sebagai nilai terendah global/per-dokumen; konfigurasi di atas 5120 KB ditolak.
+- **Penyimpanan**:
+  Berkas berada di disk `ppdb_private` (`storage/app/private/ppdb/documents`), diakses melalui route terotorisasi, tidak memakai URL publik. SHA-256 disimpan bersama metadata. Penggantian mempertahankan berkas lama dan merekam revisinya.
+- **Migrasi**:
+  Karena migration pembuatan persyaratan sudah diterapkan pada SQLite persisten, default kolom diperbarui melalui migration tambahan, bukan mengubah riwayat migration.
+- **Konsekuensi Operasional**:
+  Server perlu `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, dan batas request web server yang mencakup overhead multipart. Pada lingkungan verifikasi ini nilai PHP saat ini `upload_max_filesize=2M`; pengaturan tersebut belum diubah.

@@ -86,6 +86,18 @@ class SecurityAndOtpTest extends TestCase
         NikManager::hash('3573010101180001');
     }
 
+    public function test_identical_nik_and_otp_hmac_keys_are_forbidden(): void
+    {
+        $sharedKey = 'shared-dedicated-hmac-key-for-test-only';
+        Config::set('ppdb.nik_hmac_key', $sharedKey);
+        Config::set('ppdb.otp.hmac_key', $sharedKey);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('NIK_HMAC_KEY tidak boleh identik dengan OTP_HMAC_KEY');
+
+        NikManager::hash('3573010101180001');
+    }
+
     /**
      * Test NIK encryption and decryption round trip.
      */

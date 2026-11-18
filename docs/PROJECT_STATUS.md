@@ -1,7 +1,7 @@
 # PROJECT STATUS — PPDB MINSATAMA
 ## Sumber Kebenaran Tunggal Progres Pengembangan Sistem
 
-**Terakhir Diperbarui**: 15 November 2026, 22:36 WIB  
+**Terakhir Diperbarui**: 18 November 2026
 **Dokumentasi Versi**: 1.1.0  
 **Penanggung Jawab Teknis**: Senior Full-Stack Architect & Technical Project Manager
 
@@ -11,29 +11,41 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **Fase 4 Selesai — Menunggu Otorisasi Pemilik Proyek untuk Fase 5** |
-| **Fase Terakhir Diselesaikan** | **Fase 4 — Profil Calon Siswa, Biodata Orang Tua & Pilihan Program** |
-| **Status Persetujuan Fase Terakhir** | **SELESAI, TERUJI PENUH (128 PASSED, 0 FAILED) & SIAP DIREVIEW** |
-| **Commit Git Terakhir yang Diverifikasi** | `4c64724` (Dokumentasi Master) -> Transisi Commit Fase 4 |
-| **Fase Berikutnya yang Diusulkan** | **Fase 5 — Manajemen Berkas & Dokumen Persyaratan Pendaftaran** |
-| **Status Izin Fase 5** | **MENUNGGU PERSETUJUAN EKSPLISIT PEMILIK PROYEK (STOP PROTOCOL)** |
+| **Fase Berjalan Saat Ini** | **Fase 5 Selesai — Menunggu Otorisasi Pemilik Proyek untuk Fase 6** |
+| **Fase Terakhir Diselesaikan** | **Fase 5 — Manajemen Dokumen Persyaratan** |
+| **Status Persetujuan Fase Terakhir** | **IMPLEMENTASI SELESAI; 141 PASSED, 0 FAILED, 2 SKIPPED; MENUNGGU REVIEW PEMILIK** |
+| **Commit Git Terakhir yang Diverifikasi** | `e2a8bb3` (`first commit`, `main` = `origin/main`) |
+| **Fase Berikutnya yang Diusulkan** | **Fase 6 — Alur Submit Pendaftaran** |
+| **Status Izin Fase 6** | **BELUM DIOTORISASI; Fase 5 dihentikan sesuai stop condition** |
 
 ---
 
 ## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR
 
 - **Perintah Pengujian**: `php artisan test`
-- **Waktu Eksekusi**: 15 November 2026, 22:35 WIB
-- **Total Pengujian**: 130 pengujian
-- **Lulus (Passed)**: **128 pengujian**
+- **Waktu Eksekusi**: 18 November 2026
+- **Total Pengujian**: 143 pengujian
+- **Lulus (Passed)**: **141 pengujian**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **2 pengujian** (Pengujian skema langsung pada MySQL fisik menunggu daemon MySQL lokal aktif)
-- **Total Asersi**: **438 asersi**
-- **Durasi Eksekusi**: 7.55 detik
+- **Total Asersi**: **494 asersi**
+- **Durasi Eksekusi**: 7.64 detik
 - **Kepatuhan Format Kode (Pint)**: **100% PSR-12 / Laravel Code Style PASSED** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 kerentanan** (`composer audit`)
-- **Audit Dependensi NPM**: **0 kerentanan** (`npm audit`)
-- **Asset Build Vite**: **3 modules transformed, 71.73 kB CSS, 1.21 kB JS PASSED** (`npm run build`)
+- **Audit Dependensi NPM**: **6 temuan high** pada rantai `picomatch` (development/build); `npm audit --omit=dev` **0 temuan**. Advisory belum menetapkan versi patched yang kompatibel.
+- **Asset Build Vite**: **3 modules transformed, 85.02 kB CSS, 1.72 kB JS PASSED** (`npm run build`)
+
+### Pemeriksaan Kesiapan Teknis (18 November 2026)
+
+- Branch `main` dan remote `origin` mengarah ke `AhmadDFN/PPDB_Minsa_2026`; commit pada branch adalah root commit `e2a8bb3`. Referensi `4c64724` yang tercantum di catatan lama tidak ditemukan pada branch/remote saat ini.
+- Sumber maksud perubahan riwayat tidak dapat dipastikan dari Git yang tersedia: riwayat aktual bisa merupakan repository baru atau history yang disquash/dipindahkan. Tidak ada perubahan history yang dilakukan.
+- `package-lock.json` memiliki perubahan lokal pada nama package root (`PPDB_2026` ke `PPDB_Minsa_2026`), selaras dengan nama pada `package.json`; perubahan dipertahankan.
+- Setelah pemeriksaan agregat SQLite menunjukkan tidak ada applicant/NIK tersimpan, dua key HMAC lokal dibuat secara independen dan hanya disimpan di `.env` yang di-ignore; APP_KEY tidak diubah. Runtime memverifikasi keberadaan dan perbedaan key tanpa menampilkan nilai.
+- Kebijakan ukuran resmi adalah 5120 KB global/default; batas lebih rendah per dokumen diperbolehkan dan batas di atas 5120 KB ditolak. Migration tambahan telah diterapkan pada SQLite lokal.
+- Fase 5 mengimplementasikan penyimpanan privat, retrieval persyaratan, service kelengkapan, upload/replacement, revisi historis, preview/unduh terotorisasi, UI, dan integrasi dashboard.
+- Nilai PHP lokal saat diuji: `upload_max_filesize=2M`, `post_max_size=8M`. Pengaturan `upload_max_filesize` harus dinaikkan ke 5M untuk unggahan live ukuran maksimum; test 5120 KB memakai file sintetis di runner Laravel.
+- Temuan NPM development/build tetap terbuka; verifikasi produksi (`npm audit --omit=dev`) bersih. MySQL fisik masih pending.
+- Referensi commit lama `4c64724` belum dapat direkonsiliasi dengan riwayat aktual yang dimulai dari `e2a8bb3`; tidak ada rewrite history.
 
 ---
 
@@ -44,10 +56,10 @@
 | 0 | **Inspeksi Lingkungan** | Validasi PHP 8.3, Node 24, Composer, Git, direktori proyek | **SELESAI** | Disetujui pada awal proyek |
 | 1 | **Fondasi Proyek** | Laravel 13, Tailwind v4, Desain Token, Blade Layouts & Components | **SELESAI** | Lulus build Vite & uji fondasi |
 | 2 | **Database & Model** | 16 Migrasi tabel, Model Eloquent, Relasi, PHP Enums, Seeders | **SELESAI** | Relasi normal & integritas foreign keys |
-| 2.1 | **Audit Keamanan & DB** | Hash NIK HMAC-SHA256, enkripsi NIK, isolasi koneksi MySQL | **SELESAI** | NIK fail-closed jika key hilang/sama dengan APP_KEY |
+| 2.1 | **Audit Keamanan & DB** | Hash NIK HMAC-SHA256, enkripsi NIK, isolasi koneksi MySQL | **SELESAI BERSYARAT** | Audit kriptografi selesai; verifikasi fisik MySQL masih pending |
 | 3 | **Autentikasi & OTP** | Login NIK/Email, OTP HMAC kontekstual, aktivasi bertahap, rate limiting | **SELESAI** | 91 tes lulus, 302 asersi |
-| 4 | **Formulir & Profil Pendaftar** | Biodata siswa, ayah, ibu, wali, riwayat TK, pilih program, hitung umur | **SELESAI** | 128 tes lulus, 438 asersi, 0 Pint error |
-| 5 | **Manajemen Dokumen** | Upload privat berkas pendaftaran, validasi MIME/ukuran, revisi berkas | *Menunggu Izin* | Menunggu instruksi resmi |
+| 4 | **Formulir & Profil Pendaftar** | Biodata siswa, ayah, ibu, wali, riwayat TK, pilih program, hitung umur | **SELESAI** | 129 tes lulus, 440 asersi, 2 skip (MySQL), Pint lulus |
+| 5 | **Manajemen Dokumen** | Upload privat berkas pendaftaran, validasi MIME/ukuran, revisi berkas | **SELESAI** | 141 tes lulus, 2 skip MySQL; laporan implementasi Fase 5 tersedia |
 | 6 | **Alur Pendaftaran PPDB** | Validasi kelengkapan, transisi status DRAFT ke SUBMITTED, lock data | *Terjadwal* | Menunggu Fase 5 selesai |
 | 7 | **Mesin PDF Pendaftaran** | Cetak draft ber-watermark DRAFT, bukti registrasi resmi, versioning PDF | *Terjadwal* | Menunggu Fase 6 selesai |
 | 8 | **Panel Panitia & PTSP** | Verifikasi fisik di loket, rekapitulasi jalur pendaftaran, ekspor laporan | *Terjadwal* | Menunggu Fase 7 selesai |
@@ -63,10 +75,12 @@
    - Konfigurasi koneksi `mysql_test` ke database `ppdb_minsatama_test` telah siap pada `config/database.php`.
    - Daemon service MySQL pada port 3306 di mesin lokal Windows saat ini belum dijalankan (*not listening*).
    - Pengujian `MySqlSchemaCompatibilityTest` (2 tes) dilewati secara terencana (*gracefully skipped*) sampai server MySQL fisik lokal dijalankan oleh administrator server.
+4. **SQLite persisten lokal**:
+   - Migration additive untuk default `document_requirements.max_size_kb` menjadi 5120 telah dijalankan setelah status migration dan kesiapan database diperiksa; tidak ada migration destruktif.
 
 ---
 
-## 5. CAPAIAN FITUR FASE 4 (APPLICANT PROFILE & REGISTRATION FORM)
+## 5. CAPAIAN FITUR FASE 4–5
 
 1. **Service Profil Terpusat (`ApplicantProfileService`)**:
    - Menghitung kelengkapan profil pendaftar secara realtime (`biodata`, `address`, `father`, `mother`, `guardian`, `education`, `program`).
@@ -85,9 +99,15 @@
    - 5 Form Requests independen dengan validasi berbahasa Indonesia yang bersahabat.
    - Proteksi IDOR ketat: Semua operasi mengikat context `$request->user()->applicant`.
    - Enkripsi NIK tetap aman, input NIK tidak dapat dimanipulasi melalui request form.
+5. **Manajemen Dokumen (Fase 5)**:
+   - Persyaratan hanya diambil untuk periode/program pendaftaran pendaftar; `DocumentCompletenessService` menghitung status dokumen wajib.
+   - Upload memvalidasi ekstensi, MIME Fileinfo, SHA-256, maksimum global/default 5120 KB, dan batas per dokumen yang lebih kecil.
+   - Replacement mencatat metadata revisi dan mempertahankan file historis. File baru dibersihkan jika persistensi database gagal.
+   - Preview, download, dan revisi historis dilayani oleh route terotorisasi dengan pembatasan ownership; tidak ada public URL.
+   - Halaman pengelolaan dokumen dan progress dashboard tersedia. Tidak ada persetujuan dokumen atau pengiriman final.
 
 ---
 
 ## 6. PROTOKOL STOP CONDITION
 
-Fase 4 telah rampung 100%, seluruh tes lulus, gaya kode terformat rapi sesuai standar Pint, dan dokumen laporan telah disusun. Agen **BERHENTI** dan menunggu instruksi serta izin eksplisit dari Pemilik Proyek sebelum memulai Fase 5.
+Fase 5 telah diimplementasikan dan diuji. Agen **BERHENTI** pada batas Fase 5 dan menunggu review serta persetujuan eksplisit Pemilik Proyek sebelum memulai Fase 6. Fase 5 tidak mencakup submit final, nomor registrasi, PDF, seleksi, persetujuan dokumen, atau pelaporan administrator.

@@ -21,7 +21,7 @@ class RegistrationDocumentFactory extends Factory
         return [
             'registration_id' => Registration::factory(),
             'document_requirement_id' => DocumentRequirement::factory(),
-            'file_path' => 'private/ppdb/documents/'.fake()->uuid().'.pdf',
+            'file_path' => 'ppdb/documents/'.fake()->uuid().'.pdf',
             'original_name' => fake()->word().'.pdf',
             'mime_type' => 'application/pdf',
             'file_size_bytes' => fake()->numberBetween(50000, 1500000),

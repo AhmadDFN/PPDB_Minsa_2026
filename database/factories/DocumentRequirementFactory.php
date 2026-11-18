@@ -25,7 +25,7 @@ class DocumentRequirementFactory extends Factory
             'description' => fake()->sentence(),
             'is_required' => true,
             'allowed_mimes' => 'application/pdf,image/jpeg,image/png',
-            'max_size_kb' => 2048,
+            'max_size_kb' => 5120,
             'sort_order' => 1,
         ];
     }

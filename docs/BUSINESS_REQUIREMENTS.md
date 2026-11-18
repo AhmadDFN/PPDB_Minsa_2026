@@ -125,10 +125,12 @@ Dokumen ini berisi seluruh aturan bisnis resmi yang telah disetujui oleh Pemilik
 1. **Daftar Dokumen Persyaratan**:
    - Persyaratan berkas dikonfigurasi secara dinamis melalui tabel `document_requirements`.
    - Terdiri dari dokumen wajib (misal: Kartu Keluarga, Akta Kelahiran, Surat Keterangan TK) dan dokumen opsional (misal: Piagam Prestasi).
+   - Ukuran maksimum global dan default per dokumen adalah **5120 KB (5 MB)**. Setiap persyaratan boleh menetapkan batas yang lebih kecil; batas efektif adalah nilai terendah antara maksimum global dan batas persyaratan. Batas persyaratan di atas 5120 KB ditolak.
 2. **Keamanan Penyimpanan**:
-   - Seluruh berkas yang diunggah disimpan di disk privat lokal (`private/ppdb/documents`), tidak dapat diakses secara publik via URL langsung tanpa otorisasi.
+   - Seluruh berkas yang diunggah disimpan pada disk privat lokal di `storage/app/private/ppdb/documents`, tidak dapat diakses secara publik via URL langsung tanpa otorisasi.
+   - Validasi ukuran, ekstensi, MIME aktual, kepemilikan, dan SHA-256 dilakukan di sisi server; validasi frontend hanya bantuan tambahan.
 3. **Riwayat Revisi**:
-   - Jika dokumen diperbarui/diganti, berkas lama dicatat pada tabel `registration_document_revisions` untuk keperluan audit integritas data.
+   - Jika dokumen diperbarui/diganti, metadata dan lokasi berkas lama dicatat pada tabel `registration_document_revisions`; berkas lama tetap disimpan untuk audit integritas data.
 
 ---
 

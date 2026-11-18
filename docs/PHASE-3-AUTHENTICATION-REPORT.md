@@ -291,10 +291,10 @@ Sebelum menjalankan aplikasi di server lokal/produksi, pastikan parameter rahasi
 
 ```env
 # Kunci Rahasia Deterministic Lookup Hash NIK (64 hex characters)
-NIK_HMAC_KEY=18dc9b782d1a8fc97c4f99dacb4e0aeca009b3cc289d33197eb32c150ab655cf
+NIK_HMAC_KEY=
 
 # Kunci Rahasia One-Time Password (OTP) HMAC Binding (Wajib terpisah dari APP_KEY dan NIK_HMAC_KEY)
-OTP_HMAC_KEY=a79b8830f023dbcb767f39d1b098b671184284cfdfa83d34bb61480f2d9c1e7a
+OTP_HMAC_KEY=
 
 # Parameter OTP
 OTP_LENGTH=6

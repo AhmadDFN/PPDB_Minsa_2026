@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Applicant\DashboardController;
+use App\Http\Controllers\Applicant\DocumentController;
 use App\Http\Controllers\Applicant\RegistrationFormController;
 use App\Models\AdmissionPeriod;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +68,13 @@ Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('a
 
     Route::get('/program', [RegistrationFormController::class, 'editProgram'])->name('program.edit');
     Route::post('/program', [RegistrationFormController::class, 'updateProgram'])->name('program.update');
+
+    Route::get('/dokumen', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/dokumen/{requirementId}', [DocumentController::class, 'upload'])->name('documents.upload');
+    Route::get('/dokumen/{documentId}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
+    Route::get('/dokumen/{documentId}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/dokumen/{documentId}/revisi/{revisionId}/preview', [DocumentController::class, 'previewRevision'])->name('documents.revisions.preview');
+    Route::get('/dokumen/{documentId}/revisi/{revisionId}/download', [DocumentController::class, 'downloadRevision'])->name('documents.revisions.download');
 });
 
 // Protected Administrator Area

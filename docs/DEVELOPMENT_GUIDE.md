@@ -50,11 +50,12 @@ DB_DATABASE=ppdb_minsatama
 DB_USERNAME=root
 DB_PASSWORD=
 
-# Kunci Rahasia NIK HMAC (Wajib diisi & berbeda dari APP_KEY)
-NIK_HMAC_KEY=18dc9b782d1a8fc97c4f99dacb4e0aeca009b3cc289d33197eb32c150ab655cf
-
-# Kunci Rahasia OTP HMAC (Wajib diisi & berbeda dari APP_KEY dan NIK_HMAC_KEY)
-OTP_HMAC_KEY=a79b8830f023dbcb767f39d1b098b671184284cfdfa83d34bb61480f2d9c1e7a
+# Buat dua nilai acak dan independen menggunakan CSPRNG, lalu simpan hanya di .env lokal.
+# Contoh generator lokal (jalankan terpisah untuk masing-masing key):
+# php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
+# Jangan membagikan atau mencatat nilai. Jangan ganti APP_KEY/NIK_HMAC_KEY jika data bergantung padanya.
+NIK_HMAC_KEY=
+OTP_HMAC_KEY=
 
 # Konfigurasi OTP
 OTP_LENGTH=6
