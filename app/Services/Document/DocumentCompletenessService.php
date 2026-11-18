@@ -34,8 +34,8 @@ class DocumentCompletenessService
             ];
         }
 
-        $required = $this->requirementService
-            ->forRegistration($registration)
+        $configuredRequirements = $this->requirementService->forRegistration($registration);
+        $required = $configuredRequirements
             ->where('is_required', true)
             ->values();
 
@@ -44,8 +44,8 @@ class DocumentCompletenessService
                 'required_count' => 0,
                 'uploaded_count' => 0,
                 'missing' => [],
-                'percentage' => 0,
-                'is_complete' => false,
+                'percentage' => $configuredRequirements->isEmpty() ? 0 : 100,
+                'is_complete' => $configuredRequirements->isNotEmpty(),
             ];
         }
 

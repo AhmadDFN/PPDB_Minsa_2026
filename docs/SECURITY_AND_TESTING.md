@@ -80,6 +80,15 @@ Sistem menggunakan piramida pengujian berlapis:
    - `AuthorizationAndMiddlewareTest`: Penegakan otorisasi middleware `active`, `applicant`, dan `admin`.
 4. **Feature Tests Dokumen (`tests/Feature/Applicant/DocumentManagementTest.php`)**:
    - Menguji batas di bawah, tepat, dan di atas 5120 KB; limit per persyaratan; MIME/ekstensi; akses guest dan IDOR; history replacement; cleanup file saat persistensi gagal; dan progress dashboard.
+5. **Feature Tests Submit Pendaftaran (`tests/Feature/Applicant/RegistrationWorkflowTest.php`)**:
+   - Menguji kelengkapan pra-submit termasuk field wajib ayah/ibu, konfigurasi dokumen wajib/opsional, consent, status dan nomor, idempotensi, sequence per periode-program, periode/program tidak aktif, ownership, masking NIK, audit revisi tanpa nilai pribadi, kunci edit setelah periode ditutup, dan preservasi revisi dokumen.
+   - Uji SQLite tidak membuktikan konkurensi row-lock InnoDB; verifikasi fisik MySQL masih pending.
+
+### Konfigurasi Consent Submit
+
+- Teks dan versi persetujuan harus disahkan sekolah sebelum produksi. Redaksi sementara hanya untuk lingkungan pengembangan/testing.
+- Konfigurasi consent kosong menyebabkan submit gagal tertutup; `config/ppdb.php` tidak menyediakan fallback redaksi sementara untuk `APP_ENV=production`.
+- `.env.example` berisi placeholder kosong untuk `PPDB_CONSENT_VERSION` dan `PPDB_CONSENT_STATEMENT`; jangan mengisi nilai produksi sebelum mendapat redaksi resmi.
 
 ---
 

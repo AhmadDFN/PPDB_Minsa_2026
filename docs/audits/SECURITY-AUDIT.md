@@ -3,7 +3,7 @@
 
 **Tanggal Audit**: 18 November 2026
 **Auditor**: Senior Security Engineer & Laravel Specialist  
-**Status Audit**: TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; FASE 5 TERUJI
+**Status Audit**: TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; FASE 6 TERUJI DI SQLITE
 
 ---
 
@@ -73,7 +73,7 @@
    - Panggilan `$request->session()->regenerate()` dilakukan setiap kali login berhasil untuk menangkal serangan fiksasi sesi (*session fixation*).
    - Seluruh rute formulir terlindungi oleh token CSRF bawaan Laravel.
 
-   ## 4. AUDIT FASE 5 — PENGELOLAAN DOKUMEN
+## 4. AUDIT FASE 5 — PENGELOLAAN DOKUMEN
 
    - Disk `ppdb_private` menggunakan root `storage/app/private` dengan base path `ppdb/documents`; tidak ada route `storage` publik untuk dokumen.
    - Upload membatasi format PDF/JPG/JPEG/PNG, membandingkan ekstensi dengan MIME Fileinfo aktual, menerapkan nilai minimum global/per-persyaratan, dan menyimpan SHA-256.
@@ -81,9 +81,16 @@
    - Replacement menulis metadata/path berkas lama ke riwayat tanpa menghapus file historis. Jika transaksi database gagal setelah file baru tersimpan, action menghapus file baru dan mengembalikan error.
    - Risiko konfigurasi operasional: PHP lokal masih `upload_max_filesize=2M` (di bawah kebijakan 5 MB), sementara `post_max_size=8M`. Atur `upload_max_filesize=5M`, `post_max_size` >5M, dan request limit web server yang mencakup multipart overhead sebelum menerima berkas 5 MB.
 
----
+## 5. AUDIT FASE 6 — SUBMIT DAN REVISI PENDAFTARAN
 
-## 5. KESIMPULAN & REKOMENDASI AUDIT
+- Endpoint submit memperoleh pendaftaran hanya dari relasi pendaftar yang sedang masuk; ID dan status kiriman tidak dipercaya dari request. Uji lintas akun menolak akses.
+- Submit membungkus validasi, lock row, sequence, consent, status, timestamp, dan audit dalam transaksi. Pengiriman ulang mempertahankan nomor/timestamp serta tidak menggandakan consent/log.
+- Sequence menggunakan row lock per `admission_period_program_id` dan unique constraint nomor pada registration. Semantik lock InnoDB belum diuji pada server MySQL fisik; uji SQLite bukan bukti concurrency production.
+- NIK siswa/orang tua dimasker pada halaman tinjauan; path penyimpanan privat tidak dikirim ke Blade. Log revisi hanya berisi nama field yang berubah, bukan nilai pribadi.
+- Konfigurasi consent kosong menyebabkan submit gagal. Redaksi dan format nomor saat ini provisional dan memerlukan persetujuan sekolah sebelum produksi.
+- Tidak ada PDF, seleksi siswa, persetujuan dokumen, atau pelaporan administrator yang diimplementasikan pada fase ini.
+
+## 6. KESIMPULAN & REKOMENDASI AUDIT
 
 1. **Status risiko**: audit ini tidak menyatakan seluruh stack bebas risiko; terdapat enam temuan NPM high pada dependency build/development yang menunggu patch kompatibel.
 2. **Rekomendasi Operasional Produksi**:

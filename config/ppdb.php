@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+$provisionalConsentStatement = 'Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.';
+$isProduction = env('APP_ENV', 'production') === 'production';
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -46,5 +49,22 @@ return [
         'base_path' => 'ppdb/documents',
         'pdf_path' => 'private/ppdb/pdfs',
         'global_max_size_kb' => 5120,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Registration Submission
+    |--------------------------------------------------------------------------
+    | The number format uses the configured prefix, academic year, period
+    | program code, and a sequence scoped to that period-program pair.
+    */
+    'registration' => [
+        'number_prefix' => env('PPDB_REGISTRATION_NUMBER_PREFIX', 'PPDB'),
+        'sequence_padding' => 5,
+        'consent_version' => env('PPDB_CONSENT_VERSION', $isProduction ? '' : 'v1.0'),
+        'consent_statement' => env(
+            'PPDB_CONSENT_STATEMENT',
+            $isProduction ? '' : $provisionalConsentStatement
+        ),
     ],
 ];

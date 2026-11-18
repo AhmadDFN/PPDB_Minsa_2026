@@ -4,24 +4,33 @@
 **Eksekusi Regresi Terbaru**: 18 November 2026
 **Framework Pengujian**: PHPUnit 11.5 / Laravel Test Runner
 **Lingkungan**: SQLite in-memory (`:memory:`)  
-**Total Pengujian Terbaru**: 143 tes
-**Status Terbaru**: **141 LULUS, 2 DILEWATI, 0 GAGAL**
-**Total Asersi Terbaru**: 494
-**Durasi Terbaru**: 7.64 detik
+**Total Pengujian Terbaru**: 161 tes
+**Status Terbaru**: **159 LULUS, 2 DILEWATI, 0 GAGAL**
+**Total Asersi Terbaru**: 618
+**Durasi Terbaru**: 9.20 detik
 
-## 1. HASIL TERBARU — FASE 5
+## 1. HASIL TERBARU — FASE 6
 
-- `php artisan test`: 143 tests, 141 passed, 2 skipped, 0 failed; 494 assertions. Kedua skip adalah tes kompatibilitas MySQL karena service lokal tidak tersedia.
+- `php artisan test --compact`: 161 tests, 159 passed, 2 skipped, 0 failed; 618 assertions. Kedua skip adalah tes kompatibilitas MySQL karena service lokal tidak tersedia.
+- `php artisan test --compact tests/Feature/Applicant/RegistrationWorkflowTest.php`: 18 tests passed; 114 assertions.
+- Cakupan Fase 6: kelengkapan, consent, fail-closed konfigurasi consent kosong, submit atomik/idempoten, nomor dan sequence per periode-program, periode/program tidak aktif, ownership, masking, audit revisi, edit setelah submit/penutupan periode, dan preservasi revisi dokumen.
+- Form ayah/ibu dan pemeriksaan pra-submit mewajibkan field sesuai Business Requirements: NIK, status, pendidikan, pekerjaan, penghasilan, dan telepon.
+- Batas pengujian: tes isolasi berjalan di SQLite. Row locking dan konkurensi InnoDB belum diverifikasi karena layanan MySQL fisik tidak tersedia.
+- `vendor/bin/pint --dirty --format agent`: PASS.
+- `npm.cmd run build`: PASS (Vite 8.3.8; 3 modules transformed; CSS 85.88 kB, JS 1.72 kB).
+- `composer audit`: 0 advisories. `npm.cmd audit --json`: 6 high temuan pada rantai `picomatch`; `npm.cmd audit --omit=dev`: 0 temuan.
+- `php artisan test` dijalankan setelah Pint; tidak ada migration pada database MySQL/persisten.
+
+## 2. HASIL FASE 5 — MANAJEMEN DOKUMEN
+
+- Regresi pada akhir Fase 5: 143 tests, 141 passed, 2 skipped, 0 failed; 494 assertions.
 - `php artisan test --filter=DocumentManagementTest`: 12 tests passed, 54 assertions.
 - Cakupan dokumen: UI persyaratan, file di bawah/tepat/di atas 5120 KB, limit per dokumen, penolakan konfigurasi >5120 KB, ekstensi/MIME spoofing, ownership/IDOR, revisi dan persistensi berkas lama, escaping konten riwayat, cleanup setelah kegagalan DB, dan progress dashboard.
-- `vendor/bin/pint --test`: PASS.
-- `npm run build`: PASS (3 modules transformed; CSS 85.02 kB, JS 1.72 kB).
-- `composer audit`: 0 advisories. `npm audit`: 6 high temuan pada dependencies development/build; `npm audit --omit=dev`: 0 temuan.
 - Batas pengujian: file 5120 KB diuji menggunakan upload sintetis Laravel. PHP lokal masih `upload_max_filesize=2M`, jadi live upload 5 MB memerlukan konfigurasi server sesuai kebijakan.
 
 ---
 
-## 2. RINCIAN HISTORIS PENGUJIAN — BASELINE 15 NOVEMBER 2026
+## 3. RINCIAN HISTORIS PENGUJIAN — BASELINE 15 NOVEMBER 2026
 
 Rincian berikut mempertahankan laporan sebelum Fase 5 (93 tes, 91 lulus, 2 dilewati); gunakan hasil terbaru di atas sebagai status regresi saat ini.
 

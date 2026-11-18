@@ -46,17 +46,25 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Di luar cakupan Fase 5**: submit final, nomor registrasi, PDF, seleksi, persetujuan dokumen, dan pelaporan administrator.
 
+**Di luar cakupan Fase 6**: PDF draft/final, seleksi, persetujuan dokumen, dan pelaporan administrator.
+
 ---
 
 ## 3. TUGAS FASE LANJUTAN (FUTURE PHASE TASKS)
 
 ### Fase 6 — Alur Pendaftaran (Draft, Validasi Kelengkapan & Submit Final)
-- [ ] **[P1 - Tinggi] Sistem Status Formulir (DRAFT & SUBMITTED)**:
+- [x] **[P1 - Tinggi] Sistem Status Formulir (DRAFT & SUBMITTED)**:
   - *Deskripsi*: Menegakkan aturan bahwa formulir dapat disimpan sebagai DRAFT berkali-kali.
-- [ ] **[P1 - Tinggi] Engine Validasi Kelengkapan Pra-Submit**:
+- [x] **[P1 - Tinggi] Engine Validasi Kelengkapan Pra-Submit**:
   - *Deskripsi*: Pengecekan seluruh modul (Biodata, Ortu, Alamat, TK, Program, Berkas Wajib) sebelum pendaftar diizinkan menekan tombol "Kirim Pendaftaran Final".
-- [ ] **[P1 - Tinggi] Penerbitan Nomor Registrasi Unik**:
-  - *Deskripsi*: Nomor registrasi unik diterbitkan HANYA saat pendaftar melakukan submit final (contoh format: `REG-2026-XXXX`).
+- [x] **[P1 - Tinggi] Submit Final, Persetujuan, dan Audit Revisi**:
+  - *Deskripsi*: Submit atomik/idempoten menyimpan persetujuan, waktu submit, status, nomor registrasi unik, dan log perubahan. Perubahan pasca-submit diizinkan hanya saat periode masih terbuka.
+- [x] **[P1 - Tinggi] Penerbitan Nomor Registrasi Unik**:
+  - *Deskripsi*: Sequence unik dikunci per kombinasi periode-program. Format sementara `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`; belum disahkan sebagai format resmi sekolah.
+- [x] **[P1 - Tinggi] Halaman Tinjauan dan Integrasi Dasbor**:
+  - *Deskripsi*: Menampilkan ringkasan aman, NIK termasker, kesiapan pendaftaran, nomor dan status setelah submit.
+
+**Status Fase 6**: Implementasi dan regresi selesai; menunggu review pemilik. Teks/versi consent dan format nomor bersifat sementara dan wajib disahkan sebelum produksi. Lihat `docs/phases/PHASE-6-IMPLEMENTATION-REPORT.md`.
 
 ### Fase 7 — Pembuatan Dokumen Bukti Pendaftaran (PDF Generator)
 - [ ] **[P1 - Tinggi] Desain Layout PDF Bukti Pendaftaran**:

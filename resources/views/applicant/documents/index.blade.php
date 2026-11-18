@@ -108,49 +108,55 @@
                             </div>
                         @endif
 
-                        <form
-                            method="POST"
-                            action="{{ route('applicant.documents.upload', $requirement->id) }}"
-                            enctype="multipart/form-data"
-                            class="mt-4 space-y-3"
-                        >
-                            @csrf
-                            <label for="document-file-{{ $requirement->id }}" class="block text-xs font-semibold text-neutral-700">
-                                {{ $document ? 'Pilih berkas pengganti' : 'Pilih berkas' }}
-                                @if ($requirement->is_required && ! $document)
-                                    <span class="text-red-600">*</span>
-                                @endif
-                            </label>
-                            <input
-                                id="document-file-{{ $requirement->id }}"
-                                class="document-upload-input block w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-primary-700 hover:file:bg-primary-100"
-                                type="file"
-                                name="file"
-                                accept=".pdf,.jpg,.jpeg,.png"
-                                data-max-size-kb="{{ $effectiveMaxSizeKb }}"
-                                @if ($requirement->is_required && ! $document) required @endif
+                        @if ($canEdit)
+                            <form
+                                method="POST"
+                                action="{{ route('applicant.documents.upload', $requirement->id) }}"
+                                enctype="multipart/form-data"
+                                class="mt-4 space-y-3"
                             >
-                            <p class="document-upload-feedback text-xs text-neutral-500">
-                                Batas unggah {{ $effectiveMaxSizeKb }} KB; maksimum global {{ $globalMaxSizeKb }} KB.
-                                Pastikan jenis file dan isinya sesuai.
-                            </p>
-
-                            @if ($document)
-                                <label for="document-reason-{{ $requirement->id }}" class="block text-xs font-semibold text-neutral-700">Alasan penggantian (opsional)</label>
+                                @csrf
+                                <label for="document-file-{{ $requirement->id }}" class="block text-xs font-semibold text-neutral-700">
+                                    {{ $document ? 'Pilih berkas pengganti' : 'Pilih berkas' }}
+                                    @if ($requirement->is_required && ! $document)
+                                        <span class="text-red-600">*</span>
+                                    @endif
+                                </label>
                                 <input
-                                    id="document-reason-{{ $requirement->id }}"
-                                    type="text"
-                                    name="reason"
-                                    maxlength="255"
-                                    class="form-input w-full"
-                                    placeholder="Contoh: memperbarui hasil pindai"
+                                    id="document-file-{{ $requirement->id }}"
+                                    class="document-upload-input block w-full text-sm text-neutral-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-primary-700 hover:file:bg-primary-100"
+                                    type="file"
+                                    name="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    data-max-size-kb="{{ $effectiveMaxSizeKb }}"
+                                    @if ($requirement->is_required && ! $document) required @endif
                                 >
-                            @endif
+                                <p class="document-upload-feedback text-xs text-neutral-500">
+                                    Batas unggah {{ $effectiveMaxSizeKb }} KB; maksimum global {{ $globalMaxSizeKb }} KB.
+                                    Pastikan jenis file dan isinya sesuai.
+                                </p>
 
-                            <button type="submit" class="btn btn-primary inline-flex text-xs">
-                                {{ $document ? 'Ganti Dokumen' : 'Unggah Dokumen' }}
-                            </button>
-                        </form>
+                                @if ($document)
+                                    <label for="document-reason-{{ $requirement->id }}" class="block text-xs font-semibold text-neutral-700">Alasan penggantian (opsional)</label>
+                                    <input
+                                        id="document-reason-{{ $requirement->id }}"
+                                        type="text"
+                                        name="reason"
+                                        maxlength="255"
+                                        class="form-input w-full"
+                                        placeholder="Contoh: memperbarui hasil pindai"
+                                    >
+                                @endif
+
+                                <button type="submit" class="btn btn-primary inline-flex text-xs">
+                                    {{ $document ? 'Ganti Dokumen' : 'Unggah Dokumen' }}
+                                </button>
+                            </form>
+                        @else
+                            <p class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                                Perubahan dokumen terkunci karena periode pendaftaran tidak sedang dibuka.
+                            </p>
+                        @endif
 
                         @if ($document && $document->revisions->isNotEmpty())
                             <details class="mt-5 border-t border-neutral-100 pt-4">

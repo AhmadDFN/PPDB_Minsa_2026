@@ -28,6 +28,14 @@ class DashboardController extends Controller
         $activePeriod = $this->profileService->getActiveAdmissionPeriod();
         $completion = $this->profileService->getCompletionSummary($applicant, $activePeriod);
         $age = $this->profileService->calculateAge($applicant, $activePeriod);
+        $registration = $completion['registration'];
+
+        if ($registration === null && $activePeriod === null) {
+            $registration = $applicant->registrations()
+                ->with(['admissionPeriod', 'admissionPeriodProgram.program'])
+                ->latest('id')
+                ->first();
+        }
 
         return view('applicant.dashboard', [
             'user' => $user,
@@ -36,6 +44,7 @@ class DashboardController extends Controller
             'activePeriod' => $activePeriod,
             'completion' => $completion,
             'age' => $age,
+            'registration' => $registration,
         ]);
     }
 }

@@ -73,6 +73,7 @@
                             maxlength="16"
                             placeholder="16 digit NIK ayah"
                             :value="old('father_nik', $father?->nik)"
+                            required
                         />
                     </div>
 
@@ -91,6 +92,7 @@
                             type="tel"
                             placeholder="Contoh: 081234567890"
                             :value="old('father_phone', $father?->phone)"
+                            required
                         />
                     </div>
 
@@ -101,6 +103,7 @@
                             placeholder="-- Pilih Pendidikan --"
                             :selected="old('father_education', $father?->education)"
                             :options="$educations"
+                            required
                         />
 
                         <x-forms.input
@@ -118,6 +121,7 @@
                             placeholder="-- Pilih Rentang --"
                             :selected="old('father_monthly_income', $father?->monthly_income)"
                             :options="$incomes"
+                            required
                         />
                     </div>
                 </div>
@@ -152,6 +156,7 @@
                             maxlength="16"
                             placeholder="16 digit NIK ibu"
                             :value="old('mother_nik', $mother?->nik)"
+                            required
                         />
                     </div>
 
@@ -170,6 +175,7 @@
                             type="tel"
                             placeholder="Contoh: 081234567890"
                             :value="old('mother_phone', $mother?->phone)"
+                            required
                         />
                     </div>
 
@@ -180,6 +186,7 @@
                             placeholder="-- Pilih Pendidikan --"
                             :selected="old('mother_education', $mother?->education)"
                             :options="$educations"
+                            required
                         />
 
                         <x-forms.input
@@ -197,6 +204,7 @@
                             placeholder="-- Pilih Rentang --"
                             :selected="old('mother_monthly_income', $mother?->monthly_income)"
                             :options="$incomes"
+                            required
                         />
                     </div>
                 </div>

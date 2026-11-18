@@ -171,8 +171,8 @@ erDiagram
 | **Fase 2.1** | Audit Keamanan Kriptografi & Kompatibilitas MySQL | **SELESAI** | Audit NIK, hash deterministik, uji InnoDB terisolasi. |
 | **Fase 3** | Autentikasi, Aktivasi Akun (OTP) & Otorisasi | **SELESAI** | Login NIK/Email, proteksi rate limiter, middleware, 91 tests passed. |
 | **Fase 4** | Profil Calon Siswa, Biodata Orang Tua & Pilihan Program | *Menunggu Izin* | Multi-step form, kalkulasi umur otomatis dari tanggal acuan. |
-| **Fase 5** | Manajemen Berkas & Dokumen Pendaftaran | *Terjadwal* | Upload privat, validasi MIME/ukuran, pratinjau berkas. |
-| **Fase 6** | Alur Pendaftaran (Draft, Validasi, Submit Final) | *Terjadwal* | Validasi kelengkapan berkas sebelum submit final. |
+| **Fase 5** | Manajemen Berkas & Dokumen Pendaftaran | **Selesai** | Upload privat, validasi MIME/ukuran, pratinjau dan revisi terotorisasi. |
+| **Fase 6** | Alur Pendaftaran (Draft, Validasi, Submit Final) | **Selesai; menunggu review** | Validasi, consent, submit idempoten, nomor, dan audit revisi. |
 | **Fase 7** | Pembuatan Dokumen Bukti Pendaftaran (PDF Generator) | *Terjadwal* | PDF draft ber-watermark, PDF final, riwayat versi PDF. |
 | **Fase 8** | Dasbor Panitia, Verifikasi Berkas & Rekapitulasi | *Terjadwal* | Panel loket PTSP, verifikasi fisik, ekspor Excel/PDF. |
 | **Fase 9** | Pengujian Mutu (QA), Audit Keamanan Final & Rilis | *Terjadwal* | Uji beban, uji kompatibilitas browser, panduan operasional. |

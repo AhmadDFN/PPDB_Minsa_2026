@@ -7,6 +7,7 @@ namespace Tests\Feature\Applicant;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\Gender;
+use App\Models\AdmissionPeriod;
 use App\Models\Applicant;
 use App\Models\User;
 use App\Support\NikManager;
@@ -29,6 +30,8 @@ class ApplicantBiodataTest extends TestCase
             'nik_lookup_hash' => NikManager::hash($nik),
             'nik_encrypted' => NikManager::encrypt($nik),
         ], $userAttributes));
+
+        AdmissionPeriod::factory()->create();
 
         $applicant = Applicant::factory()->create(array_merge([
             'user_id' => $user->id,

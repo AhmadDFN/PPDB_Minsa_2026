@@ -40,7 +40,7 @@ class RegistrationFactory extends Factory
     public function submitted(): static
     {
         return $this->state(fn () => [
-            'registration_number' => 'PPDB-'.date('Y').'-'.str_pad((string) fake()->unique()->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
+            'registration_number' => 'PPDB/2026-2027/REGULER/'.str_pad((string) fake()->unique()->numberBetween(1, 99999), 5, '0', STR_PAD_LEFT),
             'status' => RegistrationStatus::SUBMITTED,
             'submitted_at' => now(),
         ]);

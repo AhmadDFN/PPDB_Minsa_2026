@@ -81,10 +81,19 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-[11px] text-neutral-500 font-semibold uppercase tracking-wider">Status Formulir</p>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold {{ $completion['is_all_complete'] ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800' }}">
-                            {{ $completion['is_all_complete'] ? '100% Lengkap' : $completion['overall_percentage'].'% Terisi' }}
-                        </span>
+                        <p class="text-[11px] text-neutral-500 font-semibold uppercase tracking-wider">Status Pendaftaran</p>
+                        @if ($registration?->isSubmitted())
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-green-100 text-xs font-bold text-green-800">
+                                {{ $registration->status->label() }}
+                            </span>
+                            <p class="mt-1 font-mono text-xs font-semibold text-neutral-700">{{ $registration->registration_number }}</p>
+                        @elseif ($registration?->isDraft())
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-xs font-bold text-amber-800">DRAFT</span>
+                        @else
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full {{ $completion['is_all_complete'] ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800' }} text-xs font-bold">
+                                {{ $completion['is_all_complete'] ? 'Data Lengkap' : $completion['overall_percentage'].'% Terisi' }}
+                            </span>
+                        @endif
                     </div>
                 </div>
             </x-ui.card>
@@ -132,7 +141,7 @@
                     </svg>
                     <div>
                         <h3 class="text-sm font-bold text-neutral-800">Periode Pendaftaran Belum Dibuka</h3>
-                        <p class="text-xs text-neutral-600">Saat ini tidak ada periode pendaftaran aktif. Anda tetap dapat melengkapi data profil calon siswa.</p>
+                        <p class="text-xs text-neutral-600">Saat ini perubahan data pendaftaran terkunci. Anda dapat melihat status dan data pendaftaran yang telah dikirim.</p>
                     </div>
                 </div>
             </x-ui.card>
@@ -307,7 +316,11 @@
             <!-- CTA Button -->
             <div class="mt-8 pt-6 border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="text-xs text-neutral-500">
-                    @if ($completion['is_all_complete'])
+                    @if ($registration?->isSubmitted())
+                        <span class="font-semibold text-green-700">Pendaftaran telah dikirim. Anda dapat meninjau kembali status dan ringkasannya.</span>
+                    @elseif (! $activePeriod)
+                        <span>Perubahan pendaftaran terkunci sampai periode berikutnya dibuka.</span>
+                    @elseif ($completion['is_all_complete'])
                         <span class="inline-flex items-center gap-1 text-green-700 font-semibold">
                             <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -319,15 +332,21 @@
                     @endif
                 </div>
 
-                <a
-                    href="{{ route('applicant.biodata.edit') }}"
-                    class="btn btn-primary w-full sm:w-auto justify-center font-semibold shadow-md inline-flex items-center gap-2"
-                >
-                    <span>{{ $completion['overall_percentage'] > 0 ? 'Lanjutkan Pengisian Formulir' : 'Mulai Pengisian Formulir' }}</span>
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </a>
+                @if ($registration)
+                    <a href="{{ route('applicant.registration.review') }}" class="btn btn-primary inline-flex w-full items-center justify-center gap-2 font-semibold shadow-md sm:w-auto">
+                        {{ $registration->isSubmitted() ? 'Lihat Status Pendaftaran' : 'Tinjau Pendaftaran' }}
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+                @elseif ($activePeriod)
+                    <a href="{{ route('applicant.biodata.edit') }}" class="btn btn-primary inline-flex w-full items-center justify-center gap-2 font-semibold shadow-md sm:w-auto">
+                        <span>{{ $completion['overall_percentage'] > 0 ? 'Lanjutkan Pengisian Formulir' : 'Mulai Pengisian Formulir' }}</span>
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+                @endif
             </div>
         </x-ui.card>
     </div>

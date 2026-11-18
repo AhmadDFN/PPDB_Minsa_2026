@@ -27,7 +27,8 @@ class ApplicantProfileService
             ->where('status', AdmissionPeriodStatus::ACTIVE)
             ->where('is_active', true)
             ->with(['periodPrograms.program', 'programs'])
-            ->first();
+            ->get()
+            ->first(fn (AdmissionPeriod $period): bool => $period->isOpen());
     }
 
     /**

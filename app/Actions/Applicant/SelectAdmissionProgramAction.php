@@ -20,12 +20,18 @@ class SelectAdmissionProgramAction
      */
     public function execute(Applicant $applicant, int $admissionPeriodProgramId, AdmissionPeriod $activePeriod): Registration
     {
+        if (! $activePeriod->isOpen()) {
+            throw new InvalidArgumentException('Periode pendaftaran sedang ditutup.');
+        }
+
         // 1. Verify that the selected period-program belongs to the active period and is open
         /** @var AdmissionPeriodProgram|null $periodProgram */
         $periodProgram = AdmissionPeriodProgram::query()
             ->where('id', $admissionPeriodProgramId)
             ->where('admission_period_id', $activePeriod->id)
             ->where('is_active', true)
+            ->whereHas('program', fn ($query) => $query->where('is_active', true))
+            ->with('program')
             ->first();
 
         if (! $periodProgram) {

@@ -12,6 +12,8 @@ use App\Models\RegistrationDocument;
 use App\Models\RegistrationDocumentRevision;
 use App\Services\Document\DocumentCompletenessService;
 use App\Services\Document\DocumentRequirementService;
+use App\Services\Document\DocumentUploadService;
+use App\Services\Registration\RegistrationEditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +26,9 @@ class DocumentController extends Controller
 {
     public function __construct(
         protected DocumentRequirementService $requirementService,
-        protected DocumentCompletenessService $completenessService
+        protected DocumentCompletenessService $completenessService,
+        protected RegistrationEditService $registrationEditService,
+        protected DocumentUploadService $uploadService
     ) {}
 
     public function index(Request $request): View
@@ -36,6 +40,7 @@ class DocumentController extends Controller
         $documents = $registration
             ? $registration->documents()->with('revisions')->get()->keyBy('document_requirement_id')
             : collect();
+        $canEdit = $registration?->admissionPeriod?->isOpen() ?? false;
 
         return view('applicant.documents.index', [
             'registration' => $registration,
@@ -43,6 +48,7 @@ class DocumentController extends Controller
             'documents' => $documents,
             'completeness' => $this->completenessService->summarize($registration),
             'globalMaxSizeKb' => min(5120, (int) config('ppdb.documents.global_max_size_kb', 5120)),
+            'canEdit' => $canEdit,
         ]);
     }
 
@@ -61,18 +67,35 @@ class DocumentController extends Controller
             ->first();
         $file = $request->validated('file');
 
-        if ($document) {
-            $replaceAction->execute(
+        $this->registrationEditService->run(
+            $request->user()->applicant,
+            $request->user(),
+            $request->ip(),
+            $request->userAgent(),
+            function () use (
+                $document,
                 $registration,
                 $requirement,
-                $document,
-                $request->user(),
+                $request,
                 $file,
-                $request->validated('reason'),
-            );
-        } else {
-            $uploadAction->execute($registration, $requirement, $file);
-        }
+                $replaceAction,
+                $uploadAction
+            ): RegistrationDocument {
+                if ($document) {
+                    return $replaceAction->execute(
+                        $registration,
+                        $requirement,
+                        $document,
+                        $request->user(),
+                        $file,
+                        $request->validated('reason'),
+                    );
+                }
+
+                return $uploadAction->execute($registration, $requirement, $file);
+            },
+            fn (RegistrationDocument $storedDocument): mixed => $this->uploadService->deleteStoredFile($storedDocument->file_path),
+        );
 
         return redirect()
             ->route('applicant.documents.index')

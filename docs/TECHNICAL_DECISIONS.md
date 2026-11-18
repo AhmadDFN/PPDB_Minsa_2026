@@ -98,3 +98,19 @@
   Karena migration pembuatan persyaratan sudah diterapkan pada SQLite persisten, default kolom diperbarui melalui migration tambahan, bukan mengubah riwayat migration.
 - **Konsekuensi Operasional**:
   Server perlu `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, dan batas request web server yang mencakup overhead multipart. Pada lingkungan verifikasi ini nilai PHP saat ini `upload_max_filesize=2M`; pengaturan tersebut belum diubah.
+
+---
+
+### ADR-007: Nomor Registrasi dan Persetujuan Submit (Sementara)
+- **Tanggal**: 18 November 2026
+- **Status**: IMPLEMENTASI SEMENTARA; MENUNGGU PENGESAHAN SEKOLAH
+- **Konteks**:
+  Fase 6 memerlukan nomor registrasi unik dan pencatatan persetujuan. Dokumen yang tersedia memberi contoh format nomor berbeda dan belum memuat redaksi/versi persetujuan yang disahkan sekolah.
+- **Pilihan Implementasi Sementara**:
+  - Nomor: `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, misalnya `PPDB/2026-2027/REGULER/00001`.
+  - Sequence dikunci per pasangan `admission_period_program_id`.
+  - Redaksi sementara memakai kalimat yang tersedia di fixture tes, dengan versi `v1.0`.
+- **Batasan dan Pengamanan**:
+  Pilihan ini bukan keputusan bisnis resmi. Aplikasi menolak submit ketika teks atau versi consent kosong; lingkungan production tidak diberi fallback redaksi sementara. Pemilik sekolah harus mengesahkan format nomor, ruang lingkup sequence, redaksi consent, dan versi sebelum produksi.
+- **Konsekuensi**:
+  Tabel `registration_sequences` dan metadata consent additive mendukung rancangan ini. Jika keputusan resmi berbeda, konfigurasi dan/atau kebijakan sequence harus ditinjau sebelum nomor produksi diterbitkan; tidak ada nomor produksi yang diasumsikan telah terbit.

@@ -17,6 +17,8 @@ class RegistrationConsent extends Model
     protected $fillable = [
         'registration_id',
         'statement_text',
+        'consent_version',
+        'accepted_by_name',
         'is_agreed',
         'agreed_at',
         'ip_address',

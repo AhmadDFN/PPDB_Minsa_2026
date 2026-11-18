@@ -16,6 +16,7 @@ use App\Http\Requests\Applicant\UpdateBiodataRequest;
 use App\Http\Requests\Applicant\UpdateEducationRequest;
 use App\Http\Requests\Applicant\UpdateParentsRequest;
 use App\Services\Applicant\ApplicantProfileService;
+use App\Services\Registration\RegistrationEditService;
 use App\Support\NikManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,8 @@ use InvalidArgumentException;
 class RegistrationFormController extends Controller
 {
     public function __construct(
-        protected ApplicantProfileService $profileService
+        protected ApplicantProfileService $profileService,
+        protected RegistrationEditService $registrationEditService
     ) {}
 
     /**
@@ -55,7 +57,13 @@ class RegistrationFormController extends Controller
         UpdateApplicantBiodataAction $action
     ): RedirectResponse {
         $applicant = $request->user()->applicant;
-        $action->execute($applicant, $request->validated());
+        $this->registrationEditService->run(
+            $applicant,
+            $request->user(),
+            $request->ip(),
+            $request->userAgent(),
+            fn () => $action->execute($applicant, $request->validated()),
+        );
 
         if ($request->input('nav_action') === 'next') {
             return redirect()->route('applicant.address.edit')
@@ -88,7 +96,13 @@ class RegistrationFormController extends Controller
         SaveApplicantAddressAction $action
     ): RedirectResponse {
         $applicant = $request->user()->applicant;
-        $action->execute($applicant, $request->validated());
+        $this->registrationEditService->run(
+            $applicant,
+            $request->user(),
+            $request->ip(),
+            $request->userAgent(),
+            fn () => $action->execute($applicant, $request->validated()),
+        );
 
         if ($request->input('nav_action') === 'next') {
             return redirect()->route('applicant.parents.edit')
@@ -125,7 +139,13 @@ class RegistrationFormController extends Controller
         SaveApplicantParentsAction $action
     ): RedirectResponse {
         $applicant = $request->user()->applicant;
-        $action->execute($applicant, $request->validated());
+        $this->registrationEditService->run(
+            $applicant,
+            $request->user(),
+            $request->ip(),
+            $request->userAgent(),
+            fn () => $action->execute($applicant, $request->validated()),
+        );
 
         if ($request->input('nav_action') === 'next') {
             return redirect()->route('applicant.education.edit')
@@ -158,7 +178,13 @@ class RegistrationFormController extends Controller
         SaveApplicantEducationAction $action
     ): RedirectResponse {
         $applicant = $request->user()->applicant;
-        $action->execute($applicant, $request->validated());
+        $this->registrationEditService->run(
+            $applicant,
+            $request->user(),
+            $request->ip(),
+            $request->userAgent(),
+            fn () => $action->execute($applicant, $request->validated()),
+        );
 
         if ($request->input('nav_action') === 'next') {
             return redirect()->route('applicant.program.edit')
@@ -208,10 +234,16 @@ class RegistrationFormController extends Controller
         }
 
         try {
-            $action->execute(
+            $this->registrationEditService->run(
                 $applicant,
-                (int) $request->validated('admission_period_program_id'),
-                $activePeriod
+                $request->user(),
+                $request->ip(),
+                $request->userAgent(),
+                fn () => $action->execute(
+                    $applicant,
+                    (int) $request->validated('admission_period_program_id'),
+                    $activePeriod
+                ),
             );
 
             return redirect()->route('applicant.dashboard')

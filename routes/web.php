@@ -6,6 +6,8 @@ use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Applicant\DashboardController;
 use App\Http\Controllers\Applicant\DocumentController;
 use App\Http\Controllers\Applicant\RegistrationFormController;
+use App\Http\Controllers\Applicant\RegistrationReviewController;
+use App\Http\Controllers\Applicant\RegistrationSubmissionController;
 use App\Models\AdmissionPeriod;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -68,6 +70,9 @@ Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('a
 
     Route::get('/program', [RegistrationFormController::class, 'editProgram'])->name('program.edit');
     Route::post('/program', [RegistrationFormController::class, 'updateProgram'])->name('program.update');
+
+    Route::get('/pendaftaran/tinjau', [RegistrationReviewController::class, 'show'])->name('registration.review');
+    Route::post('/pendaftaran/kirim', [RegistrationSubmissionController::class, 'store'])->name('registration.submit');
 
     Route::get('/dokumen', [DocumentController::class, 'index'])->name('documents.index');
     Route::post('/dokumen/{requirementId}', [DocumentController::class, 'upload'])->name('documents.upload');

@@ -7,6 +7,7 @@ namespace Tests\Feature\Applicant;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\GuardianRelationship;
+use App\Models\AdmissionPeriod;
 use App\Models\Applicant;
 use App\Models\ApplicantGuardian;
 use App\Models\User;
@@ -27,6 +28,8 @@ class ApplicantParentsTest extends TestCase
             'nik_lookup_hash' => NikManager::hash($nik),
             'nik_encrypted' => NikManager::encrypt($nik),
         ], $userAttributes));
+
+        AdmissionPeriod::factory()->create();
 
         $applicant = Applicant::factory()->create(array_merge([
             'user_id' => $user->id,
@@ -108,11 +111,19 @@ class ApplicantParentsTest extends TestCase
 
         $response = $this->actingAs($user, 'web')->post(route('applicant.parents.update'), [
             'father_name' => 'Bambang Sudibyo',
+            'father_nik' => '3573010101800001',
             'father_is_alive' => '1',
+            'father_education' => 'S1 / D4',
             'father_occupation' => 'Wiraswasta',
+            'father_monthly_income' => '5.000.000 - 10.000.000',
+            'father_phone' => '081234567890',
             'mother_name' => 'Siti Aminah',
+            'mother_nik' => '3573010101850002',
             'mother_is_alive' => '1',
+            'mother_education' => 'S1 / D4',
             'mother_occupation' => 'Ibu Rumah Tangga',
+            'mother_monthly_income' => '3.000.000 - 5.000.000',
+            'mother_phone' => '081234567891',
 
             // Guardian
             'has_guardian' => '1',
@@ -135,11 +146,19 @@ class ApplicantParentsTest extends TestCase
         // When subsequently toggled off, guardian record is removed
         $this->actingAs($user, 'web')->post(route('applicant.parents.update'), [
             'father_name' => 'Bambang Sudibyo',
+            'father_nik' => '3573010101800001',
             'father_is_alive' => '1',
+            'father_education' => 'S1 / D4',
             'father_occupation' => 'Wiraswasta',
+            'father_monthly_income' => '5.000.000 - 10.000.000',
+            'father_phone' => '081234567890',
             'mother_name' => 'Siti Aminah',
+            'mother_nik' => '3573010101850002',
             'mother_is_alive' => '1',
+            'mother_education' => 'S1 / D4',
             'mother_occupation' => 'Ibu Rumah Tangga',
+            'mother_monthly_income' => '3.000.000 - 5.000.000',
+            'mother_phone' => '081234567891',
             'has_guardian' => '0',
             'nav_action' => 'save',
         ]);
@@ -164,9 +183,19 @@ class ApplicantParentsTest extends TestCase
 
         $response->assertSessionHasErrors([
             'father_name',
+            'father_nik',
+            'father_is_alive',
+            'father_education',
             'father_occupation',
+            'father_monthly_income',
+            'father_phone',
             'mother_name',
+            'mother_nik',
+            'mother_is_alive',
+            'mother_education',
             'mother_occupation',
+            'mother_monthly_income',
+            'mother_phone',
         ]);
     }
 
@@ -176,11 +205,19 @@ class ApplicantParentsTest extends TestCase
 
         $response = $this->actingAs($user, 'web')->post(route('applicant.parents.update'), [
             'father_name' => 'Ayah',
+            'father_nik' => '3573010101800001',
             'father_is_alive' => '1',
+            'father_education' => 'SMA/SMK',
             'father_occupation' => 'Swasta',
+            'father_monthly_income' => '3.000.000 - 5.000.000',
+            'father_phone' => '081234567890',
             'mother_name' => 'Ibu',
+            'mother_nik' => '3573010101850002',
             'mother_is_alive' => '1',
+            'mother_education' => 'SMA/SMK',
             'mother_occupation' => 'Swasta',
+            'mother_monthly_income' => '3.000.000 - 5.000.000',
+            'mother_phone' => '081234567891',
             'has_guardian' => '1',
             'guardian_name' => '', // Empty
         ]);

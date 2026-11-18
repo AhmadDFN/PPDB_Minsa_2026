@@ -60,6 +60,27 @@
 - **Rencana Mitigasi**:
   Telah diverifikasi penuh dengan test case `test_allows_sibling_registration_with_same_phone_number` yang lulus tanpa konflik database.
 
+### 1.8 Persetujuan Format Nomor dan Redaksi Consent
+- **Status**: MENUNGGU PENGESAHAN SEKOLAH SEBELUM PRODUKSI
+- **Deskripsi**:
+  Implementasi Fase 6 memakai format sementara `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}` dengan sequence per periode-program, serta redaksi dari fixture tes versi `v1.0`. Keduanya belum disahkan sebagai kebijakan resmi sekolah.
+- **Mitigasi**:
+  Konfigurasi teks/versi consent kosong membuat submit gagal tertutup; production tidak memakai fallback sementara. Pemilik sekolah harus mengesahkan format, lingkup sequence, redaksi, dan versi sebelum rilis atau nomor produksi diterbitkan.
+
+### 1.9 Verifikasi Konkurensi Submit pada MySQL
+- **Status**: PENDING VERIFIKASI FISIK
+- **Deskripsi**:
+  Submit mengunci row periode, pendaftaran, program, dan sequence dalam transaksi untuk idempotensi/penomoran. Pengujian SQLite tidak membuktikan semantik lock atau beban konkurensi InnoDB. Dua tes MySQL tetap skipped karena server tidak tersedia.
+- **Mitigasi**:
+  Jalankan pengujian skema dan konkurensi terkontrol pada MySQL/InnoDB sebelum produksi; jangan menyatakan concurrency fisik telah tervalidasi.
+
+### 1.10 PDF Bukti Pendaftaran Belum Diimplementasikan
+- **Status**: MENUNGGU FASE 7
+- **Deskripsi**:
+  Fase 6 mencatat status `SUBMITTED` dan nomor registrasi, tetapi belum menghasilkan PDF final atau draft.
+- **Mitigasi**:
+  Fitur ini berada di luar lingkup Fase 6 dan tidak boleh dianggap tersedia sebelum Fase 7 diotorisasi dan diselesaikan.
+
 ---
 
 ## 2. PROSEDUR PELAPORAN ISU BARU

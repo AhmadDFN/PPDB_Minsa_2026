@@ -10,6 +10,7 @@
         4 => ['label' => 'Pendidikan Asal', 'route' => 'applicant.education.edit'],
         5 => ['label' => 'Pilihan Program', 'route' => 'applicant.program.edit'],
         6 => ['label' => 'Unggah Dokumen', 'route' => 'applicant.documents.index'],
+        7 => ['label' => 'Tinjau & Kirim', 'route' => 'applicant.registration.review'],
     ];
 @endphp
 
