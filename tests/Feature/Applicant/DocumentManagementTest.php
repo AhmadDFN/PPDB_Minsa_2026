@@ -8,6 +8,7 @@ use App\Actions\Document\UploadRegistrationDocumentAction;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\AdmissionPeriodStatus;
+use App\Enums\RegistrationStatus;
 use App\Models\AdmissionPeriod;
 use App\Models\AdmissionPeriodProgram;
 use App\Models\Applicant;
@@ -17,6 +18,7 @@ use App\Models\Registration;
 use App\Models\RegistrationDocument;
 use App\Models\RegistrationDocumentRevision;
 use App\Models\User;
+use App\Services\Registration\RegistrationEditService;
 use App\Support\NikManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -50,10 +52,12 @@ class DocumentManagementTest extends TestCase
             'program_id' => $program->id,
             'is_active' => true,
         ]);
-        $registration = Registration::factory()->create([
+        $registration = Registration::query()->create([
             'applicant_id' => $applicant->id,
             'admission_period_id' => $period->id,
             'admission_period_program_id' => $periodProgram->id,
+            'status' => RegistrationStatus::DRAFT,
+            'data_revision' => 1,
         ]);
         $requirement = DocumentRequirement::factory()->create(array_filter([
             'admission_period_id' => $period->id,
@@ -79,8 +83,13 @@ class DocumentManagementTest extends TestCase
 
     public function test_applicant_can_view_document_requirements_and_upload_form(): void
     {
-        [$user, , , $requirement] = $this->createRegistration();
+        [$user, $applicant, $registration, $requirement] = $this->createRegistration();
         Storage::fake('ppdb_private');
+
+        $this->assertSame(
+            $registration->id,
+            app(RegistrationEditService::class)->registrationForApplicant($applicant)?->id,
+        );
 
         $this->actingAs($user)
             ->get(route('applicant.documents.index'))

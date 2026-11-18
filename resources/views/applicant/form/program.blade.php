@@ -49,6 +49,12 @@
                     </a>
                 </div>
             </x-ui.card>
+        @elseif (! $canEditProgram)
+            <x-ui.card class="border-amber-200 bg-amber-50/50 p-6">
+                <h2 class="font-bold text-neutral-800">Program Tidak Dapat Diubah</h2>
+                <p class="mt-2 text-sm text-neutral-700">Pilihan program menjadi bagian dari identitas pendaftaran dan tidak dapat diubah setelah pendaftaran dikirim.</p>
+                <a href="{{ route('applicant.registration.review') }}" class="btn btn-primary mt-4 inline-flex">Kembali ke Tinjauan Pendaftaran</a>
+            </x-ui.card>
         @else
             <!-- Form Pemilihan Program -->
             <form method="POST" action="{{ route('applicant.program.update') }}" class="space-y-6" novalidate>

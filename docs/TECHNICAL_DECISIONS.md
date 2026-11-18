@@ -101,24 +101,44 @@
 
 ---
 
-### ADR-007: Nomor Registrasi dan Persetujuan Submit (Sementara)
+### ADR-007: Format Nomor Registrasi dan Persetujuan Submit
 - **Tanggal**: 18 November 2026
-- **Status**: PENDING OWNER APPROVAL; bukan keputusan resmi dan bukan untuk penerbitan produksi
+- **Status**: DISETUJUI PEMILIK (APPROVED)
 - **Konteks**:
-  Fase 6 memerlukan nomor registrasi unik dan pencatatan persetujuan. Dokumen yang tersedia memberi contoh format nomor berbeda dan belum memuat redaksi/versi persetujuan yang disahkan sekolah.
-- **Pilihan Implementasi Sementara**:
-  - Nomor: `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, misalnya `PPDB/2026-2027/REGULER/00001`.
-  - Sequence dikunci per pasangan `admission_period_program_id`.
-  - Redaksi sementara memakai kalimat yang tersedia di fixture tes, dengan versi `v1.0`.
-- **Batasan dan Pengamanan**:
-  Pilihan ini bukan keputusan bisnis resmi. Aplikasi menolak submit ketika teks atau versi consent kosong; lingkungan production tidak diberi fallback redaksi sementara. Pemilik sekolah harus mengesahkan format nomor, ruang lingkup sequence, redaksi consent, dan versi sebelum produksi.
-- **Konsekuensi**:
-  Tabel `registration_sequences` dan metadata consent additive mendukung rancangan ini. Jika keputusan resmi berbeda, konfigurasi dan/atau kebijakan sequence harus ditinjau sebelum nomor produksi diterbitkan; tidak ada nomor produksi yang diasumsikan telah terbit.
-
-### ADR-008: Gate Penutupan Fase 6 dan Admin Reopen
-- **Tanggal**: 18 November 2026
-- **Status**: BLOCKED / PENDING OWNER APPROVAL
-- **Temuan**:
-  Seeder mendefinisikan permission `reopen_registration` dan hanya role `superadmin` menerimanya. Tidak ditemukan policy, route, request, action, atau audit workflow untuk membuka kembali edit setelah periode berakhir. Dokumen Business Requirements saat ini hanya mengatur edit selama periode terbuka; target reopen (satu pendaftaran atau seluruh periode), masa berlaku, serta cara menutup kembali tidak tercatat.
+  Fase 6 memerlukan nomor registrasi unik dan pencatatan persetujuan yang disahkan sekolah.
 - **Keputusan**:
-  Tidak menambahkan implementasi reopen sampai pemilik mengesahkan target, cakupan waktu, role yang berwenang, alasan wajib, dan aturan pencatatan/penguncian kembali. Tindakan ini mencegah penciptaan aturan bisnis secara sepihak.
+  - Format nomor resmi `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, misalnya `PPDB/2026-2027/REGULER/00001`.
+  - Kode program yang sah adalah `REGULER` dan `UNGGULAN`.
+  - Consent resmi versi `v1.0`: “Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.”
+- **Batasan dan Pengamanan**:
+  Konfigurasi teks atau versi consent yang kosong tetap menyebabkan submit gagal tertutup. Lingkungan production tidak diberi fallback redaksi.
+- **Konsekuensi**:
+  Nomor tidak memuat ID periode, sehingga sequence harus unik untuk setiap pasangan tahun ajaran-program di semua periode. Tidak ada nomor produksi yang diasumsikan telah terbit sebelum implementasi ini.
+
+### ADR-008: Admin Reopen per Pendaftaran
+- **Tanggal**: 18 November 2026
+- **Status**: DISETUJUI PEMILIK DAN DIIMPLEMENTASIKAN
+- **Keputusan**:
+  Admin PPDB atau superadmin dengan permission `reopen_registration` dapat membuka kembali satu pendaftaran `SUBMITTED` pada periode tertutup dengan alasan serta expiry wajib. Akses dapat ditutup lebih awal dengan alasan wajib. Expiry ditegakkan server-side tanpa cron dan semua tindakan diaudit.
+- **Konsekuensi**:
+  Reopen tidak mengubah status, nomor, maupun waktu submit; hanya operasi edit milik pendaftar yang diizinkan selama window masih berlaku.
+
+### ADR-009: Sequence Nomor Unik Lintas Periode
+- **Tanggal**: 18 November 2026
+- **Status**: DISETUJUI SEBAGAI INVARIAN TEKNIS
+- **Konteks**:
+  Format nomor resmi tidak memuat identitas periode. Counter terpisah per periode dapat menerbitkan nomor sama jika terdapat dua periode dalam tahun ajaran yang sama untuk program yang sama.
+- **Keputusan**:
+  Migration additive membuat tabel counter global dengan unique key tahun ajaran-program dan mem-backfill nilai tertinggi dari counter per-periode yang lama. Submit mengunci satu row counter tersebut di dalam transaksi sebelum menaikkan sequence, sehingga semua periode pada scope yang sama menggunakan counter atomik yang sama.
+- **Konsekuensi**:
+  Sequence tetap monoton untuk tahun ajaran-program yang sama meskipun pendaftaran dibuka melalui lebih dari satu periode. Tabel `registration_sequences` lama dipertahankan untuk kompatibilitas data; generator aktif menggunakan `registration_number_sequences`.
+
+### ADR-010: Kompatibilitas Indeks Migrasi pada MariaDB
+- **Tanggal**: 18 November 2026
+- **Status**: DIIMPLEMENTASIKAN
+- **Konteks**:
+  Nama indeks komposit default pada migration dokumen melebihi batas identifier MariaDB 10.4. Migration berhenti setelah tabel terbentuk, sebelum migration tercatat.
+- **Keputusan**:
+  Gunakan nama indeks eksplisit yang pendek dan pulihkan tabel parsial secara idempotent dengan menambahkan unique index yang belum ada. Tidak ada tabel/data yang dihapus.
+- **Konsekuensi**:
+  Uji migrasi terhadap database khusus `ppdb_phase6_test` dapat dilanjutkan dan lulus pada MariaDB 10.4.32/InnoDB.

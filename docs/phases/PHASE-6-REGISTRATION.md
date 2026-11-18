@@ -1,8 +1,10 @@
 # PHASE 6 — ALUR PENDAFTARAN (DRAFT & SUBMIT FINAL)
 ## Rencana Kerja dan Desain Siklus Hidup Pendaftaran Siswa
 
-**Status**: IMPLEMENTASI DIAUDIT; CLOSURE BLOCKED
+**Status pada dokumen rencana awal**: IMPLEMENTASI DIAUDIT; CLOSURE BLOCKED
 **Target Pelaksanaan**: Fase 6
+
+> **Pembaruan**: Fase 6 kini CLOSED setelah keputusan resmi dan verifikasi MariaDB/InnoDB. Catatan di bawah dipertahankan sebagai snapshot rencana awal; status dan hasil final ada di `PHASE-6-FINAL-CLOSURE-REPORT.md`.
 
 ---
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
+use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Applicant\DashboardController;
 use App\Http\Controllers\Applicant\DocumentController;
 use App\Http\Controllers\Applicant\RegistrationFormController;
@@ -91,4 +92,11 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
     Route::get('/dashboard', function () {
         return view('admin.preview');
     })->name('dashboard');
+
+    Route::middleware('can:reopen_registration')->group(function () {
+        Route::get('/registrations', [RegistrationReopenController::class, 'index'])->name('registrations.index');
+        Route::get('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'create'])->name('registrations.reopen.create');
+        Route::post('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'store'])->name('registrations.reopen.store');
+        Route::post('/registration-reopen-windows/{reopenWindow}/close', [RegistrationReopenController::class, 'close'])->name('registrations.reopen.close');
+    });
 });

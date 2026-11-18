@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Registration;
 
 use App\Enums\AdmissionPeriodStatus;
+use App\Enums\RegistrationStatus;
 use App\Models\AdmissionPeriod;
 use App\Models\Applicant;
 use App\Models\Registration;
@@ -20,6 +21,71 @@ use Throwable;
 
 class RegistrationEditService
 {
+    public function registrationForApplicant(Applicant $applicant): ?Registration
+    {
+        $reopenedRegistration = Registration::query()
+            ->where('applicant_id', $applicant->id)
+            ->where('status', RegistrationStatus::SUBMITTED)
+            ->whereHas('reopenWindows', fn ($query) => $query
+                ->whereNull('closed_at')
+                ->where('expires_at', '>', now()))
+            ->with(['admissionPeriod', 'admissionPeriodProgram.program'])
+            ->latest('id')
+            ->first();
+
+        if ($reopenedRegistration !== null) {
+            return $reopenedRegistration;
+        }
+
+        $activePeriod = AdmissionPeriod::query()
+            ->where('is_active', true)
+            ->where('status', AdmissionPeriodStatus::ACTIVE)
+            ->orderByDesc('id')
+            ->first();
+
+        if ($activePeriod?->isOpen()) {
+            return $applicant->registrations()
+                ->where('admission_period_id', $activePeriod->id)
+                ->with(['admissionPeriod', 'admissionPeriodProgram.program'])
+                ->first();
+        }
+
+        if ($activePeriod !== null) {
+            return $applicant->registrations()
+                ->where('admission_period_id', $activePeriod->id)
+                ->with(['admissionPeriod', 'admissionPeriodProgram.program'])
+                ->first();
+        }
+
+        return $applicant->registrations()
+            ->with(['admissionPeriod', 'admissionPeriodProgram.program'])
+            ->latest('id')
+            ->first();
+    }
+
+    public function canEdit(?Registration $registration): bool
+    {
+        if ($registration === null) {
+            return AdmissionPeriod::query()
+                ->where('is_active', true)
+                ->where('status', AdmissionPeriodStatus::ACTIVE)
+                ->get()
+                ->contains(fn (AdmissionPeriod $period): bool => $period->isOpen());
+        }
+
+        $registration->loadMissing('admissionPeriod');
+
+        if ($registration->admissionPeriod?->isOpen()) {
+            return true;
+        }
+
+        return $registration->isSubmitted()
+            && $registration->reopenWindows()
+                ->whereNull('closed_at')
+                ->where('expires_at', '>', now())
+                ->exists();
+    }
+
     public function run(
         Applicant $applicant,
         User $user,
@@ -43,23 +109,51 @@ class RegistrationEditService
                 $operation,
                 &$result
             ): mixed {
-                $period = AdmissionPeriod::query()
-                    ->where('is_active', true)
-                    ->where('status', AdmissionPeriodStatus::ACTIVE)
-                    ->lockForUpdate()
-                    ->first();
+                $candidate = $this->registrationForApplicant($applicant);
 
-                if ($period === null || ! $period->isOpen()) {
+                if ($candidate === null) {
+                    $period = AdmissionPeriod::query()
+                        ->where('is_active', true)
+                        ->where('status', AdmissionPeriodStatus::ACTIVE)
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($period?->isOpen()) {
+                        $result = $operation();
+
+                        return $result;
+                    }
+
                     throw ValidationException::withMessages([
                         'registration' => 'Perubahan data hanya dapat dilakukan selama periode pendaftaran dibuka.',
                     ]);
                 }
 
-                $registration = Registration::query()
-                    ->where('applicant_id', $applicant->id)
-                    ->where('admission_period_id', $period->id)
+                $period = AdmissionPeriod::query()
+                    ->whereKey($candidate->admission_period_id)
                     ->lockForUpdate()
-                    ->first();
+                    ->firstOrFail();
+
+                $registration = Registration::query()
+                    ->whereKey($candidate->id)
+                    ->where('applicant_id', $applicant->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $reopenWindow = null;
+                if (! $period->isOpen() && $registration->isSubmitted()) {
+                    $reopenWindow = $registration->reopenWindows()
+                        ->whereNull('closed_at')
+                        ->where('expires_at', '>', now())
+                        ->lockForUpdate()
+                        ->first();
+                }
+
+                if (! $period->isOpen() && $reopenWindow === null) {
+                    throw ValidationException::withMessages([
+                        'registration' => 'Perubahan data hanya dapat dilakukan selama periode terbuka atau akses edit ulang masih berlaku.',
+                    ]);
+                }
 
                 $before = $registration?->isSubmitted()
                     ? $this->snapshot($applicant, $registration)

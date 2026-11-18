@@ -15,22 +15,19 @@
 - **Mitigasi**:
   Jangan gunakan `npm audit fix --force`; periksa advisory dan kompatibilitas setelah patch tersedia. Hindari build dari konfigurasi/glob yang dikendalikan pengguna tak tepercaya.
 
-### 1.2 Admin Reopen Belum Diimplementasikan dan Kebijakannya Belum Lengkap
-- **Status**: MENUNGGU KEPUTUSAN PEMILIK
+### 1.2 Batasan Verifikasi Database Produksi
+- **Status**: TERBUKA — MySQL 8.x BELUM DIUJI TERPISAH
 - **Deskripsi**:
-  Seeder mendefinisikan permission `reopen_registration` dan hanya role `superadmin` yang menerimanya. Tidak ditemukan route, policy, controller, atau action untuk reopen. Dokumen Business Requirements tidak menetapkan apakah reopen berlaku untuk satu pendaftaran atau seluruh periode, durasinya, proses penutupan kembali, maupun alasan dan audit yang diwajibkan.
+  Sembilan tes migrasi/backfill counter, skema, default 5120 KB, submit konkuren, rollback, dan retry lulus pada MariaDB 10.4.32/InnoDB menggunakan database disposable `ppdb_phase6_test`. Hasil ini tidak diklaim sebagai verifikasi fisik MySQL 8.x.
 - **Mitigasi**:
-  Jangan menganggap permission sebagai implementasi atau memberi akses melalui jalur lain. Pemilik perlu menetapkan cakupan, masa berlaku, role, alasan wajib, audit, dan cara akses ditutup kembali sebelum fitur dibuat.
+  Jalankan suite yang sama terhadap versi MySQL produksi sebelum rilis. Jangan arahkan tes ke database produksi atau data pendaftar.
 
-### 1.3 Layanan Daemon MySQL Lokal Belum Aktif di Port 3306
-- **Status**: BLOCKED — MYSQL TIDAK TERSEDIA
-- **Tingkat Keparahan**: Rendah (Lingkungan Pengembangan Lokal)
+### 1.3 Nomor Sequence Lintas Periode
+- **Status**: SELESAI
 - **Deskripsi**:
-  Ekstensi `pdo_mysql` aktif, tetapi service MySQL pada `127.0.0.1:3306` tidak dapat dihubungi. Akibatnya, kedua pengujian migrasi fisik live pada database uji disposable `ppdb_minsatama_test` diskip (`MySqlSchemaCompatibilityTest`, 2 tests skipped).
-- **Dampak**:
-  Kompatibilitas migrasi dan concurrency InnoDB belum diverifikasi. SQLite tidak membuktikan semantik lock/constraint MySQL. Jangan menyatakan gate ini PASS berdasarkan tes SQLite.
-- **Rencana Mitigasi**:
-  Saat MySQL tersedia, pastikan koneksi `mysql_test` menunjuk hanya ke database uji disposable dan bukan database produksi sebelum menjalankan migrasi. Aplikasi tidak mengalami gangguan karena pengujian otomatis default berjalan di SQLite in-memory yang terisolasi.
+  Karena format resmi tidak memuat ID periode, counter dibagikan per tahun ajaran dan program melalui row unik pada `registration_number_sequences`. Migration mem-backfill nilai tertinggi dari tabel counter per-periode lama; submit mengunci row counter global yang sama.
+- **Verifikasi**:
+  Tes SQLite dan MariaDB multi-proses membuktikan nomor berurutan dan berbeda pada skenario lintas periode.
 
 ### 1.4 Batas Unggah PHP Lokal di Bawah Kebijakan Aplikasi
 - **Status**: MENUNGGU KONFIGURASI SERVER
@@ -40,10 +37,10 @@
 - **Mitigasi**:
   Atur `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, dan batas request web server yang mencakup overhead multipart. Setelah perubahan, uji unggah aktual 5 MB.
 
-### 1.5 Migration Default Ukuran Persyaratan Lokal
-- **Status**: SELESAI PADA SQLITE LOKAL
+### 1.5 Migration Default Ukuran Persyaratan
+- **Status**: SELESAI
 - **Deskripsi**:
-  Migration tambahan `2026_11_18_120000_update_document_requirement_default_size` telah diterapkan setelah migration awal terverifikasi berjalan. Migration hanya mengubah default kolom `max_size_kb` menjadi 5120; tidak mengubah atau menghapus nilai baris yang telah ada.
+  Migration tambahan menetapkan default kolom `max_size_kb` menjadi 5120 KB tanpa mengubah nilai baris yang telah ada. Default terverifikasi pada SQLite dan MariaDB.
 
 ### 1.6 Transportasi Pengiriman OTP WhatsApp Masih Menggunakan Driver Log/Simulasi
 - **Status**: SESUAI DESAIN FASE SAAT INI (BY-DESIGN)
@@ -60,26 +57,22 @@
 - **Rencana Mitigasi**:
   Telah diverifikasi penuh dengan test case `test_allows_sibling_registration_with_same_phone_number` yang lulus tanpa konflik database.
 
-### 1.8 Persetujuan Format Nomor dan Redaksi Consent
-- **Status**: MENUNGGU PENGESAHAN SEKOLAH SEBELUM PRODUKSI
+### 1.8 Format Nomor dan Consent
+- **Status**: SELESAI — DISETUJUI PEMILIK
 - **Deskripsi**:
-  Implementasi Fase 6 memakai format sementara `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}` dengan sequence per periode-program, serta redaksi dari fixture tes versi `v1.0`. Keduanya belum disahkan sebagai kebijakan resmi sekolah.
-- **Mitigasi**:
-  Konfigurasi teks/versi consent kosong membuat submit gagal tertutup; production tidak memakai fallback sementara. Pemilik sekolah harus mengesahkan format, lingkup sequence, redaksi, dan versi sebelum rilis atau nomor produksi diterbitkan.
+  Format `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, kode `REGULER`/`UNGGULAN`, dan redaksi consent versi `v1.0` telah disahkan dan diterapkan. Submit tetap gagal tertutup jika konfigurasi production kosong.
 
-### 1.9 Verifikasi Konkurensi Submit pada MySQL
-- **Status**: BLOCKED — MYSQL TIDAK TERSEDIA
+### 1.9 Admin Reopen per Pendaftaran
+- **Status**: SELESAI — DISETUJUI DAN DIUJI
 - **Deskripsi**:
-  Submit mengunci row periode, pendaftaran, program, dan sequence dalam transaksi untuk idempotensi/penomoran. Pengujian SQLite tidak membuktikan semantik lock atau beban konkurensi InnoDB. Dua tes MySQL tetap skipped karena server tidak tersedia.
-- **Mitigasi**:
-  Jalankan pengujian skema dan konkurensi terkontrol pada MySQL/InnoDB sebelum produksi; jangan menyatakan concurrency fisik telah tervalidasi.
+  Admin berizin dapat membuka akses edit untuk satu pendaftaran submitted dengan alasan dan expiry wajib, menutup lebih awal dengan alasan, dan seluruh tindakan dicatat. Expiry ditegakkan server-side tanpa cron.
+- **Verifikasi**:
+  Feature tests mencakup permission, lifecycle, audit, validasi, serta akses pendaftar setelah reopen dan setelah expiry.
 
-### 1.10 Nomor Registrasi dan Consent Menunggu Persetujuan
-- **Status**: PENDING OWNER APPROVAL
+### 1.10 Penutupan Fase 6
+- **Status**: SELESAI
 - **Deskripsi**:
-  Format nomor `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}` dan consent versi `v1.0` merupakan konfigurasi/fixture provisional. Tidak ditemukan persetujuan tertulis pemilik untuk format, cakupan/reset sequence, redaksi, dan versi consent.
-- **Mitigasi**:
-  Pertahankan submit production fail-closed bila consent belum dikonfigurasi. Jangan menerbitkan nomor produksi sebelum keputusan tersebut disahkan.
+  Seluruh gate Fase 6 lulus dengan 179 tes, 0 gagal/skip, dan verifikasi MariaDB fisik. Fase 7 belum dimulai dan masih memerlukan otorisasi tertulis pemilik.
 
 ### 1.11 PDF Bukti Pendaftaran Belum Diimplementasikan
 - **Status**: MENUNGGU FASE 7

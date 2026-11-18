@@ -81,22 +81,29 @@ Sistem menggunakan piramida pengujian berlapis:
 4. **Feature Tests Dokumen (`tests/Feature/Applicant/DocumentManagementTest.php`)**:
    - Menguji batas di bawah, tepat, dan di atas 5120 KB; limit per persyaratan; MIME/ekstensi; akses guest dan IDOR; history replacement; cleanup file saat persistensi gagal; dan progress dashboard.
 5. **Feature Tests Submit Pendaftaran (`tests/Feature/Applicant/RegistrationWorkflowTest.php`)**:
-   - Menguji kelengkapan pra-submit termasuk field wajib ayah/ibu, konfigurasi dokumen wajib/opsional, consent, status dan nomor, idempotensi, sequence per periode-program, periode/program tidak aktif, ownership, masking NIK, audit revisi tanpa nilai pribadi, kunci edit setelah periode ditutup, dan preservasi revisi dokumen.
-   - Uji SQLite tidak membuktikan konkurensi row-lock InnoDB; verifikasi fisik MySQL masih pending.
+   - Menguji kelengkapan pra-submit termasuk field wajib ayah/ibu, konfigurasi dokumen wajib/opsional, consent, status dan nomor, idempotensi, sequence per tahun ajaran-program lintas periode, periode/program tidak aktif, ownership, masking NIK, audit revisi tanpa nilai pribadi, kunci edit setelah periode ditutup, dan preservasi revisi dokumen.
+   - Pengujian terpisah menjalankan submit multi-process di MariaDB/InnoDB; suite SQLite tetap tidak dianggap sebagai bukti semantik lock MySQL.
 
 ### Status Gate Verifikasi Fase 6
 
-- MySQL PDO extension tersedia, tetapi MySQL lokal pada `127.0.0.1:3306` tidak dapat dihubungi. Dua test `MySqlSchemaCompatibilityTest` diskip; tidak ada migration MySQL yang dijalankan.
-- Submit dan sequence memakai transaction serta `lockForUpdate`; unique constraint nomor dan pendaftaran ada pada migration. Hasil SQLite/sequential tidak membuktikan concurrency InnoDB.
-- Tidak ada test multi-connection/process concurrent submit yang dijalankan. Gate concurrency berstatus BLOCKED.
-- Admin reopen belum mempunyai endpoint/policy/action. Permission `reopen_registration` hanya diberikan ke `superadmin`; kebijakan target dan masa berlaku belum diputuskan.
-- Fase 6 tidak boleh dinyatakan CLOSED dan Fase 7 tetap BLOCKED sampai temuan tersebut dan persetujuan nomor/consent diselesaikan.
+- **Lulus pada MariaDB 10.4.32/InnoDB** melalui database khusus `ppdb_phase6_test`: migrasi lengkap, tabel InnoDB, foreign key dan indeks reopen, serta default `max_size_kb=5120`.
+- Empat tes konkurensi fisik menjalankan worker PHP terpisah untuk submit ulang pada pendaftaran yang sama, submit dua calon siswa pada periode-program yang sama, submit lintas periode dengan tahun ajaran/program sama, dan rollback/retry setelah kegagalan audit.
+- Nomor registrasi menggunakan transaksi serta lock pada periode, pendaftaran, program, dan satu row counter global. Unique key tahun ajaran-program dan `lockForUpdate()` pada row yang sama menjaga urutan lintas periode secara atomik di InnoDB. Migration additive mem-backfill counter dari tabel per-periode lama.
+- Fase 6 CLOSED setelah keputusan format nomor, consent, dan admin reopen diterapkan. Fase 7 belum dimulai dan menunggu otorisasi tertulis pemilik.
+- MySQL 8.x target produksi belum diuji terpisah; hasil MariaDB tidak diklaim sebagai verifikasi fisik MySQL 8.x.
 
 ### Konfigurasi Consent Submit
 
-- Teks dan versi persetujuan harus disahkan sekolah sebelum produksi. Redaksi sementara hanya untuk lingkungan pengembangan/testing.
-- Konfigurasi consent kosong menyebabkan submit gagal tertutup; `config/ppdb.php` tidak menyediakan fallback redaksi sementara untuk `APP_ENV=production`.
-- `.env.example` berisi placeholder kosong untuk `PPDB_CONSENT_VERSION` dan `PPDB_CONSENT_STATEMENT`; jangan mengisi nilai produksi sebelum mendapat redaksi resmi.
+- Format resmi nomor: `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`; kode yang diizinkan `REGULER` dan `UNGGULAN`.
+- Consent resmi versi `v1.0`: “Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.” Nilai versi dan teks disimpan bersama pendaftaran.
+- Konfigurasi consent kosong tetap menyebabkan submit gagal tertutup; `config/ppdb.php` tidak menyediakan fallback untuk `APP_ENV=production`.
+- `.env.example` menggunakan placeholder kosong untuk `PPDB_CONSENT_VERSION` dan `PPDB_CONSENT_STATEMENT`; konfigurasi produksi harus diisi sesuai redaksi yang disahkan.
+
+### Admin Reopen
+
+- Permission `reopen_registration` membatasi endpoint admin; hanya pendaftaran berstatus `SUBMITTED` pada periode tertutup yang dapat dibuka kembali.
+- Alasan dan waktu kedaluwarsa wajib; penutupan dini juga memerlukan alasan. Server memeriksa expiry pada setiap operasi, tanpa cron.
+- Pembukaan/penutupan dicatat dalam `registration_logs` dengan aktor, alasan, waktu, dan pendaftaran terkait. Status, nomor, dan timestamp submit tidak berubah.
 
 ---
 
@@ -136,4 +143,4 @@ Sistem menggunakan piramida pengujian berlapis:
 - Maksimum global dan default per dokumen: **5120 KB (5 MB)**. Batas persyaratan dapat lebih kecil, tetapi tidak boleh lebih besar dari 5120 KB. Server menggunakan nilai minimum dari global dan batas persyaratan.
 - Browser memberikan pemeriksaan ukuran tambahan; seluruh otorisasi, ekstensi, MIME aktual, dan ukuran diverifikasi server-side.
 - Produksi wajib menetapkan `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, dan request limit web server yang mencakup overhead multipart. Pada lingkungan verifikasi lokal, `upload_max_filesize=2M` dan `post_max_size=8M`; unggahan live 5 MB belum dapat dilakukan sampai PHP diperbarui.
-- Feature test menggunakan `UploadedFile` sintetis dan telah menguji tepat 5120 KB, tetapi tidak membuktikan konfigurasi PHP/web server produksi. Verifikasi fisik MySQL juga tetap pending.
+- Feature test menggunakan `UploadedFile` sintetis dan telah menguji tepat 5120 KB, tetapi tidak membuktikan konfigurasi PHP/web server produksi. MySQL 8.x belum diverifikasi secara fisik; MariaDB 10.4.32/InnoDB telah lulus tes integrasi.

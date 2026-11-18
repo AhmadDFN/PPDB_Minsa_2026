@@ -33,14 +33,14 @@ class DocumentController extends Controller
 
     public function index(Request $request): View
     {
-        $registration = $this->requirementService->activeRegistrationFor($request->user()->applicant);
+        $registration = $this->registrationEditService->registrationForApplicant($request->user()->applicant);
         $requirements = $registration
             ? $this->requirementService->forRegistration($registration)
             : collect();
         $documents = $registration
             ? $registration->documents()->with('revisions')->get()->keyBy('document_requirement_id')
             : collect();
-        $canEdit = $registration?->admissionPeriod?->isOpen() ?? false;
+        $canEdit = $this->registrationEditService->canEdit($registration);
 
         return view('applicant.documents.index', [
             'registration' => $registration,
@@ -58,7 +58,7 @@ class DocumentController extends Controller
         UploadRegistrationDocumentAction $uploadAction,
         ReplaceRegistrationDocumentAction $replaceAction
     ): RedirectResponse {
-        $registration = $this->requirementService->activeRegistrationFor($request->user()->applicant);
+        $registration = $this->registrationEditService->registrationForApplicant($request->user()->applicant);
         abort_unless($registration, 404);
 
         $requirement = $this->requirementService->findForRegistrationOrFail($requirementId, $registration);

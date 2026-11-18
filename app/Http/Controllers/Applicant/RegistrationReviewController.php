@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Applicant;
 use App\Http\Controllers\Controller;
 use App\Models\ApplicantGuardian;
 use App\Services\Applicant\ApplicantProfileService;
+use App\Services\Registration\RegistrationEditService;
 use App\Services\Registration\RegistrationReadinessService;
 use App\Support\NikManager;
 use Illuminate\Http\Request;
@@ -17,7 +18,8 @@ class RegistrationReviewController extends Controller
     public function show(
         Request $request,
         ApplicantProfileService $profileService,
-        RegistrationReadinessService $readinessService
+        RegistrationReadinessService $readinessService,
+        RegistrationEditService $registrationEditService
     ): View {
         $user = $request->user();
         $applicant = $user->applicant()->with([
@@ -27,14 +29,8 @@ class RegistrationReviewController extends Controller
             'guardian',
             'education',
         ])->firstOrFail();
-        $registration = $applicant->registrations()
-            ->with([
-                'admissionPeriod',
-                'admissionPeriodProgram.program',
-                'consent',
-            ])
-            ->latest('id')
-            ->first();
+        $registration = $registrationEditService->registrationForApplicant($applicant);
+        $registration?->loadMissing('consent');
         $period = $registration?->admissionPeriod ?? $profileService->getActiveAdmissionPeriod();
         $readiness = $readinessService->assess($applicant, $registration);
 
@@ -71,7 +67,9 @@ class RegistrationReviewController extends Controller
             'documents' => $documents,
             'readiness' => $readiness,
             'canSubmit' => $canSubmit,
-            'canEdit' => $period?->isOpen() ?? false,
+            'canEdit' => $registrationEditService->canEdit($registration),
+            'canEditProgram' => ($period?->isOpen() ?? false)
+                && ($registration === null || $registration->isDraft()),
             'consentStatement' => (string) config('ppdb.registration.consent_statement'),
             'consentVersion' => (string) config('ppdb.registration.consent_version'),
         ]);

@@ -102,6 +102,13 @@ class RegistrationReadinessService
 
         $programMissing = [];
         $periodProgram = $registration?->admissionPeriodProgram;
+        $programCode = strtoupper(trim((string) $periodProgram?->program?->code));
+        $programCodeIsAllowed = in_array(
+            $programCode,
+            config('ppdb.registration.program_codes', []),
+            true,
+        );
+
         if (
             $registration === null
             || $registration->applicant_id !== $applicant->id
@@ -114,6 +121,7 @@ class RegistrationReadinessService
             || $periodProgram->admission_period_id !== $period->id
             || ! $periodProgram->is_active
             || ! $periodProgram->program?->is_active
+            || ! $programCodeIsAllowed
         ) {
             $programMissing[] = 'Program tidak tersedia pada periode aktif';
         }

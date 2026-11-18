@@ -43,6 +43,13 @@
             <x-ui.alert type="danger" dismissible>{{ session('error') }}</x-ui.alert>
         @endif
 
+        @if ($registration?->activeReopenWindow)
+            <x-ui.alert type="warning">
+                Akses perubahan data dibuka sampai {{ $registration->activeReopenWindow->expires_at->translatedFormat('d F Y, H:i') }} WIB.
+                {{ $registration->activeReopenWindow->reason }}
+            </x-ui.alert>
+        @endif
+
         <!-- Informasi Akun & Calon Siswa -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <x-ui.card class="p-5 border-neutral-200">
@@ -141,7 +148,13 @@
                     </svg>
                     <div>
                         <h3 class="text-sm font-bold text-neutral-800">Periode Pendaftaran Belum Dibuka</h3>
-                        <p class="text-xs text-neutral-600">Saat ini perubahan data pendaftaran terkunci. Anda dapat melihat status dan data pendaftaran yang telah dikirim.</p>
+                        <p class="text-xs text-neutral-600">
+                            @if ($canEdit)
+                                Anda dapat memperbarui data yang terkait dengan pendaftaran selama akses edit ulang masih berlaku.
+                            @else
+                                Saat ini perubahan data pendaftaran terkunci. Anda dapat melihat status dan data pendaftaran yang telah dikirim.
+                            @endif
+                        </p>
                     </div>
                 </div>
             </x-ui.card>
@@ -191,9 +204,11 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{{ route('applicant.biodata.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
-                        {{ $completion['biodata']['is_complete'] ? 'Ubah' : 'Isi' }}
-                    </a>
+                    @if ($canEdit)
+                        <a href="{{ route('applicant.biodata.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                            {{ $completion['biodata']['is_complete'] ? 'Ubah' : 'Isi' }}
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Step 2: Alamat -->
@@ -213,9 +228,11 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{{ route('applicant.address.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
-                        {{ $completion['address']['is_complete'] ? 'Ubah' : 'Isi' }}
-                    </a>
+                    @if ($canEdit)
+                        <a href="{{ route('applicant.address.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                            {{ $completion['address']['is_complete'] ? 'Ubah' : 'Isi' }}
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Step 3: Orang Tua -->
@@ -235,9 +252,11 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{{ route('applicant.parents.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
-                        {{ $completion['father']['is_complete'] && $completion['mother']['is_complete'] ? 'Ubah' : 'Isi' }}
-                    </a>
+                    @if ($canEdit)
+                        <a href="{{ route('applicant.parents.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                            {{ $completion['father']['is_complete'] && $completion['mother']['is_complete'] ? 'Ubah' : 'Isi' }}
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Step 4: Pendidikan Asal -->
@@ -257,9 +276,11 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{{ route('applicant.education.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
-                        {{ $completion['education']['is_complete'] ? 'Ubah' : 'Isi' }}
-                    </a>
+                    @if ($canEdit)
+                        <a href="{{ route('applicant.education.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                            {{ $completion['education']['is_complete'] ? 'Ubah' : 'Isi' }}
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Step 5: Pilihan Program -->
@@ -279,9 +300,11 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{{ route('applicant.program.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
-                        {{ $completion['program']['is_complete'] ? 'Ubah Program' : 'Pilih Program' }}
-                    </a>
+                    @if ($canEditProgram)
+                        <a href="{{ route('applicant.program.edit') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                            {{ $completion['program']['is_complete'] ? 'Ubah Program' : 'Pilih Program' }}
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Step 6: Dokumen Persyaratan -->
@@ -307,9 +330,11 @@
                             </span>
                         </div>
                     </div>
-                    <a href="{{ route('applicant.documents.index') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
-                        Kelola Dokumen
-                    </a>
+                    @if ($canEdit)
+                        <a href="{{ route('applicant.documents.index') }}" class="btn btn-outline text-xs px-3 py-1.5 shrink-0">
+                            Kelola Dokumen
+                        </a>
+                    @endif
                 </div>
             </div>
 

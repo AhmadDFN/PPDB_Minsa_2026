@@ -73,6 +73,23 @@ class Registration extends Model
         return $this->hasOne(RegistrationConsent::class);
     }
 
+    public function reopenWindows(): HasMany
+    {
+        return $this->hasMany(RegistrationReopenWindow::class);
+    }
+
+    public function activeReopenWindow(): HasOne
+    {
+        return $this->hasOne(RegistrationReopenWindow::class)
+            ->whereNull('closed_at')
+            ->where('expires_at', '>', now());
+    }
+
+    public function latestReopenWindow(): HasOne
+    {
+        return $this->hasOne(RegistrationReopenWindow::class)->latestOfMany();
+    }
+
     public function isDraft(): bool
     {
         return $this->status === RegistrationStatus::DRAFT;

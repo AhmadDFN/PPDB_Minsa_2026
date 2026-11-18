@@ -59,6 +59,18 @@
             <span>Data Pendaftar</span>
         </a>
 
+        @can('reopen_registration')
+            <a
+                href="{{ route('admin.registrations.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('admin/registrations*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
+            >
+                <svg class="w-5 h-5 {{ request()->is('admin/registrations*') ? 'text-primary-600' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v6h6M20 20v-6h-6M5 9a7 7 0 0112-3l3 3M19 15a7 7 0 01-12 3l-3-3" />
+                </svg>
+                <span>Buka Ulang Pendaftaran</span>
+            </a>
+        @endcan
+
         {{-- Dokumen Persyaratan --}}
         <a
             href="{{ url('/admin/dokumen') }}"

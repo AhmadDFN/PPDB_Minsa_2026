@@ -12,7 +12,7 @@
 ## 1. TUGAS SELESAI (COMPLETED TASKS)
 
 - [x] **[P0 - Kritis] Inisialisasi Struktur Dokumentasi Master**: Membuat berkas master `AGENTS.md`, `PROJECT_BLUEPRINT.md`, `PROJECT_STATUS.md`, `TODO_ROADMAP.md`, `BUSINESS_REQUIREMENTS.md`, `SYSTEM_ARCHITECTURE.md`, `DATABASE_DESIGN.md`, `SECURITY_AND_TESTING.md`, `TECHNICAL_DECISIONS.md`, `DEVELOPMENT_GUIDE.md`.
-- [x] **[P0 - Kritis] Audit Repositori & Test Suite Terkini**: Regresi terbaru 141 lulus, 494 asersi, 2 skip MySQL; Pint lulus, Composer audit 0 advisory, NPM audit 6 high development-only dan 0 temuan production-only.
+- [x] **[P0 - Kritis] Audit Repositori & Test Suite Terkini**: Regresi penutupan Fase 6: 179 lulus, 823 asersi, 0 gagal/skip; 9 tes MariaDB/InnoDB lulus. Pint dan build lulus; Composer audit 0 temuan; NPM audit 6 high development/build, 0 temuan production-only.
 - [x] **[P1 - Tinggi] Service & Action Layer Biodata Siswa (Fase 4)**:
   - `app/Actions/Applicant/UpdateApplicantBiodataAction.php` untuk melengkapi data nama, tempat/tanggal lahir, jenis kelamin, NISN, anak ke-, jumlah saudara. NIK terkunci dan read-only.
 - [x] **[P1 - Tinggi] Form & Action Data Alamat Domisili (Fase 4)**:
@@ -60,11 +60,17 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P1 - Tinggi] Submit Final, Persetujuan, dan Audit Revisi**:
   - *Deskripsi*: Submit atomik/idempoten menyimpan persetujuan, waktu submit, status, nomor registrasi unik, dan log perubahan. Perubahan pasca-submit diizinkan hanya saat periode masih terbuka.
 - [x] **[P1 - Tinggi] Penerbitan Nomor Registrasi Unik**:
-  - *Deskripsi*: Sequence unik dikunci per kombinasi periode-program. Format sementara `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`; belum disahkan sebagai format resmi sekolah.
+  - *Deskripsi*: Format resmi `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}` dengan kode `REGULER`/`UNGGULAN`. Sequence dikunci dan dibagikan per tahun ajaran-program agar periode ganda pada tahun yang sama tidak menghasilkan nomor bentrok.
 - [x] **[P1 - Tinggi] Halaman Tinjauan dan Integrasi Dasbor**:
   - *Deskripsi*: Menampilkan ringkasan aman, NIK termasker, kesiapan pendaftaran, nomor dan status setelah submit.
+- [x] **[P1 - Tinggi] Persetujuan Submit Resmi**:
+  - *Deskripsi*: Redaksi consent versi `v1.0` disimpan bersama pendaftaran saat submit.
+- [x] **[P1 - Tinggi] Admin Reopen per Pendaftaran**:
+  - *Deskripsi*: Admin berizin dapat membuka akses edit untuk pendaftaran yang telah dikirim, dengan alasan dan kedaluwarsa wajib; akses dapat ditutup lebih awal dan semua tindakan diaudit.
+- [x] **[P1 - Tinggi] Verifikasi Migrasi dan Submit Konkuren MariaDB/InnoDB**:
+  - *Deskripsi*: Sembilan tes fisik mencakup migrasi/backfill counter, skema, default 5120 KB, submit multi-proses pada pendaftaran sama dan periode berbeda, serta rollback/retry.
 
-**Status Fase 6**: Implementasi dan regresi tersedia, tetapi fase **belum CLOSED**. Persetujuan format nomor/consent dan kebijakan reopen menunggu pemilik; migrasi/concurrency MySQL terhambat oleh server yang tidak tersedia. Lihat `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`.
+**Status Fase 6: CLOSED.** Seluruh keputusan bisnis telah diterapkan; 179 tes lulus, termasuk 9 tes MariaDB/InnoDB. Lihat `docs/phases/PHASE-6-FINAL-CLOSURE-REPORT.md`. Fase 7 tetap menunggu otorisasi tertulis pemilik.
 
 ### Fase 7 — Pembuatan Dokumen Bukti Pendaftaran (PDF Generator)
 - [ ] **[BLOCKED — P1] Desain Layout PDF Bukti Pendaftaran**:
@@ -100,8 +106,8 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P1 - Selesai] Otorisasi Dokumen Pendaftar**: Preview, unduh, dan riwayat revisi dibatasi ke dokumen milik pendaftar yang sedang masuk.
 - [ ] **[P0 - Berkala] Pantau advisory `picomatch`**: Enam temuan high tetap terbuka pada dependency build/development; advisory belum menyatakan patched version. Hindari downgrade lintas major tanpa kajian kompatibilitas.
 - [ ] **[P1 - Operasional] Atur batas unggah server**: PHP produksi wajib `upload_max_filesize=5M`, `post_max_size` > 5M, dan request limit web server mencakup overhead multipart. Lingkungan lokal saat ini masih `2M`.
-- [ ] **[P1 - Operasional] Verifikasi MySQL fisik**: Dua tes kompatibilitas MySQL tetap pending sampai server tersedia.
-- [ ] **[P1 - Kebijakan] Penetapan kebijakan admin reopen**: Permission `reopen_registration` tersedia bagi superadmin, tetapi implementasi dan ruang lingkup reopen menunggu keputusan pemilik.
+- [x] **[P1 - Operasional] Verifikasi MariaDB fisik**: Sembilan tes lulus pada MariaDB 10.4.32/InnoDB dan database uji khusus `ppdb_phase6_test`. MySQL 8 produksi belum diuji terpisah.
+- [x] **[P1 - Kebijakan] Implementasi kebijakan admin reopen**: Hak akses per pendaftaran dengan alasan, waktu kedaluwarsa, penutupan dini, penegakan server-side, dan audit telah diterapkan.
 - [x] **[P2 - Dokumentasi] Verifikasi referensi riwayat Git**: Riwayat saat audit diverifikasi (`e2a8bb3` → `4e70b5d` → `d970b33` → `311e099`); referensi historis `4c64724` tidak ditemukan dan penyebabnya belum dapat dipastikan. Tidak ada rewrite history.
 - [ ] **[P2 - Berkala] Rotasi Kunci HMAC & Manajemen Secret**: Prosedur pembaruan kunci rahasia jika terjadi insiden keamanan.
 - [ ] **[P2 - Berkala] Audit Log Pembersihan Token OTP Kedaluwarsa**: Scheduled task pembersihan otomatis record OTP yang telah kedaluwarsa lebih dari 30 hari.

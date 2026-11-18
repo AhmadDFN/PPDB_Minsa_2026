@@ -84,6 +84,13 @@ Dokumen ini berisi seluruh aturan bisnis resmi yang telah disetujui oleh Pemilik
 6. **Perubahan Data Setelah Submit**:
    - Pendaftar tetap diperkenankan mengubah data yang telah di-submit selama periode pendaftaran masih dibuka.
    - Setiap perubahan pada status submitted akan mencatat riwayat revisi dan menaikkan versi dokumen PDF bukti pendaftaran.
+7. **Nomor Registrasi Resmi**:
+   - Format nomor adalah `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`.
+   - Kode program yang sah adalah `REGULER` dan `UNGGULAN`.
+   - Urutan harus unik untuk setiap kombinasi tahun ajaran dan program, termasuk jika terdapat lebih dari satu periode pada tahun ajaran yang sama.
+8. **Persetujuan Submit**:
+   - Sebelum submit, orang tua/wali menyetujui pernyataan versi `v1.0`: “Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.”
+   - Versi dan pernyataan yang diterima disimpan bersama pendaftaran.
 
 ---
 
@@ -154,3 +161,13 @@ Jika di masa mendatang tim teknis atau panitia madrasah mengusulkan perubahan te
 2. **Analisis Dampak (*Impact Assessment*)**: Mengidentifikasi modul, migrasi basis data, dan alur antarmuka yang terdampak.
 3. **Pengajuan Proposal Tertulis**: Menyampaikan opsi solusi ke Pemilik Proyek.
 4. **Persetujuan Eksplisit**: Aturan baru hanya boleh diimplementasikan setelah disetujui secara tertulis oleh Pemilik Proyek.
+
+---
+
+## 10. KEBIJAKAN ADMINISTRATOR MEMBUKA AKSES EDIT ULANG
+
+1. Admin PPDB atau superadmin yang memiliki permission `reopen_registration` dapat membuka akses edit untuk **satu pendaftaran** yang sudah `SUBMITTED` pada periode yang telah ditutup.
+2. Alasan pembukaan dan waktu kedaluwarsa wajib diisi; waktu kedaluwarsa harus berada di masa depan.
+3. Admin yang berwenang dapat menutup akses lebih awal dengan alasan wajib.
+4. Akses kedaluwarsa ditegakkan server-side pada setiap operasi, tanpa bergantung pada cron atau scheduler.
+5. Pembukaan dan penutupan dicatat dalam `registration_logs` beserta aktor, waktu, alasan, dan referensi pendaftaran. Pembukaan tidak mengubah status, nomor registrasi, atau waktu submit.

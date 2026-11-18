@@ -174,7 +174,7 @@
             <x-ui.card class="p-5">
                 <div class="flex items-start justify-between gap-3">
                     <h2 class="text-base font-bold text-neutral-800">Program dan Periode</h2>
-                    @if ($canEdit)
+                    @if ($canEditProgram)
                         <a href="{{ route('applicant.program.edit') }}" class="text-xs font-semibold text-primary-700 hover:underline">Ubah</a>
                     @endif
                 </div>

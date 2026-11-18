@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Applicant;
 
 use App\Http\Controllers\Controller;
 use App\Services\Applicant\ApplicantProfileService;
+use App\Services\Registration\RegistrationEditService;
 use App\Support\NikManager;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -13,7 +14,8 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     public function __construct(
-        protected ApplicantProfileService $profileService
+        protected ApplicantProfileService $profileService,
+        protected RegistrationEditService $registrationEditService
     ) {}
 
     /**
@@ -26,16 +28,11 @@ class DashboardController extends Controller
 
         $maskedNik = $user->nik_encrypted ? NikManager::mask($user->getDecryptedNik() ?? '') : '****************';
         $activePeriod = $this->profileService->getActiveAdmissionPeriod();
-        $completion = $this->profileService->getCompletionSummary($applicant, $activePeriod);
+        $registration = $this->registrationEditService->registrationForApplicant($applicant);
+        $completionPeriod = $registration?->admissionPeriod ?? $activePeriod;
+        $completion = $this->profileService->getCompletionSummary($applicant, $completionPeriod);
         $age = $this->profileService->calculateAge($applicant, $activePeriod);
-        $registration = $completion['registration'];
-
-        if ($registration === null && $activePeriod === null) {
-            $registration = $applicant->registrations()
-                ->with(['admissionPeriod', 'admissionPeriodProgram.program'])
-                ->latest('id')
-                ->first();
-        }
+        $registration = $completion['registration'] ?? $registration;
 
         return view('applicant.dashboard', [
             'user' => $user,
@@ -45,6 +42,9 @@ class DashboardController extends Controller
             'completion' => $completion,
             'age' => $age,
             'registration' => $registration,
+            'canEdit' => $this->registrationEditService->canEdit($registration),
+            'canEditProgram' => ($activePeriod?->isOpen() ?? false)
+                && ($registration === null || $registration->isDraft()),
         ]);
     }
 }

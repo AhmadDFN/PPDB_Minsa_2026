@@ -49,6 +49,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_applicants',
             'export_reports',
             'verify_documents',
+            'reopen_registration',
         ]);
     }
 }

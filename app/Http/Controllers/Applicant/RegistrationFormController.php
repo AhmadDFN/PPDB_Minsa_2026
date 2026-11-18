@@ -213,6 +213,7 @@ class RegistrationFormController extends Controller
             'applicant' => $applicant,
             'activePeriod' => $activePeriod,
             'registration' => $registration,
+            'canEditProgram' => $registration === null || $registration->isDraft(),
             'currentStep' => 5,
         ]);
     }

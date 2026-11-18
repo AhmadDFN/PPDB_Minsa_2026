@@ -27,6 +27,8 @@ use App\Support\NikManager;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
@@ -82,8 +84,8 @@ class RegistrationWorkflowTest extends TestCase
 
         if ($periodProgram === null) {
             $program = Program::factory()->create([
-                'code' => $index === 1 ? 'REGULER' : 'REGULER'.$index,
-                'name' => 'Program Reguler',
+                'code' => $index % 2 === 1 ? 'REGULER' : 'UNGGULAN',
+                'name' => $index % 2 === 1 ? 'Program Reguler' : 'Program Unggulan',
                 'is_active' => true,
             ]);
             $periodProgram = AdmissionPeriodProgram::factory()->create([
@@ -315,7 +317,7 @@ class RegistrationWorkflowTest extends TestCase
         $this->assertSame($submittedAt, $registration->submitted_at?->toISOString());
         $this->assertDatabaseCount('registration_consents', 1);
         $this->assertDatabaseCount('registration_logs', 1);
-        $this->assertDatabaseCount('registration_sequences', 1);
+        $this->assertDatabaseCount('registration_number_sequences', 1);
     }
 
     public function test_sequence_is_unique_and_increments_within_the_same_period_program(): void
@@ -337,10 +339,10 @@ class RegistrationWorkflowTest extends TestCase
 
         $this->assertSame('PPDB/2026-2027/REGULER/00001', $first['registration']->fresh()->registration_number);
         $this->assertSame('PPDB/2026-2027/REGULER/00002', $second['registration']->fresh()->registration_number);
-        $this->assertDatabaseCount('registration_sequences', 1);
+        $this->assertDatabaseCount('registration_number_sequences', 1);
     }
 
-    public function test_registration_number_sequence_is_scoped_to_each_period_program(): void
+    public function test_registration_number_sequence_is_scoped_to_each_program(): void
     {
         Storage::fake('ppdb_private');
         $first = $this->createRegistration();
@@ -354,8 +356,111 @@ class RegistrationWorkflowTest extends TestCase
         }
 
         $this->assertSame('PPDB/2026-2027/REGULER/00001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('PPDB/2026-2027/REGULER2/00001', $second['registration']->fresh()->registration_number);
-        $this->assertDatabaseCount('registration_sequences', 2);
+        $this->assertSame('PPDB/2026-2027/UNGGULAN/00001', $second['registration']->fresh()->registration_number);
+        $this->assertDatabaseCount('registration_number_sequences', 2);
+    }
+
+    public function test_registration_number_sequence_does_not_reset_across_periods_in_the_same_academic_year(): void
+    {
+        Storage::fake('ppdb_private');
+        $first = $this->createRegistration();
+        $secondPeriod = AdmissionPeriod::factory()->create([
+            'name' => 'PPDB MIN 1 Kota Madiun 2026/2027 - Periode Kedua',
+            'academic_year' => '2026/2027',
+            'start_date' => now()->subDay(),
+            'end_date' => now()->addDay(),
+            'status' => AdmissionPeriodStatus::ACTIVE,
+            'is_active' => true,
+        ]);
+        $secondPeriodProgram = AdmissionPeriodProgram::factory()->create([
+            'admission_period_id' => $secondPeriod->id,
+            'program_id' => $first['periodProgram']->program_id,
+            'is_active' => true,
+        ]);
+        $secondRequirement = DocumentRequirement::factory()->create([
+            'admission_period_id' => $secondPeriod->id,
+            'program_id' => $first['periodProgram']->program_id,
+            'is_required' => true,
+        ]);
+        $second = $this->createRegistration(
+            period: $secondPeriod,
+            periodProgram: $secondPeriodProgram,
+            requirement: $secondRequirement,
+        );
+
+        foreach ([$first, $second] as $data) {
+            $this->actingAs($data['user'])->post(route('applicant.registration.submit'), [
+                'consent' => '1',
+                'consent_name' => 'Orang Tua Siswa',
+            ])->assertRedirect(route('applicant.registration.review'));
+        }
+
+        $this->assertSame('PPDB/2026-2027/REGULER/00001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('PPDB/2026-2027/REGULER/00002', $second['registration']->fresh()->registration_number);
+        $this->assertDatabaseCount('registration_number_sequences', 1);
+    }
+
+    public function test_migration_backfills_the_highest_legacy_sequence_per_academic_year_and_program(): void
+    {
+        $first = $this->createRegistration();
+        $secondPeriod = AdmissionPeriod::factory()->create([
+            'name' => 'PPDB MIN 1 Kota Madiun 2026/2027 - Periode Kedua',
+            'academic_year' => str_replace('/', '-', $first['period']->academic_year),
+            'start_date' => now()->subDay(),
+            'end_date' => now()->addDay(),
+            'status' => AdmissionPeriodStatus::ACTIVE,
+            'is_active' => true,
+        ]);
+        $secondPeriodProgram = AdmissionPeriodProgram::factory()->create([
+            'admission_period_id' => $secondPeriod->id,
+            'program_id' => $first['periodProgram']->program_id,
+            'is_active' => true,
+        ]);
+
+        DB::table('registration_sequences')->insert([
+            [
+                'admission_period_program_id' => $first['periodProgram']->id,
+                'last_sequence' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'admission_period_program_id' => $secondPeriodProgram->id,
+                'last_sequence' => 7,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+        Schema::drop('registration_number_sequences');
+
+        $migration = require database_path('migrations/2026_11_18_151640_create_registration_number_sequences_table.php');
+        $migration->up();
+
+        $this->assertDatabaseCount('registration_number_sequences', 1);
+        $this->assertDatabaseHas('registration_number_sequences', [
+            'academic_year' => str_replace('/', '-', $first['period']->academic_year),
+            'program_id' => $first['periodProgram']->program_id,
+            'last_sequence' => 7,
+        ]);
+    }
+
+    public function test_program_code_outside_the_approved_set_blocks_submission(): void
+    {
+        Storage::fake('ppdb_private');
+        $data = $this->createRegistration();
+        $data['periodProgram']->program->update(['code' => 'REGULER2']);
+
+        $this->actingAs($data['user'])
+            ->from(route('applicant.registration.review'))
+            ->post(route('applicant.registration.submit'), [
+                'consent' => '1',
+                'consent_name' => 'Orang Tua Siswa',
+            ])
+            ->assertSessionHasErrors('registration');
+
+        $this->assertSame(RegistrationStatus::DRAFT, $data['registration']->fresh()->status);
+        $this->assertNull($data['registration']->fresh()->registration_number);
+        $this->assertDatabaseCount('registration_number_sequences', 0);
     }
 
     public function test_unconfigured_required_documents_block_submission_but_optional_documents_do_not(): void
@@ -417,7 +522,7 @@ class RegistrationWorkflowTest extends TestCase
 
         $this->assertSame(RegistrationStatus::DRAFT, $data['registration']->fresh()->status);
         $this->assertNull($data['registration']->fresh()->registration_number);
-        $this->assertDatabaseCount('registration_sequences', 0);
+        $this->assertDatabaseCount('registration_number_sequences', 0);
     }
 
     public function test_inactive_program_blocks_submission(): void

@@ -126,6 +126,20 @@ erDiagram
         timestamps created_at_updated_at
     }
 
+    registration_sequences {
+        bigint id PK
+        bigint admission_period_program_id FK "UK, legacy counter"
+        timestamps created_at_updated_at
+    }
+
+    registration_number_sequences {
+        bigint id PK
+        string academic_year "VARCHAR(15)"
+        bigint program_id FK "UK with academic_year"
+        bigint last_sequence "global counter per academic year-program"
+        timestamps created_at_updated_at
+    }
+
     document_requirements {
         bigint id PK
         string code "VARCHAR(50) UK"
@@ -186,6 +200,19 @@ erDiagram
         timestamps created_at_updated_at
     }
 
+    registration_reopen_windows {
+        bigint id PK
+        bigint registration_id FK
+        bigint opened_by FK
+        bigint closed_by FK "NULL"
+        text reason
+        datetime opened_at
+        datetime expires_at
+        datetime closed_at "NULL"
+        text close_reason "NULL"
+        timestamps created_at_updated_at
+    }
+
     users ||--o{ user_otp_tokens : "has"
     users ||--|| applicants : "has"
     applicants ||--|| applicant_addresses : "has"
@@ -196,12 +223,15 @@ erDiagram
     admission_periods ||--o{ admission_period_programs : "offers"
     programs ||--o{ admission_period_programs : "provides"
     registrations }|--|| admission_period_programs : "selects"
+    admission_period_programs ||--o| registration_sequences : "legacy counter"
+    programs ||--o{ registration_number_sequences : "owns counters"
     registrations ||--o{ registration_documents : "attaches"
     document_requirements ||--o{ registration_documents : "defines"
     registration_documents ||--o{ registration_document_revisions : "records"
     registrations ||--o{ registration_pdf_versions : "issues"
     registrations ||--|| registration_consents : "signs"
     registrations ||--o{ registration_logs : "audits"
+    registrations ||--o{ registration_reopen_windows : "reopens editing"
 ```
 
 ---

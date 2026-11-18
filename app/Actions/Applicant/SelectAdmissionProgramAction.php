@@ -44,6 +44,10 @@ class SelectAdmissionProgramAction
             'admission_period_id' => $activePeriod->id,
         ]);
 
+        if ($registration->exists && $registration->isSubmitted()) {
+            throw new InvalidArgumentException('Program tidak dapat diubah setelah pendaftaran dikirim.');
+        }
+
         $registration->admission_period_program_id = $periodProgram->id;
 
         // Set status to DRAFT if newly created

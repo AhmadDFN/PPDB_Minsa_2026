@@ -3,7 +3,7 @@
 
 **Tanggal Audit**: 18 November 2026
 **Auditor**: Senior Security Engineer & Laravel Specialist  
-**Status Audit**: TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; FASE 6 BELUM CLOSED (MYSQL/INNODB BELUM DIVERIFIKASI)
+**Status Audit**: FASE 6 CLOSED; TEMUAN NPM HIGH PADA DEPENDENCY BUILD TERBUKA; UPLOAD LIVE 5 MB PERLU KONFIGURASI PHP
 
 ---
 
@@ -81,17 +81,18 @@
    - Replacement menulis metadata/path berkas lama ke riwayat tanpa menghapus file historis. Jika transaksi database gagal setelah file baru tersimpan, action menghapus file baru dan mengembalikan error.
    - Risiko konfigurasi operasional: PHP lokal masih `upload_max_filesize=2M` (di bawah kebijakan 5 MB), sementara `post_max_size=8M`. Atur `upload_max_filesize=5M`, `post_max_size` >5M, dan request limit web server yang mencakup multipart overhead sebelum menerima berkas 5 MB.
 
-## 5. AUDIT FASE 6 — SUBMIT DAN REVISI PENDAFTARAN
+## 5. AUDIT FASE 6 — SUBMIT, REVISI, DAN ADMIN REOPEN
 
 - Endpoint submit memperoleh pendaftaran hanya dari relasi pendaftar yang sedang masuk; ID dan status kiriman tidak dipercaya dari request. Uji lintas akun menolak akses.
 - Submit membungkus validasi, lock row, sequence, consent, status, timestamp, dan audit dalam transaksi. Pengiriman ulang mempertahankan nomor/timestamp serta tidak menggandakan consent/log.
-- Sequence menggunakan row lock per `admission_period_program_id` dan unique constraint nomor pada registration. Semantik lock InnoDB belum diuji pada server MySQL fisik; uji SQLite bukan bukti concurrency production.
+- Sequence unik per tahun ajaran-program. Submit mengunci row counter global dengan `lockForUpdate()` di dalam transaksi; migration additive mem-backfill nilai tertinggi dari counter per-periode lama. Tes multi-proses lintas periode lulus di MariaDB 10.4.32/InnoDB.
 - NIK siswa/orang tua dimasker pada halaman tinjauan; path penyimpanan privat tidak dikirim ke Blade. Log revisi hanya berisi nama field yang berubah, bukan nilai pribadi.
-- Konfigurasi consent kosong menyebabkan submit gagal. Redaksi dan format nomor saat ini provisional dan memerlukan persetujuan sekolah sebelum produksi.
+- Format nomor resmi `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, kode `REGULER`/`UNGGULAN`; redaksi consent `v1.0` sudah disahkan. Konfigurasi consent kosong tetap menyebabkan submit gagal tertutup.
+- Admin berpermission dapat reopen satu registration submitted dalam window wajib expiry dan reason; dapat ditutup dini dengan reason. Server menegakkan expiry tanpa cron, mencatat semua tindakan, dan tidak mengubah status/nomor/waktu submit.
 - Tidak ada PDF, seleksi siswa, persetujuan dokumen, atau pelaporan administrator yang diimplementasikan pada fase ini.
-- Review penutupan: izin `reopen_registration` hanya tersedia bagi `superadmin` di seeder; tidak ditemukan route/action/policy untuk menjalankan reopen. Ruang lingkup dan masa berlaku belum menjadi aturan tertulis, sehingga implementasi tidak boleh diasumsikan tersedia.
-- **Batas verifikasi**: MySQL PDO tersedia, tetapi server `127.0.0.1:3306` tidak dapat dihubungi. Dua test MySQL diskip; tidak ada bukti fisik migrasi maupun submit bersamaan di InnoDB. Status audit database/concurrency adalah BLOCKED, bukan PASS.
-- **Gerbang rilis**: format nomor dan redaksi/versi consent masih menunggu persetujuan pemilik. Fase 6 belum CLOSED; Fase 7 tetap BLOCKED sampai semua gate selesai dan ada otorisasi.
+- Sembilan tes fisik pada database khusus `ppdb_phase6_test` lulus untuk migrasi/backfill counter, skema, default kolom 5120 KB, submit multi-proses pada pendaftaran sama dan lintas periode, rollback, serta retry. Migrasi tabel dokumen kini memakai nama indeks MariaDB yang pendek dan dapat memulihkan tabel parsial tanpa menghapus data.
+- **Batas verifikasi**: MariaDB 10.4.32/InnoDB telah diuji; MySQL 8.x target produksi belum diuji terpisah. Nilai PHP lokal `upload_max_filesize=2M` masih di bawah kebijakan 5 MB; `post_max_size=8M`.
+- **Status fase**: Fase 6 CLOSED. Fase 7 belum dimulai dan tetap menunggu otorisasi tertulis pemilik.
 
 ## 6. KESIMPULAN & REKOMENDASI AUDIT
 
@@ -99,3 +100,4 @@
 2. **Rekomendasi Operasional Produksi**:
    - Pastikan variabel `APP_KEY`, `NIK_HMAC_KEY`, dan `OTP_HMAC_KEY` pada server produksi digenerate menggunakan random string berentropi tinggi (minimal 64 karakter hex/base64) dan disimpan secara aman.
    - Aktifkan HTTPS/SSL penuh dan pastikan cookie diset dengan atribut `Secure` dan `HttpOnly`.
+   - Sebelum menerima upload 5 MB secara live, atur `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, serta request limit web server yang mencakup multipart overhead; uji juga terhadap MySQL 8.x target produksi.
