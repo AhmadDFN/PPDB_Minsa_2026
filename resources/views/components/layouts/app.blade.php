@@ -63,8 +63,8 @@
                 {{-- Col 1: Identity & Accreditation (5 cols) --}}
                 <div class="lg:col-span-5 space-y-4">
                     <div class="flex items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-secondary-600 to-primary-600 text-white flex items-center justify-center font-extrabold text-base shadow-sm">
-                            <span>M1</span>
+                        <div class="w-12 h-12 shrink-0 flex items-center justify-center p-1 bg-white/10 rounded-xl backdrop-blur-xs border border-white/10">
+                            <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain">
                         </div>
                         <div>
                             <span class="block text-[11px] uppercase tracking-wider text-secondary-400 font-bold leading-tight">
