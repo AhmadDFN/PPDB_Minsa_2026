@@ -1,12 +1,12 @@
-<x-layouts.app title="Langkah 3: Data Orang Tua / Wali — PPDB MIN 1 Kota Madiun">
+<x-layouts.applicant title="Langkah 3: Data Orang Tua / Wali — PPDB MIN 1 Kota Madiun">
     <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-6">
-            <a href="{{ route('applicant.dashboard') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-600 hover:text-primary-700 hover:underline mb-2">
+            <a href="{{ route('applicant.dashboard') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:underline mb-2">
                 &larr; Kembali ke Dasbor
             </a>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-neutral-800 tracking-tight">Data Orang Tua & Wali</h1>
-            <p class="mt-1 text-sm text-neutral-600">Pengisian data Ayah Kandung dan Ibu Kandung wajib diisi. Data Wali bersifat opsional.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Data Orang Tua & Wali</h1>
+            <p class="mt-1 text-sm text-slate-400">Pengisian data Ayah Kandung dan Ibu Kandung wajib diisi. Data Wali bersifat opsional.</p>
         </div>
 
         <!-- Step Indicator -->
@@ -310,4 +310,4 @@
             }
         }
     </script>
-</x-layouts.app>
+</x-layouts.applicant>

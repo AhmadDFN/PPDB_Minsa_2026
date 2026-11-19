@@ -1,11 +1,11 @@
-<x-layouts.app title="Tinjau Pendaftaran — PPDB MIN 1 Kota Madiun">
+<x-layouts.applicant title="Tinjau Pendaftaran — PPDB MIN 1 Kota Madiun">
     <div class="max-w-5xl mx-auto space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         <div>
-            <a href="{{ route('applicant.dashboard') }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-primary-600 hover:text-primary-700 hover:underline">
+            <a href="{{ route('applicant.dashboard') }}" class="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:underline">
                 &larr; Kembali ke Dasbor
             </a>
-            <h1 class="text-2xl font-extrabold tracking-tight text-neutral-800 sm:text-3xl">Tinjau Pendaftaran</h1>
-            <p class="mt-1 text-sm text-neutral-600">Periksa kembali data sebelum mengirim pendaftaran secara resmi.</p>
+            <h1 class="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Tinjau Pendaftaran</h1>
+            <p class="mt-1 text-sm text-slate-400">Periksa kembali data sebelum mengirim pendaftaran secara resmi.</p>
         </div>
 
         <x-applicant.form-steps :currentStep="7" />
@@ -244,4 +244,4 @@
             @endif
         @endif
     </div>
-</x-layouts.app>
+</x-layouts.applicant>
