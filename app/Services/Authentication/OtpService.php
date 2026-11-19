@@ -92,7 +92,11 @@ class OtpService
         ]);
 
         // Dispatch via delivery abstraction
-        $this->delivery->send($targetPhone, $plainOtp, $purposeValue, $user);
+        $dispatched = $this->delivery->send($targetPhone, $plainOtp, $purposeValue, $user);
+
+        if (! $dispatched) {
+            throw new RuntimeException('Kode OTP belum dapat dikirim. Silakan coba kembali beberapa saat lagi atau hubungi panitia PPDB.');
+        }
 
         return [
             'token' => $token,

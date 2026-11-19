@@ -36,6 +36,7 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="NIK_HMAC_KEY" value="test-nik-hmac-secret-key-distinct-from-app-key-12345"/>
         <env name="OTP_HMAC_KEY" value="test-otp-hmac-secret-key-distinct-from-all-1234567890"/>
+        <env name="OTP_DRIVER" value="array"/>
         <env name="OTP_DELIVERY_DRIVER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>

@@ -127,10 +127,14 @@ class ApplicantActivationController extends Controller
             return back()->with('error', "Mohon tunggu {$seconds} detik sebelum meminta pengiriman ulang kode OTP.");
         }
 
-        $otpService->hitSendRateLimiter($throttleKey, 300);
-        $otpService->generateAndSend($user, OtpPurpose::ACTIVATION);
+        try {
+            $otpService->generateAndSend($user, OtpPurpose::ACTIVATION);
+            $otpService->hitSendRateLimiter($throttleKey, 300);
 
-        return back()->with('success', 'Kode verifikasi OTP baru telah berhasil dikirimkan.');
+            return back()->with('success', 'Kode verifikasi OTP baru telah berhasil dikirimkan.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**

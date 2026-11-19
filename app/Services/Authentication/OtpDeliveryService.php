@@ -7,6 +7,7 @@ namespace App\Services\Authentication;
 use App\Contracts\OtpDeliveryInterface;
 use App\Models\User;
 use App\Services\Authentication\Delivery\ArrayOtpDelivery;
+use App\Services\Authentication\Delivery\FonnteOtpDelivery;
 use App\Services\Authentication\Delivery\LogOtpDelivery;
 use App\Services\Authentication\Delivery\NullOtpDelivery;
 use InvalidArgumentException;
@@ -28,6 +29,7 @@ class OtpDeliveryService implements OtpDeliveryInterface
         $driverName = config('ppdb.otp.delivery_driver', 'log');
 
         return match ($driverName) {
+            'fonnte' => new FonnteOtpDelivery,
             'log' => new LogOtpDelivery,
             'array' => new ArrayOtpDelivery,
             'null' => new NullOtpDelivery,

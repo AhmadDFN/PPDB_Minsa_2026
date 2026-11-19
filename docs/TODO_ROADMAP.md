@@ -164,6 +164,22 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10.1: SELESAI (100% TERUJI, BEBAS 404 & TERHUBUNG DATA AKTUAL).** 215 tests passed, 1109 assertions. Code style Pint 100% compliant. Vite asset compilation sukses.
 
+### Fase 10.2 — Integrasi Gateway WhatsApp OTP Menggunakan Fonnte API
+- [x] **[P0 - Kritis] Driver Pengiriman Fonnte (`FonnteOtpDelivery`)**:
+  - *Deskripsi*: Membuat `app/Services/Authentication/Delivery/FonnteOtpDelivery.php` dengan normalisasi nomor telepon Indonesia (`08...`, `628...`, `+628...`), header Authorization langsung tanpa Bearer, payload `asForm()`, dan validasi status boolean/string.
+- [x] **[P0 - Kritis] Pemisahan Template Pesan Profesional**:
+  - *Deskripsi*: Template pesan terpisah untuk Aktivasi Akun dan Pemulihan Kata Sandi, steril dari NIK/informasi pribadi sensitif.
+- [x] **[P0 - Kritis] Penanganan Kegagalan & Timeout Ambigu**:
+  - *Deskripsi*: Penanganan terisolasi untuk token invalid, device disconnected, insufficient quota, invalid target, timeout koneksi, dan respons non-JSON. Log teknis steril tanpa plaintext OTP maupun token API.
+- [x] **[P0 - Kritis] Integrasi Service Bisnis & Pengendali**:
+  - *Deskripsi*: `OtpDeliveryService` memetakan driver `'fonnte'`, `OtpService` melempar `RuntimeException` ramah saat provider menolak pengiriman, dan kontroler auth menangkap exception tanpa fatal error 500.
+- [x] **[P0 - Kritis] Suite Pengujian Otomatis 20 Skenario**:
+  - *Deskripsi*: `tests/Feature/Auth/FonnteOtpDeliveryTest.php` menguji 20 skenario menyeluruh menggunakan `Http::fake()`. 20 tes lulus dengan 41 asersi.
+- [x] **[P1 - Tinggi] Panduan Konfigurasi & Operasional**:
+  - *Deskripsi*: Pembuatan dokumen `docs/manual/FONNTE-WHATSAPP-INTEGRATION-GUIDE.md` (cara perolehan token, scan QR, konfigurasi `.env`, rotasi token, dan troubleshooting).
+
+**Status Fase 10.2: SELESAI SECARA TEKNIS (SIAP UJI MANUAL NOMOR KENDALI PEMILIK PROYEK).** 235 tests passed, 1150 assertions. Nol pengiriman WhatsApp sungguhan pada automated test.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)

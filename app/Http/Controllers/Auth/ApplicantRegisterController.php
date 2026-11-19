@@ -47,6 +47,10 @@ class ApplicantRegisterController extends Controller
             return back()
                 ->withInput($request->except(['consent']))
                 ->withErrors(['nik' => $e->getMessage()]);
+        } catch (\RuntimeException $e) {
+            return back()
+                ->withInput($request->except(['consent']))
+                ->withErrors(['phone' => $e->getMessage()]);
         }
     }
 }

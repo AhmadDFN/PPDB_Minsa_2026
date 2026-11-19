@@ -25,7 +25,7 @@ return [
         'length' => (int) env('OTP_LENGTH', 6),
         'expiry_minutes' => (int) env('OTP_EXPIRY_MINUTES', 5),
         'max_attempts' => (int) env('OTP_MAX_ATTEMPTS', 5),
-        'delivery_driver' => env('OTP_DELIVERY_DRIVER', 'log'), // 'log' for dev, 'null', or custom provider
+        'delivery_driver' => env('OTP_DRIVER', env('OTP_DELIVERY_DRIVER', 'log')), // 'fonnte', 'log', 'array', 'null'
     ],
 
     /*

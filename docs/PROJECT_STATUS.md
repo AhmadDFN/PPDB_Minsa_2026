@@ -12,33 +12,34 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 10.1 — ADMIN DASHBOARD REAL DATA & NAVIGATION RESILIENCE** |
-| **Status Teknis Fase 10.1** | **SELESAI (100% CONTROLLER, VIEW DASHBOARD REAL DATA, SIDEBAR AMAN & 12 TESTS PASSED)** |
+| **Fase Berjalan Saat Ini** | **FASE 10.2 — INTEGRASI WHATSAPP OTP MENGGUNAKAN FONNTE API** |
+| **Status Teknis Fase 10.2** | **SELESAI SECARA TEKNIS (100% TERUJI OTOMATIS; MENUNGGU TOKEN RESMI & UJI MANUAL)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
 | **Status Lingkungan Staging** | **READY (Paket ZIP bersih deploy_minsatama_hostinger_clean.zip 23.9MB siap)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Gerbang Produksi (Logo/Alamat)** | **PENDING OWNER ACTION (MENUNGGU SUMBER RESMI LOGO & ALAMAT)** |
-| **Commit Baseline Sebelum Fase 10.1** | `42b809d` (`docs(phase-10): add applicant admin manuals and operational SOP`) |
+| **Commit Baseline Sebelum Fase 10.2** | `05134e5` (`feat(admin): implement real-data admin dashboard and resilient navigation (phase 10.1)`) |
 
 ---
 
-## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.1)
+## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.2)
 
 - **Perintah Pengujian**: `php artisan test`
 - **Waktu Eksekusi**: 19 November 2026
-- **Total Pengujian**: **215 pengujian**
-- **Lulus (Passed)**: **215 pengujian (100%)**
+- **Total Pengujian**: **235 pengujian**
+- **Lulus (Passed)**: **235 pengujian (100%)**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **0 pengujian**
-- **Total Asersi**: **1109 asersi**
-- **Durasi Eksekusi**: ~8.8 detik
+- **Total Asersi**: **1150 asersi**
+- **Durasi Eksekusi**: ~10.3 detik
 - **Kepatuhan Format Kode (Pint)**: **PASSED (0 issues)** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 advisories** (`composer audit`)
-- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 99.95 kB, JS 1.72 kB)
+- **Audit Dependensi NPM Produksi**: **0 vulnerabilities** (`npm.cmd audit --omit=dev`)
+- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 93.10 kB, JS 1.72 kB)
 
-### Rincian Suite Pengujian Tambahan Fase 10.1:
-1. **Admin Dashboard Feature Suite** (`tests/Feature/Admin/AdminDashboardTest.php`):
-   - 12 pengujian fitur dasbor administratif lulus dengan 44 asersi (akses admin/superadmin, proteksi unauthorized/guest/applicant, kalkulasi agregasi data nyata, isolasi pendaftar periode lampau, 5 submisi teranyar, penanganan periode nihil, proteksi data pribadi NIK, dan redirect navigasi modul mendatang).
+### Rincian Suite Pengujian Tambahan Fase 10.2:
+1. **Fonnte OTP Delivery Suite** (`tests/Feature/Auth/FonnteOtpDeliveryTest.php`):
+   - 20 pengujian gateway WhatsApp Fonnte lulus dengan 41 asersi (aktivasi akun, reset password, normalisasi format nomor, header Authorization tanpa Bearer, validasi status boolean/string, penanganan token invalid/nomor invalid/device disconnected/kuota habis/timeout/non-JSON, verifikasi log steril tanpa OTP/token, penegakan rate limit, expiry 5 menit, batas 5 percobaan, dan isolasi driver array/log).
 
 ---
 
@@ -59,6 +60,7 @@
 | 9 | **Hostinger Staging Deployment & UAT** | Pemeriksaan Hostinger, paket deploy staging, skema MySQL bersih, panduan Hostinger & aaPanel, lembar hasil UAT | **SELESAI** | Paket ZIP 23.9MB steril, skema `schema_clean.sql`, panduan `HOSTINGER-STAGING-GUIDE.md` & `AAPANEL-PRODUCTION-GUIDE.md` selesai; siap uji fisik |
 | 10 | **Operational Docs, User Manual & SOP** | 12 buku panduan operasional (Orang Tua, Admin, Superadmin, Matriks Hak Akses, SOP Panitia, FAQ, Pedoman Privasi, Glosarium, Analisis Gap, Briefing, Quick Guide) | **SELESAI** | 12 dokumen operasional di `docs/manual/`, 100% tervalidasi terhadap kode aktual repositori, nol perubahan kode aplikasi |
 | 10.1 | **Admin Dashboard Real Data & Resilient Navigation** | Controller dashboard data riil, UI dashboard informatif (5 metrik, hero periode, tabel pendaftar terbaru, quick actions), sidebar aman bebas 404 | **SELESAI** | `AdminDashboardController` + Blade view riil, 12 feature tests baru, 215 tests passed, 0 failed, Pint & Vite compliant |
+| 10.2 | **Integrasi Gateway WhatsApp Fonnte API** | Driver `FonnteOtpDelivery`, normalisasi nomor Indonesia, validasi status Fonnte, penanganan error/timeout, template aktivasi & pemulihan, 20 test cases otomatis | **SELESAI SECARA TEKNIS** | 235 tests passed (100%), 1150 assertions, panduan operasional `FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`, siap uji manual pemilik proyek |
 
 ---
 

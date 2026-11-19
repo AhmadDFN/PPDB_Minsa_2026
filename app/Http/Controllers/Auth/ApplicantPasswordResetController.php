@@ -81,11 +81,15 @@ class ApplicantPasswordResetController extends Controller
         }
 
         // Issue password reset OTP
-        $otpService->generateAndSend($user, OtpPurpose::PASSWORD_RESET);
-        session(['password_reset_user_id' => $user->id]);
+        try {
+            $otpService->generateAndSend($user, OtpPurpose::PASSWORD_RESET);
+            session(['password_reset_user_id' => $user->id]);
 
-        return redirect()->route('password.reset.verify.form')
-            ->with('success', $genericMessage);
+            return redirect()->route('password.reset.verify.form')
+                ->with('success', $genericMessage);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
