@@ -21,7 +21,7 @@ class AdminLoginController extends Controller
         if (Auth::guard('web')->check()) {
             $user = Auth::guard('web')->user();
             if ($user->isAdmin()) {
-                return redirect()->route('admin.preview');
+                return redirect()->route('admin.dashboard');
             }
 
             return redirect()->route('applicant.dashboard');
@@ -54,6 +54,6 @@ class AdminLoginController extends Controller
         // Prevent session fixation
         $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.preview'));
+        return redirect()->intended(route('admin.dashboard'));
     }
 }

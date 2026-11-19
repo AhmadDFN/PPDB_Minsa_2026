@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Applicant\DashboardController;
 use App\Http\Controllers\Applicant\DocumentController;
@@ -48,7 +49,7 @@ require __DIR__.'/auth.php';
 // Generic authenticated dashboard redirector
 Route::middleware(['auth', 'active'])->get('/dashboard', function () {
     if (auth()->user()->isAdmin()) {
-        return redirect()->route('admin.preview');
+        return redirect()->route('admin.dashboard');
     }
 
     return redirect()->route('applicant.dashboard');
@@ -95,13 +96,17 @@ Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('a
 
 // Protected Administrator Area
 Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    });
+
     Route::get('/preview', function () {
         return view('admin.preview');
     })->name('preview');
 
-    Route::get('/dashboard', function () {
-        return view('admin.preview');
-    })->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+        ->middleware('can:view_dashboard')
+        ->name('dashboard');
 
     Route::middleware('can:reopen_registration')->group(function () {
         Route::get('/registrations', [RegistrationReopenController::class, 'index'])->name('registrations.index');
@@ -109,4 +114,21 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::post('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'store'])->name('registrations.reopen.store');
         Route::post('/registration-reopen-windows/{reopenWindow}/close', [RegistrationReopenController::class, 'close'])->name('registrations.reopen.close');
     });
+
+    // Fallback handler for upcoming modules to prevent 404 during navigation testing
+    Route::get('/{module}', function (string $module) {
+        $moduleNames = [
+            'pendaftar' => 'Data Pendaftar',
+            'dokumen' => 'Verifikasi Berkas',
+            'periode' => 'Periode Pendaftaran',
+            'program' => 'Program MI',
+            'laporan' => 'Laporan & Ekspor',
+            'pengguna' => 'Manajemen Pengguna',
+        ];
+
+        $name = $moduleNames[$module] ?? ucfirst($module);
+
+        return redirect()->route('admin.dashboard')
+            ->with('warning', "Modul {$name} dijadwalkan pada fase pengembangan berikutnya.");
+    })->where('module', 'pendaftar|dokumen|periode|program|laporan|pengguna');
 });

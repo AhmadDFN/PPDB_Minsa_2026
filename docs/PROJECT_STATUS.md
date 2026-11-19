@@ -12,39 +12,33 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 10 — OPERATIONAL DOCUMENTATION, USER MANUAL & ADMIN SOP** |
-| **Status Teknis Fase 10** | **SELESAI (100% ARTEFAK DOKUMENTASI, USER MANUAL, SOP & GAP ANALYSIS TERBIT)** |
+| **Fase Berjalan Saat Ini** | **FASE 10.1 — ADMIN DASHBOARD REAL DATA & NAVIGATION RESILIENCE** |
+| **Status Teknis Fase 10.1** | **SELESAI (100% CONTROLLER, VIEW DASHBOARD REAL DATA, SIDEBAR AMAN & 12 TESTS PASSED)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
 | **Status Lingkungan Staging** | **READY (Paket ZIP bersih deploy_minsatama_hostinger_clean.zip 23.9MB siap)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Gerbang Produksi (Logo/Alamat)** | **PENDING OWNER ACTION (MENUNGGU SUMBER RESMI LOGO & ALAMAT)** |
-| **Commit Baseline Sebelum Fase 10** | `03ebefc` (`deploy(phase-9): prepare Hostinger staging deployment, UAT results, and aaPanel production runbook`) |
+| **Commit Baseline Sebelum Fase 10.1** | `42b809d` (`docs(phase-10): add applicant admin manuals and operational SOP`) |
 
 ---
 
-## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 8)
+## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.1)
 
 - **Perintah Pengujian**: `php artisan test`
 - **Waktu Eksekusi**: 19 November 2026
-- **Total Pengujian**: **203 pengujian**
-- **Lulus (Passed)**: **203 pengujian (100%)**
+- **Total Pengujian**: **215 pengujian**
+- **Lulus (Passed)**: **215 pengujian (100%)**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **0 pengujian**
-- **Total Asersi**: **1065 asersi**
-- **Durasi Eksekusi**: ~8.4 detik
+- **Total Asersi**: **1109 asersi**
+- **Durasi Eksekusi**: ~8.8 detik
 - **Kepatuhan Format Kode (Pint)**: **PASSED (0 issues)** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 advisories** (`composer audit`)
-- **Audit Dependensi NPM Produksi**: **0 vulnerabilities** (`npm.cmd audit --omit=dev`)
-- **Audit Dependensi NPM Penuh**: **0 vulnerabilities** (`npm.cmd audit`)
-- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 95.99 kB, JS 1.72 kB)
+- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 99.95 kB, JS 1.72 kB)
 
-### Rincian Suite Pengujian Tambahan Fase 8:
-1. **End-to-End Integration Suite** (`tests/Feature/Integration/EndToEndRegistrationIntegrationTest.php`):
-   - 7 pengujian skenario menyeluruh (Scenario 1 hingga 7) lulus dengan 121 asersi.
-2. **Performance & Benchmark Suite** (`tests/Feature/Performance/PerformanceAndBenchmarkTest.php`):
-   - 3 pengujian performa lulus (N+1 query bounded <= 30 kueri, PDF memory & DejaVu font render, uji beban sintetis error rate 0.0%, 10 asersi).
-3. **MySQL/MariaDB Integration Suite** (`tests/Feature/Database/MySqlSchemaCompatibilityTest.php` & `MySqlRegistrationConcurrencyTest.php`):
-   - 10 pengujian fisik pada MariaDB 10.4.32/InnoDB lulus dengan 122 asersi, termasuk verifikasi skema tabel Phase 7 (`registration_pdf_versions` columns & unique index).
+### Rincian Suite Pengujian Tambahan Fase 10.1:
+1. **Admin Dashboard Feature Suite** (`tests/Feature/Admin/AdminDashboardTest.php`):
+   - 12 pengujian fitur dasbor administratif lulus dengan 44 asersi (akses admin/superadmin, proteksi unauthorized/guest/applicant, kalkulasi agregasi data nyata, isolasi pendaftar periode lampau, 5 submisi teranyar, penanganan periode nihil, proteksi data pribadi NIK, dan redirect navigasi modul mendatang).
 
 ---
 
@@ -64,6 +58,7 @@
 | 8 | **Integrasi Sistem, UAT & Kesiapan Produksi** | End-to-end testing (7 skenario), audit keamanan menyeluruh, UAT test plan, performa/benchmark, checklist produksi, panduan backup/restore | **SELESAI** | 203 tes lulus (100%); dokumen UAT, checklist produksi, panduan deployment & backup selesai |
 | 9 | **Hostinger Staging Deployment & UAT** | Pemeriksaan Hostinger, paket deploy staging, skema MySQL bersih, panduan Hostinger & aaPanel, lembar hasil UAT | **SELESAI** | Paket ZIP 23.9MB steril, skema `schema_clean.sql`, panduan `HOSTINGER-STAGING-GUIDE.md` & `AAPANEL-PRODUCTION-GUIDE.md` selesai; siap uji fisik |
 | 10 | **Operational Docs, User Manual & SOP** | 12 buku panduan operasional (Orang Tua, Admin, Superadmin, Matriks Hak Akses, SOP Panitia, FAQ, Pedoman Privasi, Glosarium, Analisis Gap, Briefing, Quick Guide) | **SELESAI** | 12 dokumen operasional di `docs/manual/`, 100% tervalidasi terhadap kode aktual repositori, nol perubahan kode aplikasi |
+| 10.1 | **Admin Dashboard Real Data & Resilient Navigation** | Controller dashboard data riil, UI dashboard informatif (5 metrik, hero periode, tabel pendaftar terbaru, quick actions), sidebar aman bebas 404 | **SELESAI** | `AdminDashboardController` + Blade view riil, 12 feature tests baru, 215 tests passed, 0 failed, Pint & Vite compliant |
 
 ---
 

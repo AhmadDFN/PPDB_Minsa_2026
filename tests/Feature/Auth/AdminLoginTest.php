@@ -47,7 +47,7 @@ class AdminLoginTest extends TestCase
             'password' => 'AdminPPDB2026!',
         ]);
 
-        $response->assertRedirect(route('admin.preview'));
+        $response->assertRedirect(route('admin.dashboard'));
         $this->assertAuthenticatedAs($admin, 'web');
     }
 

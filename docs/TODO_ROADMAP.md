@@ -152,6 +152,18 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10: SELESAI (100% ARTEFAK DOKUMENTASI TERSEDIA & TERVALIDASI).** Nol modifikasi pada kode sumber aplikasi. Dokumen operasional siap dipakai untuk pelatihan panitia dan sosialisasi orang tua.
 
+### Fase 10.1 — Admin Dashboard Real Data & Navigasi Bebas 404
+- [x] **[P0 - Kritis] Controller Admin Dashboard Data Riil**:
+  - *Deskripsi*: Membuat `app/Http/Controllers/Admin/AdminDashboardController.php` dengan kueri agregasi optimal (2 kueri ringkas), pemisahan data periode aktif vs lampau, 5 pendaftar terbaru terkirim dengan eager loading, dan penanganan status periode kosong (*graceful empty state*).
+- [x] **[P1 - Tinggi] Antarmuka Blade Admin Dashboard Profesional**:
+  - *Deskripsi*: Membangun `resources/views/admin/dashboard.blade.php` beridentitas visual Minsatama (#0F7FA3, #0B6E3F, #F2C94C), hero banner periode aktif dengan countdown waktu, 5 kartu metrik riil (Total, Terkirim, Draf, Reguler, Unggulan), tabel 5 pendaftar terbaru tanpa paparan NIK/PII, kartu aksi cepat (*Buka Ulang Pendaftaran* & *Portal Publik*), serta status sistem/petugas login.
+- [x] **[P1 - Tinggi] Penanganan Navigasi Sidebar Bebas Error 404**:
+  - *Deskripsi*: Memperbarui `resources/views/components/navigation/admin-sidebar.blade.php` agar menu yang rutenya belum diimplementasikan (`Data Pendaftar`, `Verifikasi Berkas`, `Periode`, `Program`, `Laporan`, `Pengguna`) memiliki badge "Segera" dan tidak melempar error `404 | Not Found`. Menambahkan route fallback di `routes/web.php` yang mengarahkan URL modul mendatang kembali ke dashboard dengan notifikasi informatif.
+- [x] **[P0 - Kritis] Suite Pengujian Fitur Dasbor Admin**:
+  - *Deskripsi*: `tests/Feature/Admin/AdminDashboardTest.php` memverifikasi 12 skenario pengujian (otorisasi role/permission, kalkulasi agregat riil, isolasi periode lampau, 5 submisi teranyar, empty state, proteksi kerahasiaan NIK, dan redirect navigasi aman). 12 tes lulus dengan 44 asersi.
+
+**Status Fase 10.1: SELESAI (100% TERUJI, BEBAS 404 & TERHUBUNG DATA AKTUAL).** 215 tests passed, 1109 assertions. Code style Pint 100% compliant. Vite asset compilation sukses.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)
