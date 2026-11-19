@@ -156,3 +156,16 @@ npm audit
   - `docs(status): update Phase 3 completion report`
   - `test(database): add constraint verification test`
 - Selalu pastikan branch bersih dan sinkron sebelum memulai fase baru.
+
+---
+
+## 9. PANDUAN DEPLOYMENT & LINGKUNGAN HOSTING
+
+Untuk instruksi rinci deployment aplikasi ke lingkungan server:
+1. **Lingkungan Staging (Hostinger)**:
+   - Baca [docs/deployment/HOSTINGER-STAGING-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/HOSTINGER-STAGING-GUIDE.md).
+   - Target preview: `https://sleek-forestgreen-mink-13.hostingersite.com`.
+2. **Lingkungan Produksi (VPS Mandiri dengan aaPanel)**:
+   - Baca [docs/deployment/AAPANEL-PRODUCTION-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/AAPANEL-PRODUCTION-GUIDE.md).
+   - Arsitektur: Ubuntu Linux, Nginx FastCGI, PHP 8.3 FPM, MariaDB 10.11/MySQL 8, Redis, Supervisor, Let's Encrypt SSL.
+   - **PERINGATAN**: Dilarang melakukan deployment produksi sebelum persetujuan resmi Go-Live dari Pemilik Proyek.

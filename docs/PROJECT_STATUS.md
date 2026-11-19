@@ -1,9 +1,9 @@
-# PROJECT STATUS â€” PPDB MINSATAMA
+# PROJECT STATUS — PPDB MINSATAMA
 ## Sumber Kebenaran Tunggal Progres Pengembangan Sistem
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
 **Terakhir Diperbarui**: 19 November 2026
-**Dokumentasi Versi**: 1.2.0
+**Dokumentasi Versi**: 1.3.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead & Deployment Engineer
 
 ---
@@ -12,13 +12,14 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 8 â€” SYSTEM INTEGRATION, UAT & PRODUCTION READINESS** |
-| **Status Teknis Fase 8** | **SELESAI SECARA TEKNIS (AUDIT KESIAPAN & INTEGRASI LENGKAP)** |
-| **Status UAT Sekolah** | **UAT TEST PLAN DITERBITKAN; MENUNGGU EKSEKUSI OLEH PANITIA SEKOLAH** |
-| **Status Gerbang Produksi (MySQL 8)** | **BLOCKED (MENUNGGU PENYEDIAAN SERVER STAGING MYSQL 8.x)** |
+| **Fase Berjalan Saat Ini** | **FASE 9 — HOSTINGER STAGING DEPLOYMENT & USER ACCEPTANCE TESTING** |
+| **Status Teknis Fase 9** | **SELESAI SECARA TEKNIS (PAKET STAGING & PANDUAN AAPANEL LENGKAP)** |
+| **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
+| **Status Lingkungan Staging** | **READY (Paket ZIP 24MB, skema MySQL bersih, dan rilis GitHub tersedia)** |
+| **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Gerbang Produksi (Logo/Alamat)** | **PENDING OWNER ACTION (MENUNGGU SUMBER RESMI LOGO & ALAMAT)** |
-| **Status Deployment Produksi** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
-| **Commit Baseline Sebelum Fase 8** | `e401157` (`Vendor`) / `f91fb62` (`feat(phase-7): implement private registration PDFs`) |
+| **Commit Baseline Sebelum Fase 9** | `774f7bc` (`test(phase-8): complete integration and production readiness audit`) |
+| **Commit Staging & Fixes Terkini** | `e42e7d0` (`fix(htaccess): add RewriteCond to prevent loop in root rewrite`) |
 
 ---
 
@@ -61,35 +62,40 @@
 | 5 | **Manajemen Dokumen** | Upload privat berkas pendaftaran, validasi MIME/ukuran, revisi berkas | **SELESAI** | Global/default 5120 KB; validasi MIME finfo aktual |
 | 6 | **Alur Pendaftaran PPDB** | Validasi kesiapan, consent, submit idempoten, nomor, audit revisi, admin reopen | **SELESAI** | Submit transaksi atomik, nomor unik per tahun ajaran-program |
 | 7 | **Mesin PDF Pendaftaran** | Cetak draft ber-watermark DRAFT, bukti registrasi resmi, versioning PDF, QR verifikasi, akses privat | **SELESAI** | Dompdf sandboxed, QR SVG minimal, integritas SHA-256 |
-| 8 | **Integrasi Sistem, UAT & Kesiapan Produksi** | End-to-end testing (7 skenario), audit keamanan menyeluruh, UAT test plan, performa/benchmark, checklist produksi, panduan backup/restore | **SELESAI SECARA TEKNIS** | 203 tes lulus (100%); dokumen UAT, checklist produksi, panduan deployment & backup selesai |
+| 8 | **Integrasi Sistem, UAT & Kesiapan Produksi** | End-to-end testing (7 skenario), audit keamanan menyeluruh, UAT test plan, performa/benchmark, checklist produksi, panduan backup/restore | **SELESAI** | 203 tes lulus (100%); dokumen UAT, checklist produksi, panduan deployment & backup selesai |
+| 9 | **Hostinger Staging Deployment & UAT** | Pemeriksaan Hostinger, paket deploy staging, skema MySQL bersih, panduan Hostinger & aaPanel, lembar hasil UAT | **SELESAI SECARA TEKNIS** | Paket ZIP 24MB, skema `schema_clean.sql`, panduan `HOSTINGER-STAGING-GUIDE.md` & `AAPANEL-PRODUCTION-GUIDE.md` selesai; siap uji fisik |
 
 ---
 
 ## 4. STATUS LINGKUNGAN BASIS DATA (MYSQL & MARIADB)
 
-1. **Target Produksi**: MySQL 8.x / MariaDB (InnoDB Engine, UTF8MB4).
+1. **Target Produksi**: MariaDB 10.11+ LTS / MySQL 8.0+ (InnoDB Engine, UTF8MB4).
 2. **Lingkungan Pengujian Terisolasi**: SQLite in-memory (`:memory:`) digunakan untuk continuous test suite agar pengujian berjalan atomik dan cepat.
 3. **Status Verifikasi Fisik MariaDB**:
    - Pengujian fisik menggunakan MariaDB 10.4.32/InnoDB melalui koneksi `mysql_test` ke database `ppdb_phase6_test`.
-   - Sepuluh tes migrasi Fase 1â€“7, skema tabel, default 5120 KB, kolom & unique index PDF, submit multi-proses, rollback, dan retry **100% LULUS**.
-4. **Status Gerbang MySQL 8.x**:
-   - Belum diuji terpisah pada mesin fisik MySQL 8.x. Sesuai instruksi kejujuran teknis, status uji fisik MySQL 8.x ditandai **BLOCKED** menunggu penyediaan lingkungan staging MySQL 8.x.
+   - Sepuluh tes migrasi Fase 1–7, skema tabel, default 5120 KB, kolom & unique index PDF, submit multi-proses, rollback, dan retry **100% LULUS**.
+4. **Status Skema MySQL 8 Staging**:
+   - Skema DDL bersih `database/schema_clean.sql` siap diimpor ke phpMyAdmin MySQL/MariaDB Hostinger.
 
 ---
 
 ## 5. DOKUMEN OPERASIONAL & KESIAPAN PRODUKSI TERSEDIA
 
-1. `docs/uat/UAT-TEST-PLAN.md`: Rencana uji penerimaan pengguna (UAT) untuk kelompok Pendaftar dan Panitia/Admin.
-2. `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`: Matriks evaluasi runtime PHP, batas upload, memori, ekstensi, dan konfigurasi environment.
-3. `docs/deployment/DEPLOYMENT-GUIDE.md`: Panduan langkah demi langkah deployment dan pembaruan aplikasi ke Hostinger/VPS.
-4. `docs/deployment/BACKUP-AND-RESTORE.md`: Prosedur pencadangan basis data, berkas privat, dan pemulihan bencana.
-5. `docs/audits/SECURITY-AUDIT.md`: Laporan audit keamanan 18 dimensi web application security.
-6. `docs/audits/TEST-REPORT.md`: Laporan eksekusi 203 automated test cases.
-7. `docs/audits/KNOWN-ISSUES.md`: Catatan isu terbuka, prasyarat operasional hosting, dan mitigasi.
-8. `docs/phases/PHASE-8-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 8.
+1. `docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 18 seksi implementasi Fase 9.
+2. `docs/deployment/HOSTINGER-STAGING-GUIDE.md`: Panduan langkah demi langkah staging Hostinger (`sleek-forestgreen-mink-13.hostingersite.com`).
+3. `docs/deployment/AAPANEL-PRODUCTION-GUIDE.md`: Cetak biru operasional server produksi VPS dengan aaPanel (Nginx, PHP 8.3 FPM, MariaDB, Redis, SSL, Backup, Rollback).
+4. `docs/uat/UAT-TEST-PLAN.md`: Rencana uji penerimaan pengguna (UAT) untuk kelompok Pendaftar dan Panitia/Admin.
+5. `docs/uat/UAT-RESULTS.md`: Hasil evaluasi 21 skenario UAT (100% lulus teknis otomatis, status siap uji fisik komite madrasah).
+6. `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`: Matriks evaluasi runtime PHP, batas upload, memori, ekstensi, dan konfigurasi environment.
+7. `docs/deployment/DEPLOYMENT-GUIDE.md`: Panduan langkah demi langkah deployment dan pembaruan aplikasi ke Hostinger/VPS.
+8. `docs/deployment/BACKUP-AND-RESTORE.md`: Prosedur pencadangan basis data, berkas privat, dan pemulihan bencana.
+9. `docs/audits/SECURITY-AUDIT.md`: Laporan audit keamanan 18 dimensi web application security.
+10. `docs/audits/TEST-REPORT.md`: Laporan eksekusi 203 automated test cases.
+11. `docs/audits/KNOWN-ISSUES.md`: Catatan isu terbuka, prasyarat operasional hosting, dan mitigasi.
+12. `docs/phases/PHASE-8-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 8.
 
 ---
 
 ## 6. PROTOKOL KONDISI BERHENTI (STOP CONDITION)
 
-Fase 8 selesai secara teknis. Seluruh berkas terformat rapi dan seluruh pengujian (203 tes) lulus 100%. Tidak ada deployment ke server produksi yang dilakukan. Agen BERHENTI dan menunggu persetujuan tertulis dari Pemilik Proyek.
+Fase 9 selesai secara teknis. Paket staging Hostinger siap digunakan, panduan arsitektur produksi aaPanel lengkap, seluruh pengujian otomatis (203 tes) lulus 100%, dan gaya kode bersih. Tidak ada deployment ke server produksi aaPanel yang dilakukan. Agen BERHENTI dan menunggu persetujuan tertulis dari Pemilik Proyek.

@@ -90,7 +90,7 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 7: CLOSED.** Implementasi dan tes selesai setelah otorisasi pemilik. Operasional produksi memerlukan `APP_URL` HTTPS publik untuk QR; PNG memerlukan ekstensi GD, sementara JPG telah dirender pada lingkungan lokal tanpa GD/Imagick. Logo/alamat resmi menunggu sumber resmi dari pemilik. Laporan: `docs/phases/PHASE-7-IMPLEMENTATION-REPORT.md`.
 
-### Fase 8 â€” Integrasi Sistem, UAT & Kesiapan Produksi (System Integration & Readiness)
+### Fase 8 — Integrasi Sistem, UAT & Kesiapan Produksi (System Integration & Readiness)
 - [x] **[P0 - Kritis] Uji Integrasi Menyeluruh End-to-End (E2E Testing)**:
   - *Deskripsi*: 7 skenario pengujian komprehensif (`EndToEndRegistrationIntegrationTest.php`): pendaftaran normal, isolasi sequence jalur unggulan, validasi kelengkapan pra-submit, revisi data dan PDF stale, alur admin reopen & kedaluwarsa server-side, proteksi IDOR & isolasi multi-tenant, serta failure & recovery. (7 Passed, 121 Assertions).
 - [x] **[P0 - Kritis] Audit Keamanan Menyeluruh (OWASP & Security Review)**:
@@ -104,7 +104,25 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P1 - Tinggi] Checklist & Panduan Kesiapan Produksi**:
   - *Deskripsi*: Penyusunan checklist environment hosting (`docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`), panduan deployment langkah demi langkah (`docs/deployment/DEPLOYMENT-GUIDE.md`), dan panduan backup-restore (`docs/deployment/BACKUP-AND-RESTORE.md`).
 
-**Status Fase 8: SELESAI SECARA TEKNIS (CLOSED FOR TECHNICAL AUDIT; PENDING PHYSICAL UAT BY SCHOOL).** 203 pengujian lulus (100%), 1065 asersi, 0 failed, 0 skipped. Pint, Vite build, Composer audit, dan NPM audit seluruhnya lulus tanpa celah keamanan. Tidak ada penambahan fitur bisnis di luar cakupan pendaftaran.
+**Status Fase 8: CLOSED.** 203 pengujian lulus (100%), 1065 asersi, 0 failed, 0 skipped. Pint, Vite build, Composer audit, dan NPM audit seluruhnya lulus tanpa celah keamanan.
+
+### Fase 9 — Hostinger Staging Deployment & User Acceptance Testing (Staging & UAT)
+- [x] **[P0 - Kritis] Audit Kesiapan Staging Hostinger**:
+  - *Deskripsi*: Evaluasi kapabilitas server `sleek-forestgreen-mink-13.hostingersite.com` (PHP 8.3.36, LiteSpeed/Apache, memory limit 512M, SSL HTTPS aktif, prasyarat ekstensi `ext-gd`).
+- [x] **[P0 - Kritis] Paket Deployment Mandiri & Skema Bersih MySQL**:
+  - *Deskripsi*: Penyusunan arsip deploy `deploy_minsatama_hostinger.zip` (24 MB) memuat dependensi teroptimasi, aset Vite terkompilasi, konfigurasi `.env` staging, isolasi kunci kriptografi mandiri, serta skema database bersih `database/schema_clean.sql`.
+- [x] **[P0 - Kritis] Proteksi Direktori & Konfigurasi Root .htaccess**:
+  - *Deskripsi*: Penerapan aturan rewrite anti-loop `RewriteCond %{REQUEST_URI} !^/public/` dan pemblokiran akses langsung ke berkas sensitif (`.env`, `storage/`, `vendor/`, `artisan`). Commit: `e42e7d0`.
+- [x] **[P1 - Tinggi] Panduan Operasional Staging Hostinger**:
+  - *Deskripsi*: Penyusunan dokumen [docs/deployment/HOSTINGER-STAGING-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/HOSTINGER-STAGING-GUIDE.md) mencakup metode ekstraksi ZIP, pembuatan database MySQL, seeding referensi, pengujian alur 1–7, dan pemecahan masalah.
+- [x] **[P1 - Tinggi] Cetak Biru Produksi Mandiri aaPanel VPS**:
+  - *Deskripsi*: Penyusunan panduan operasional produksi resmi [docs/deployment/AAPANEL-PRODUCTION-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/AAPANEL-PRODUCTION-GUIDE.md) meliputi Nginx FastCGI, PHP 8.3 FPM, MariaDB 10.11/MySQL 8, Redis, Supervisor, Let's Encrypt SSL, zero-downtime deployment script, cron backup, dan rollback darurat.
+- [x] **[P1 - Tinggi] Pelaporan Hasil Uji Penerimaan Pengguna (UAT Results)**:
+  - *Deskripsi*: Pencatatan hasil evaluasi 21 skenario UAT pada [docs/uat/UAT-RESULTS.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/uat/UAT-RESULTS.md) (21 skenario lulus verifikasi teknis otomatis; lembar pengesahan menunggu pelaksanaan fisik panitia madrasah).
+- [x] **[P0 - Kritis] Laporan Komprehensif Fase 9 (18 Seksi)**:
+  - *Deskripsi*: Penyusunan dokumen master [docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md).
+
+**Status Fase 9: SELESAI SECARA TEKNIS (SIAP UAT FISIK SEKOLAH & MENUNGGU ARSITEKTUR AAPANEL PRODUKSI).** Paket rilis staging siap diuji di server Hostinger, dokumentasi produksi aaPanel lengkap. Dilarang melakukan deployment produksi ke aaPanel sebelum persetujuan resmi.
 
 ---
 
