@@ -7,6 +7,7 @@
 
     <title>{{ isset($title) ? $title . ' — ' : '' }}Admin PPDB — {{ config('app.name') }}</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-minsatama.png') }}">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     @fonts
@@ -33,8 +34,8 @@
 
                 {{-- Brand Header / Title --}}
                 <a href="{{ url('/admin') }}" class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-primary-600 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-xs">
-                        <span>M1</span>
+                    <div class="w-8 h-8 shrink-0 flex items-center justify-center">
+                        <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain">
                     </div>
                     <div class="hidden sm:flex flex-col">
                         <span class="text-sm font-bold text-gray-900 leading-tight">PPDB Minsatama</span>
