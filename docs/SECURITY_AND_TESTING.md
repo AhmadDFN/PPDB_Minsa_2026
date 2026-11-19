@@ -1,4 +1,4 @@
-# SECURITY & TESTING STRATEGY — PPDB MINSATAMA
+# SECURITY & TESTING STRATEGY â€” PPDB MINSATAMA
 ## Kerangka Kerja Keamanan Aplikasi, Model Ancaman, dan Strategi Pengujian
 
 ---
@@ -98,7 +98,7 @@ Sistem menggunakan piramida pengujian berlapis:
 ### Konfigurasi Consent Submit
 
 - Format resmi nomor: `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`; kode yang diizinkan `REGULER` dan `UNGGULAN`.
-- Consent resmi versi `v1.0`: “Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.” Nilai versi dan teks disimpan bersama pendaftaran.
+- Consent resmi versi `v1.0`: â€œSaya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.â€ Nilai versi dan teks disimpan bersama pendaftaran.
 - Konfigurasi consent kosong tetap menyebabkan submit gagal tertutup; `config/ppdb.php` tidak menyediakan fallback untuk `APP_ENV=production`.
 - `.env.example` menggunakan placeholder kosong untuk `PPDB_CONSENT_VERSION` dan `PPDB_CONSENT_STATEMENT`; konfigurasi produksi harus diisi sesuai redaksi yang disahkan.
 
@@ -117,6 +117,17 @@ Sistem menggunakan piramida pengujian berlapis:
 - Tes PDF terarah: 13 passed, 101 assertions. Suite lengkap SQLite: 192 passed, 0 failed, 0 skipped, 924 assertions. Migration Fase 7 belum diuji fisik pada MySQL 8.
 - Dompdf dapat merender foto JPG pada lingkungan lokal tanpa GD/Imagick. Foto PNG memerlukan ekstensi PHP GD; tanpa GD sistem mengembalikan pesan validasi yang menyarankan mengaktifkan GD atau menggunakan JPG.
 - Pada production, `APP_URL` harus HTTPS publik agar QR final berisi URL verifikasi yang dapat digunakan.
+
+7. **Integration Tests End-to-End (`tests/Feature/Integration/EndToEndRegistrationIntegrationTest.php`)**:
+   - Menguji 7 skenario siklus hidup lengkap pendaftaran: pembuatan akun hingga cetak PDF final & verifikasi QR (Scenario 1), isolasi sequence Program Unggulan (Scenario 2), penolakan pengiriman berkas belum lengkap (Scenario 3), perubahan data dan staleness PDF final (Scenario 4), admin reopen & kedaluwarsa server-side (Scenario 5), isolasi kepemilikan data multi-tenant (Scenario 6), serta penanganan kegagalan & pemulihan transaksi (Scenario 7). (7 passed, 121 assertions).
+8. **Performance & Benchmark Tests (`tests/Feature/Performance/PerformanceAndBenchmarkTest.php`)**:
+   - Pengujian batas query N+1 pada dasbor (bounded <= 30 kueri), profil konsumsi memori dan ukuran berkas PDF Dompdf dengan penanaman subset DejaVu Sans, serta uji beban sintetis error rate 0.0% (3 passed, 10 assertions).
+
+### Status Kematangan Pengujian Fase 8
+
+- **Regresi Keseluruhan**: **203 tes lulus (100%), 0 gagal, 0 dilewati, 1065 asersi**.
+- **Audit Dependensi**: `composer audit` 0 advisories, `npm.cmd audit` 0 vulnerabilities, `npm.cmd audit --omit=dev` 0 vulnerabilities.
+- **Basis Data Fisik**: 10 tes skema, foreign keys, indeks, ukuran default 5120 KB, kolom tabel PDF Phase 7, dan konkurensi multi-proses transaksi InnoDB `SELECT ... FOR UPDATE` lulus pada MariaDB 10.4.32. Gerbang fisik MySQL 8.x ditandai BLOCKED menunggu server staging MySQL 8.
 
 ---
 

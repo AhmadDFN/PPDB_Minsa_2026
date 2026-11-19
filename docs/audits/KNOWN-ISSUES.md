@@ -1,107 +1,78 @@
-# KNOWN ISSUES & LIMITATIONS — PPDB MINSATAMA
+# KNOWN ISSUES & LIMITATIONS â€” PPDB MINSATAMA
 ## Catatan Kendala, Batasan Lingkungan, dan Rencana Mitigasi
-
-**Terakhir Ditinjau**: 18 November 2026
+### Terakhir Ditinjau: 19 November 2026 (Fase 8)
 
 ---
 
 ## 1. DAFTAR ISU & BATASAN SAAT INI
 
-### 1.1 Enam Temuan NPM High pada Rantai `picomatch`
-- **Status**: TERBUKA (MENUNGGU PATCH UPSTREAM)
-- **Tingkat Keparahan**: High pada advisory; paket yang terpasang merupakan dependency build/development.
-- **Deskripsi**:
-  `npm audit --json` melaporkan `GHSA-fc5q-39xc-vjpf` / `CVE-2026-112366` melalui `picomatch`, `fdir`, `tinyglobby`, `vite-plugin-full-reload`, `laravel-vite-plugin`, dan `vite`. GitHub Advisory saat diperiksa belum menetapkan versi patched. NPM dry-run menyarankan downgrade lintas major Vite/plugin, sehingga tidak diterapkan.
-- **Mitigasi**:
-  Jangan gunakan `npm audit fix --force`; periksa advisory dan kompatibilitas setelah patch tersedia. Hindari build dari konfigurasi/glob yang dikendalikan pengguna tak tepercaya.
+### 1.1 Status Dependensi NPM (picomatch advisory)
+- **Status**: TERSELESAIKAN (RESOLVED)
+- **Tingkat Keparahan**: Tidak ada (Clean)
+- **Verifikasi**:
+  Eksekusi `npm.cmd audit` dan `npm.cmd audit --omit=dev` pada 19 November 2026 menghasilkan **0 vulnerabilities**. Seluruh rantai dependensi build dan runtime dinyatakan bersih dari kerentanan.
 
-### 1.2 Batasan Verifikasi Database Produksi
-- **Status**: TERBUKA — MySQL 8.x BELUM DIUJI TERPISAH
+### 1.2 Batasan Verifikasi Fisik Database Produksi (MySQL 8.x)
+- **Status**: **BLOCKED (MENUNGGU PENYEDIAAN SERVER STAGING MYSQL 8.x)**
+- **Tingkat Keparahan**: Kepatuhan Operasional Produksi
 - **Deskripsi**:
-  Sembilan tes migrasi/backfill counter, skema, default 5120 KB, submit konkuren, rollback, dan retry lulus pada MariaDB 10.4.32/InnoDB menggunakan database disposable `ppdb_phase6_test`. Migration metadata PDF Fase 7 baru dijalankan pada SQLite in-memory. Hasil MariaDB tersebut tidak diklaim sebagai verifikasi fisik MySQL 8.x.
-- **Mitigasi**:
-  Jalankan suite yang sama terhadap versi MySQL produksi sebelum rilis. Jangan arahkan tes ke database produksi atau data pendaftar.
+  Pengujian fisik basis data pada Fase 6â€“8 dijalankan menggunakan server lokal MariaDB 10.4.32/InnoDB (`ppdb_phase6_test` pada `127.0.0.1:3306`), dengan 10 tes skema, migrasi Fase 1â€“7, indeks unik, foreign keys, ukuran default 5120 KB, dan submit konkuren multi-proses seluruhnya **LULUS (10 Passed, 122 Assertions)**.
+  Namun, mesin fisik lokal tidak menjalankan instance MySQL 8.x terpisah. Berdasarkan protokol kejujuran teknis, pengembang **tidak mengklaim** bahwa MySQL 8.x telah diuji secara fisik. Gerbang pengujian fisik MySQL 8.x ditandai `BLOCKED`.
+- **Rencana Mitigasi**:
+  Prosedur deployment dan verifikasi migrasi telah disiapkan pada `docs/deployment/DEPLOYMENT-GUIDE.md`. Sebelum peluncuran publik, jalankan suite pengujian database pada server staging yang menggunakan MySQL 8.x.
 
 ### 1.3 Nomor Sequence Lintas Periode
-- **Status**: SELESAI
+- **Status**: SELESAI & TERVERIFIKASI
 - **Deskripsi**:
-  Karena format resmi tidak memuat ID periode, counter dibagikan per tahun ajaran dan program melalui row unik pada `registration_number_sequences`. Migration mem-backfill nilai tertinggi dari tabel counter per-periode lama; submit mengunci row counter global yang sama.
+  Counter dibagikan per tahun ajaran dan kode program (`REGULER` / `UNGGULAN`) melalui baris unik pada `registration_number_sequences`. Penguncian transaksional `lockForUpdate()` mencegah tabrakan nomor antarperiode maupun konkurensi multi-pendaftar.
 - **Verifikasi**:
-  Tes SQLite dan MariaDB multi-proses membuktikan nomor berurutan dan berbeda pada skenario lintas periode.
+  Uji konkurensi multi-proses MariaDB dan E2E Scenario 2 membuktikan nomor berurutan dan terisolasi sempurna.
 
-### 1.4 Batas Unggah PHP Lokal di Bawah Kebijakan Aplikasi
-- **Status**: MENUNGGU KONFIGURASI SERVER
-- **Tingkat Keparahan**: Operasional; unggahan lebih dari 2 MB akan ditolak oleh PHP sebelum mencapai Laravel.
+### 1.4 Batas Unggah PHP Hosting di Bawah Kebijakan Aplikasi
+- **Status**: PRASYARAT KONFIGURASI SERVER PRODUKSI
+- **Tingkat Keparahan**: Operasional Server
 - **Deskripsi**:
-  Kebijakan aplikasi sudah 5120 KB. Nilai PHP lokal yang terukur adalah `upload_max_filesize=2M` dan `post_max_size=8M`. Feature test menguji batas 5120 KB melalui file sintetis, bukan request melalui PHP/web server produksi.
-- **Mitigasi**:
-  Atur `upload_max_filesize=5M`, `post_max_size` lebih besar dari 5M, dan batas request web server yang mencakup overhead multipart. Setelah perubahan, uji unggah aktual 5 MB.
+  Kebijakan aplikasi mengizinkan berkas hingga 5120 KB (5 MB). Konfigurasi bawaan PHP default biasanya `upload_max_filesize=2M` dan `post_max_size=8M`. Jika nilai ini tidak dinaikkan di server hosting, PHP akan menolak berkas sebelum mencapai lapisan validasi FormRequest Laravel.
+- **Rencana Mitigasi**:
+  Administrator server wajib mengatur `upload_max_filesize = 10M` dan `post_max_size = 16M` pada `php.ini` atau panel cPanel/Hostinger sebagaimana dirinci dalam `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`.
 
-### 1.5 Migration Default Ukuran Persyaratan
-- **Status**: SELESAI
-- **Deskripsi**:
-  Migration tambahan menetapkan default kolom `max_size_kb` menjadi 5120 KB tanpa mengubah nilai baris yang telah ada. Default terverifikasi pada SQLite dan MariaDB.
-
-### 1.6 Transportasi Pengiriman OTP WhatsApp Masih Menggunakan Driver Log/Simulasi
-- **Status**: SESUAI DESAIN FASE SAAT INI (BY-DESIGN)
+### 1.5 Driver Pengiriman OTP WhatsApp Masih Driver Log/Array
+- **Status**: SESUAI DESAIN ARSITEKTUR FASE 1â€“8 (BY-DESIGN)
 - **Tingkat Keparahan**: Info / Operasional
 - **Deskripsi**:
-  Sistem saat ini menggunakan driver `log` (mencatat kode OTP pada berkas log lokal untuk memudahkan pengujian pengembang) dan driver `array` (untuk automated tests). Belum ada gateway WhatsApp resmi (seperti Fonnte, Twilio, atau Zenziva) yang dihubungkan karena belum tersedianya kredensial API resmi madrasah.
+  Sistem saat ini menggunakan driver `log` (mencatat kode OTP ke log lokal) dan driver `array` (untuk pengujian otomatis). Integrasi langsung dengan vendor gateway WhatsApp resmi (seperti Fonnte, Twilio, atau Zenziva) belum dihubungkan karena menunggu akun dan API key resmi dari madrasah.
 - **Rencana Mitigasi**:
-  Abstraksi `OtpDeliveryInterface` telah disiapkan. Ketika pihak madrasah telah menyediakan provider WhatsApp dan API key resmi, pengembang hanya perlu menambahkan satu kelas implementasi (misal: `FonnteOtpDelivery`) dan mengikatnya pada `OtpDeliveryService` tanpa mengubah logika bisnis pendaftaran atau basis data.
+  Abstraksi `OtpDeliveryInterface` telah disiapkan. Ketika pihak madrasah menyerahkan API key resmi, pengembang hanya perlu mengimplementasikan kelas baru (misal `FonnteOtpDelivery`) tanpa mengubah logika bisnis autentikasi atau basis data.
 
-### 1.7 Pembatasan Ukuran Form Data Sibling
-- **Status**: TERMITIGASI
+### 1.6 Aset Identitas Resmi Madrasah (Logo & Alamat Lengkap)
+- **Status**: PENDING OWNER ACTION
+- **Tingkat Keparahan**: Tampilan / Branding PDF
 - **Deskripsi**:
-  Orang tua dengan anak kembar harus membuat dua akun terpisah dengan NIK masing-masing, namun nomor WhatsApp orang tua dapat digunakan kembali.
+  Logo resmi Kementerian Agama dan MIN 1 Kota Madiun serta alamat jalan lengkap madrasah belum tersedia sebagai berkas sumber terverifikasi di repositori. Saat ini kop PDF Bukti Pendaftaran menggunakan teks nama institusi resmi yang terdokumentasi tanpa merekayasa logo fiktif.
 - **Rencana Mitigasi**:
-  Telah diverifikasi penuh dengan test case `test_allows_sibling_registration_with_same_phone_number` yang lulus tanpa konflik database.
+  Menunggu penyerahan berkas logo resmi dalam format PNG/SVG transparan dan teks alamat resmi dari pemilik proyek.
 
-### 1.8 Format Nomor dan Consent
-- **Status**: SELESAI — DISETUJUI PEMILIK
+### 1.7 Rendering Pas Foto PNG Memerlukan Ekstensi PHP GD
+- **Status**: PRASYARAT OPERASIONAL HOSTING
 - **Deskripsi**:
-  Format `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, kode `REGULER`/`UNGGULAN`, dan redaksi consent versi `v1.0` telah disahkan dan diterapkan. Submit tetap gagal tertutup jika konfigurasi production kosong.
+  Dompdf memerlukan ekstensi PHP `gd` untuk menanam gambar PNG ke dalam dokumen PDF. Pas foto format JPG dapat dirender tanpa ekstensi GD (menggunakan DCT decode bawaan PDF). Pada lingkungan tanpa GD, pas foto PNG ditolak secara elegan dengan pesan informatif: *"Server belum mendukung pas foto PNG. Aktifkan ekstensi PHP GD atau unggah pas foto dalam format JPG."*
+- **Rencana Mitigasi**:
+  Pastikan ekstensi PHP `gd` diaktifkan pada panel PHP Extensions di hosting produksi Hostinger.
 
-### 1.9 Admin Reopen per Pendaftaran
-- **Status**: SELESAI — DISETUJUI DAN DIUJI
-- **Deskripsi**:
-  Admin berizin dapat membuka akses edit untuk satu pendaftaran submitted dengan alasan dan expiry wajib, menutup lebih awal dengan alasan, dan seluruh tindakan dicatat. Expiry ditegakkan server-side tanpa cron.
-- **Verifikasi**:
-  Feature tests mencakup permission, lifecycle, audit, validasi, serta akses pendaftar setelah reopen dan setelah expiry.
-
-### 1.10 Penutupan Fase 6
-- **Status**: SELESAI
-- **Deskripsi**:
-  Seluruh gate Fase 6 lulus dengan 179 tes, 0 gagal/skip, dan verifikasi MariaDB fisik. Fase 7 telah diotorisasi dan diselesaikan.
-
-### 1.11 Aset Branding PDF Resmi Belum Tersedia
-- **Status**: MENUNGGU SUMBER TERVERIFIKASI DARI PEMILIK
-- **Deskripsi**:
-  Logo resmi dan alamat lengkap madrasah belum ditemukan pada sumber proyek. PDF saat ini memakai nama Kementerian Agama dan MIN 1 Kota Madiun yang terdokumentasi, tanpa logo/alamat yang belum terverifikasi.
-- **Mitigasi**:
-  Jangan menggunakan aset atau alamat hasil tebakan. Tambahkan hanya setelah pemilik memberikan sumber resmi.
-
-### 1.12 Rendering Pas Foto PNG Memerlukan PHP GD
-- **Status**: PRASYARAT OPERASIONAL
-- **Deskripsi**:
-  Lingkungan lokal tidak memiliki ekstensi GD maupun Imagick. Pas foto JPG telah berhasil dirender pada PDF; Dompdf memerlukan GD untuk menanam PNG. Bila PNG dipilih tanpa GD, aplikasi mengembalikan validasi yang menyarankan mengaktifkan GD atau menggunakan JPG.
-- **Mitigasi**:
-  Pasang ekstensi PHP GD pada server yang harus memproses pas foto PNG, atau gunakan format JPG.
-
-### 1.13 APP_URL Publik HTTPS untuk QR Final
+### 1.8 Persyaratan APP_URL Publik HTTPS untuk QR Final
 - **Status**: PRASYARAT OPERASIONAL PRODUKSI
 - **Deskripsi**:
-  Pembuatan PDF final di production menolak `APP_URL` non-HTTPS atau host lokal/private agar QR verifikasi tidak mengarah ke endpoint yang tidak dapat diakses publik.
-- **Mitigasi**:
-  Konfigurasikan `APP_URL` dengan host publik HTTPS sebelum menerbitkan PDF final.
+  Pembuatan PDF final pada lingkungan `APP_ENV=production` menolak konfigurasi `APP_URL` non-HTTPS, host `localhost`, atau IP privat agar QR verifikasi pada cetakan fisik selalu mengarah ke domain publik yang valid.
+- **Rencana Mitigasi**:
+  Pastikan `APP_URL` di `.env` produksi diisi URL domain HTTPS resmi madrasah sebelum mencetak PDF final.
 
 ---
 
 ## 2. PROSEDUR PELAPORAN ISU BARU
 
-Jika ditemukan bug atau deviasi perilaku sistem selama pengujian manual:
-1. Catat rute URI, metode HTTP, dan payload data yang dikirimkan.
+Jika ditemukan anomali baru:
+1. Dokumentasikan langkah reproduksi secara detail.
 2. Lampirkan log error dari `storage/logs/laravel.log`.
-3. Tambahkan skenario kegagalan tersebut ke berkas pengujian otomatis terkait (*reproduce via test*).
-4. Lakukan perbaikan kode hingga pengujian otomatis lulus.
-5. Perbarui berkas `KNOWN-ISSUES.md` ini.
+3. Buat skenario automated test yang mereplikasi anomali tersebut.
+4. Lakukan perbaikan kode hingga seluruh test suite (203+ tests) lulus.
+5. Perbarui berkas `KNOWN-ISSUES.md`.

@@ -1,4 +1,4 @@
-# DATABASE DESIGN — PPDB MINSATAMA
+# DATABASE DESIGN â€” PPDB MINSATAMA
 ## Spesifikasi Fisik Basis Data & Kamus Data Relasional
 
 ---
@@ -177,7 +177,14 @@ erDiagram
         bigint registration_id FK
         string document_type "VARCHAR(50) [draft, final]"
         smallint version_number "default 1"
+        int data_revision "default 1"
         string file_path "VARCHAR(255)"
+        string file_hash "VARCHAR(64)"
+        string storage_disk "VARCHAR(255) default 'ppdb_private'"
+        string mime_type "VARCHAR(127) NULL"
+        bigint file_size_bytes "BIGINT UNSIGNED NULL"
+        string verification_token_hash "VARCHAR(64) UK NULL"
+        bigint generated_by FK "NULL"
         datetime generated_at
         timestamps created_at_updated_at
     }

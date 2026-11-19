@@ -1,4 +1,4 @@
-# TECHNICAL DECISIONS — ARCHITECTURE DECISION RECORDS (ADR)
+# TECHNICAL DECISIONS â€” ARCHITECTURE DECISION RECORDS (ADR)
 ## Log Keputusan Arsitektur dan Pilihan Desain PPDB Minsatama
 
 ---
@@ -109,7 +109,7 @@
 - **Keputusan**:
   - Format nomor resmi `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`, misalnya `PPDB/2026-2027/REGULER/00001`.
   - Kode program yang sah adalah `REGULER` dan `UNGGULAN`.
-  - Consent resmi versi `v1.0`: “Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.”
+  - Consent resmi versi `v1.0`: â€œSaya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.â€
 - **Batasan dan Pengamanan**:
   Konfigurasi teks atau versi consent yang kosong tetap menyebabkan submit gagal tertutup. Lingkungan production tidak diberi fallback redaksi.
 - **Konsekuensi**:
@@ -159,3 +159,18 @@
   - Pas foto JPG telah diuji pada PHP tanpa GD/Imagick. Foto PNG memerlukan ekstensi GD; tanpa GD sistem mengembalikan validasi yang menyarankan mengaktifkan ekstensi atau menggunakan JPG.
   - Logo dan alamat resmi belum tersedia dalam sumber proyek; layout saat ini hanya menggunakan nama institusi yang terdokumentasi dan tidak mengarang identitas tambahan.
   - Migration metadata bersifat additive. Suite SQLite lulus; kompatibilitas fisik migration Fase 7 pada MySQL 8 belum diverifikasi.
+
+---
+
+### ADR-012: Strategi Verifikasi Sistem Menyeluruh, UAT, dan Kesiapan Lingkungan Produksi
+- **Tanggal**: 19 November 2026
+- **Status**: DISETUJUI DAN DIIMPLEMENTASIKAN (FASE 8)
+- **Konteks**:
+  Fase 1â€“7 telah rampung. Diperlukan pengujian regresi ujung ke ujung (E2E), verifikasi UAT non-teknis, audit keamanan, evaluasi batas runtime hosting, dan panduan operasional sebelum go-live.
+- **Keputusan**:
+  1. *End-to-End Testing*: Mengimplementasikan 7 skenario uji integrasi terarah yang menguji seluruh perjalanan calon siswa, isolasi sequence program, penolakan berkas tidak lengkap, kenaikan revisi data pasca-submit, siklus hidup admin reopen, isolasi multi-tenant, serta kegagalan dan pemulihan.
+  2. *UAT Plan*: Menyusun dokumen non-teknis `docs/uat/UAT-TEST-PLAN.md` khusus untuk panitia madrasah dan perwakilan wali murid tanpa jargon pemrograman.
+  3. *Integritas Basis Data Produksi*: Mempertahankan pemisahan tegas antara hasil uji MariaDB 10.4.32 fisik (10 passed) dan status uji fisik MySQL 8.x yang ditandai `BLOCKED` menunggu lingkungan staging.
+  4. *Benchmark Kinerja*: Memastikan dasbor bebas dari query N+1 (terukur <= 30 kueri) dan alokasi memori render PDF terkontrol.
+- **Konsekuensi**:
+  Sistem mencapai tingkat kematangan teknis 100% lulus uji (203 tes, 1065 asersi). Tidak ada fitur bisnis di luar pendaftaran yang ditambahkan. Lingkup operasional PPDB tetap berakhir saat bukti pendaftaran diserahkan ke loket PTSP madrasah.

@@ -177,6 +177,26 @@ class MySqlSchemaCompatibilityTest extends TestCase
         ));
     }
 
+    public function test_mysql_pdf_version_schema_has_phase7_columns_and_unique_token_index(): void
+    {
+        $this->runMigrations();
+
+        $columns = Schema::connection('mysql_test')->getColumnListing('registration_pdf_versions');
+        $this->assertContains('storage_disk', $columns);
+        $this->assertContains('mime_type', $columns);
+        $this->assertContains('file_size_bytes', $columns);
+        $this->assertContains('verification_token_hash', $columns);
+
+        $indexes = DB::connection('mysql_test')->select(
+            'SELECT INDEX_NAME, COLUMN_NAME, NON_UNIQUE FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND INDEX_NAME = ?',
+            [self::TEST_DATABASE, 'registration_pdf_versions', 'reg_pdf_verification_token_hash_unique']
+        );
+
+        $this->assertNotEmpty($indexes);
+        $this->assertSame('verification_token_hash', $indexes[0]->COLUMN_NAME);
+        $this->assertSame(0, (int) $indexes[0]->NON_UNIQUE);
+    }
+
     private function runMigrations(): void
     {
         if (! self::$mysqlAvailable) {
