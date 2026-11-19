@@ -24,6 +24,12 @@
                 </div>
             @endif
 
+            @if (session('warning'))
+                <div class="mb-5">
+                    <x-ui.alert type="warning" dismissible>{{ session('warning') }}</x-ui.alert>
+                </div>
+            @endif
+
             @if (session('error'))
                 <div class="mb-5">
                     <x-ui.alert type="danger" dismissible>{{ session('error') }}</x-ui.alert>
@@ -72,14 +78,14 @@
                             id="btn-resend"
                             class="text-sm font-semibold text-primary-600 hover:text-primary-700 hover:underline transition"
                         >
-                            Kirim Ulang Kode OTP
+                            Coba Kirim Ulang OTP
                         </button>
                     </form>
                 </div>
 
                 <div class="mt-4 text-center">
-                    <a href="{{ route('register') }}" class="text-xs text-neutral-500 hover:text-neutral-700 underline">
-                        &larr; Nomor salah? Ulangi pendaftaran
+                    <a href="{{ route('register') }}" class="text-xs text-neutral-600 hover:text-primary-600 underline font-medium">
+                        &larr; Nomor salah? Kembali ke Formulir Pendaftaran
                     </a>
                 </div>
             </x-ui.card>

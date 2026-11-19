@@ -12,34 +12,34 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 10.2 — INTEGRASI WHATSAPP OTP MENGGUNAKAN FONNTE API** |
-| **Status Teknis Fase 10.2** | **SELESAI SECARA TEKNIS (100% TERUJI OTOMATIS; MENUNGGU TOKEN RESMI & UJI MANUAL)** |
+| **Fase Berjalan Saat Ini** | **FASE 10.3 — PENDING REGISTRATION RECOVERY & RESILIENT NIK REUSE AFTER OTP FAILURE** |
+| **Status Teknis Fase 10.3** | **SELESAI (100% TERUJI OTOMATIS: 256 TESTS PASSED, 1217 ASSERTIONS, PINT & VITE COMPLIANT)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
 | **Status Lingkungan Staging** | **READY (Paket ZIP bersih deploy_minsatama_hostinger_clean.zip 23.9MB siap)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Gerbang Produksi (Logo/Alamat)** | **PENDING OWNER ACTION (MENUNGGU SUMBER RESMI LOGO & ALAMAT)** |
-| **Commit Baseline Sebelum Fase 10.2** | `05134e5` (`feat(admin): implement real-data admin dashboard and resilient navigation (phase 10.1)`) |
+| **Commit Baseline Sebelum Fase 10.3** | `11e2a81` (`feat(otp): integrate Fonnte WhatsApp API delivery driver with resilient error handling (phase 10.2)`) |
 
 ---
 
-## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.2)
+## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.3)
 
 - **Perintah Pengujian**: `php artisan test`
 - **Waktu Eksekusi**: 19 November 2026
-- **Total Pengujian**: **235 pengujian**
-- **Lulus (Passed)**: **235 pengujian (100%)**
+- **Total Pengujian**: **256 pengujian**
+- **Lulus (Passed)**: **256 pengujian (100%)**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **0 pengujian**
-- **Total Asersi**: **1150 asersi**
-- **Durasi Eksekusi**: ~10.3 detik
+- **Total Asersi**: **1.217 asersi**
+- **Durasi Eksekusi**: ~11.0 detik
 - **Kepatuhan Format Kode (Pint)**: **PASSED (0 issues)** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 advisories** (`composer audit`)
 - **Audit Dependensi NPM Produksi**: **0 vulnerabilities** (`npm.cmd audit --omit=dev`)
 - **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 93.10 kB, JS 1.72 kB)
 
-### Rincian Suite Pengujian Tambahan Fase 10.2:
-1. **Fonnte OTP Delivery Suite** (`tests/Feature/Auth/FonnteOtpDeliveryTest.php`):
-   - 20 pengujian gateway WhatsApp Fonnte lulus dengan 41 asersi (aktivasi akun, reset password, normalisasi format nomor, header Authorization tanpa Bearer, validasi status boolean/string, penanganan token invalid/nomor invalid/device disconnected/kuota habis/timeout/non-JSON, verifikasi log steril tanpa OTP/token, penegakan rate limit, expiry 5 menit, batas 5 percobaan, dan isolasi driver array/log).
+### Rincian Suite Pengujian Tambahan Fase 10.3:
+1. **Pending Registration Recovery Suite** (`tests/Feature/Auth/PendingRegistrationRecoveryTest.php`):
+   - 20 pengujian pemulihan pendaftaran tertunda dan penggunaan kembali NIK setelah kegagalan OTP (pemulihan nomor sama/baru, pencegahan duplikat User/Applicant, invalidasi token lama, reset timestamp verifikasi, verifikasi identitas nama/gender/tempat/tanggal lahir, penolakan akun aktif/suspended, toleransi case/whitespace, degradasi graceful saat Fonnte gagal, aktivasi sukses pasca-recovery, proteksi token kedaluwarsa, pemulihan berulang, tautan koreksi nomor, dan penegakan rate limit).
 
 ---
 
@@ -60,7 +60,8 @@
 | 9 | **Hostinger Staging Deployment & UAT** | Pemeriksaan Hostinger, paket deploy staging, skema MySQL bersih, panduan Hostinger & aaPanel, lembar hasil UAT | **SELESAI** | Paket ZIP 23.9MB steril, skema `schema_clean.sql`, panduan `HOSTINGER-STAGING-GUIDE.md` & `AAPANEL-PRODUCTION-GUIDE.md` selesai; siap uji fisik |
 | 10 | **Operational Docs, User Manual & SOP** | 12 buku panduan operasional (Orang Tua, Admin, Superadmin, Matriks Hak Akses, SOP Panitia, FAQ, Pedoman Privasi, Glosarium, Analisis Gap, Briefing, Quick Guide) | **SELESAI** | 12 dokumen operasional di `docs/manual/`, 100% tervalidasi terhadap kode aktual repositori, nol perubahan kode aplikasi |
 | 10.1 | **Admin Dashboard Real Data & Resilient Navigation** | Controller dashboard data riil, UI dashboard informatif (5 metrik, hero periode, tabel pendaftar terbaru, quick actions), sidebar aman bebas 404 | **SELESAI** | `AdminDashboardController` + Blade view riil, 12 feature tests baru, 215 tests passed, 0 failed, Pint & Vite compliant |
-| 10.2 | **Integrasi Gateway WhatsApp Fonnte API** | Driver `FonnteOtpDelivery`, normalisasi nomor Indonesia, validasi status Fonnte, penanganan error/timeout, template aktivasi & pemulihan, 20 test cases otomatis | **SELESAI SECARA TEKNIS** | 235 tests passed (100%), 1150 assertions, panduan operasional `FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`, siap uji manual pemilik proyek |
+| 10.2 | **Integrasi Gateway WhatsApp Fonnte API** | Driver `FonnteOtpDelivery`, normalisasi nomor Indonesia, validasi status Fonnte, penanganan error/timeout, template aktivasi & pemulihan, 20 test cases otomatis | **SELESAI** | 235 tests passed (100%), 1150 assertions, panduan operasional `FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`, siap uji manual pemilik proyek |
+| 10.3 | **Pending Registration Recovery & NIK Reuse** | Mekanisme recovery pendaftaran tertunda, verifikasi identitas, update nomor WA, invalidasi OTP lama, zero-duplicate guarantee, 20 test cases otomatis | **SELESAI** | 256 tests passed (100%), 1217 assertions, laporan komprehensif `PHASE-10.3-IMPLEMENTATION-REPORT.md`, siap deploy |
 
 ---
 
@@ -78,7 +79,9 @@
 
 ## 5. DOKUMEN OPERASIONAL & KESIAPAN PRODUKSI TERSEDIA
 
-1. `docs/manual/`: Direktori 12 dokumen operasional lengkap:
+1. `docs/phases/PHASE-10.3-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.3 (Pending Registration Recovery & NIK Reuse).
+2. `docs/phases/PHASE-10.2-IMPLEMENTATION-REPORT.md` / `docs/manual/FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`: Panduan & laporan integrasi WhatsApp Fonnte API.
+3. `docs/manual/`: Direktori 12 dokumen operasional lengkap:
    - `README.md` (Indeks master panduan)
    - `01-PANDUAN-ORANG-TUA-WALI.md` (Buku panduan lengkap 14 bab untuk orang tua)
    - `02-PANDUAN-ADMIN-PPDB.md` (Buku panduan operasional panitia admin)
@@ -92,22 +95,22 @@
    - `10-DAFTAR-FITUR-DAN-GAP.md` (Analisis celah fitur & workaround)
    - `BRIEFING-PANITIA-PPDB.md` (Ringkasan materi briefing panitia)
    - `QUICK-GUIDE-ORANG-TUA.md` (Panduan kilat pendaftaran 3 menit)
-2. `docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 16 seksi implementasi Fase 10.
-3. `docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 18 seksi implementasi Fase 9.
-4. `docs/deployment/HOSTINGER-STAGING-GUIDE.md`: Panduan langkah demi langkah staging Hostinger (`sleek-forestgreen-mink-13.hostingersite.com`).
-5. `docs/deployment/AAPANEL-PRODUCTION-GUIDE.md`: Cetak biru operasional server produksi VPS dengan aaPanel (Nginx, PHP 8.3 FPM, MariaDB, Redis, SSL, Backup, Rollback).
-6. `docs/uat/UAT-TEST-PLAN.md`: Rencana uji penerimaan pengguna (UAT) untuk kelompok Pendaftar dan Panitia/Admin.
-7. `docs/uat/UAT-RESULTS.md`: Hasil evaluasi 21 skenario UAT (100% lulus teknis otomatis, status siap uji fisik komite madrasah).
-8. `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`: Matriks evaluasi runtime PHP, batas upload, memori, ekstensi, dan konfigurasi environment.
-9. `docs/deployment/DEPLOYMENT-GUIDE.md`: Panduan langkah demi langkah deployment dan pembaruan aplikasi ke Hostinger/VPS.
-10. `docs/deployment/BACKUP-AND-RESTORE.md`: Prosedur pencadangan basis data, berkas privat, dan pemulihan bencana.
-11. `docs/audits/SECURITY-AUDIT.md`: Laporan audit keamanan 18 dimensi web application security.
-12. `docs/audits/TEST-REPORT.md`: Laporan eksekusi 203 automated test cases.
-13. `docs/audits/KNOWN-ISSUES.md`: Catatan isu terbuka, prasyarat operasional hosting, dan mitigasi.
-14. `docs/phases/PHASE-8-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 8.
+4. `docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 16 seksi implementasi Fase 10.
+5. `docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 18 seksi implementasi Fase 9.
+6. `docs/deployment/HOSTINGER-STAGING-GUIDE.md`: Panduan langkah demi langkah staging Hostinger.
+7. `docs/deployment/AAPANEL-PRODUCTION-GUIDE.md`: Cetak biru operasional server produksi VPS dengan aaPanel.
+8. `docs/uat/UAT-TEST-PLAN.md`: Rencana uji penerimaan pengguna (UAT) untuk kelompok Pendaftar dan Panitia/Admin.
+9. `docs/uat/UAT-RESULTS.md`: Hasil evaluasi 21 skenario UAT.
+10. `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`: Matriks evaluasi runtime PHP, batas upload, memori, ekstensi, dan konfigurasi environment.
+11. `docs/deployment/DEPLOYMENT-GUIDE.md`: Panduan langkah demi langkah deployment dan pembaruan aplikasi ke Hostinger/VPS.
+12. `docs/deployment/BACKUP-AND-RESTORE.md`: Prosedur pencadangan basis data, berkas privat, dan pemulihan bencana.
+13. `docs/audits/SECURITY-AUDIT.md`: Laporan audit keamanan 18 dimensi web application security.
+14. `docs/audits/TEST-REPORT.md`: Laporan eksekusi automated test cases.
+15. `docs/audits/KNOWN-ISSUES.md`: Catatan isu terbuka, prasyarat operasional hosting, dan mitigasi.
+16. `docs/phases/PHASE-8-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 8.
 
 ---
 
 ## 6. PROTOKOL KONDISI BERHENTI (STOP CONDITION)
 
-Fase 10 selesai secara penuh. Seluruh dokumen operasional, user manual, SOP, dan laporan implementasi telah lengkap dan terverifikasi terhadap kode sumber aktual. Tidak ada perubahan pada kode sumber aplikasi. Agen BERHENTI dan menunggu persetujuan tertulis dari Pemilik Proyek.
+Fase 10.3 selesai secara penuh. Mekanisme pemulihan pendaftaran tertunda dan penggunaan kembali NIK setelah kegagalan OTP telah teruji 100% lulus (256 pengujian, 1.217 asersi, 0 gagal). Seluruh dokumentasi diperbarui secara faktual. Agen BERHENTI dan menunggu persetujuan atau instruksi dari Pemilik Proyek.

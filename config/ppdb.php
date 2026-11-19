@@ -69,10 +69,9 @@ return [
         'number_format' => '{prefix}/{academic_year}/{program_code}/{sequence}',
         'program_codes' => ['REGULER', 'UNGGULAN'],
         'sequence_padding' => 5,
-        'consent_version' => env('PPDB_CONSENT_VERSION', $isProduction ? '' : 'v1.0'),
-        'consent_statement' => env(
-            'PPDB_CONSENT_STATEMENT',
-            $isProduction ? '' : $approvedConsentStatement
+        'consent_version' => (string) (env('PPDB_CONSENT_VERSION') ?: ($isProduction ? '' : 'v1.0')),
+        'consent_statement' => (string) (
+            env('PPDB_CONSENT_STATEMENT') ?: ($isProduction ? '' : $approvedConsentStatement)
         ),
     ],
 ];

@@ -19,6 +19,18 @@
                 </div>
             @endif
 
+            @if (session('warning'))
+                <div class="mb-6">
+                    <x-ui.alert type="warning" dismissible>{{ session('warning') }}</x-ui.alert>
+                </div>
+            @endif
+
+            @if (session('info'))
+                <div class="mb-6">
+                    <x-ui.alert type="info" dismissible>{{ session('info') }}</x-ui.alert>
+                </div>
+            @endif
+
             <x-ui.card class="shadow-lg border-neutral-200/80 p-6 sm:p-8">
                 <div class="bg-primary-50/50 border border-primary-100/80 rounded-xl p-4 mb-6">
                     <div class="flex items-start gap-3">

@@ -27,7 +27,7 @@ class ApplicantRegisterController extends Controller
     }
 
     /**
-     * Handle initial applicant registration submission.
+     * Handle initial applicant registration or pending registration recovery.
      */
     public function store(
         ApplicantRegisterRequest $request,
@@ -39,18 +39,22 @@ class ApplicantRegisterController extends Controller
             // Store user id in session to facilitate multi-step activation
             session(['activation_user_id' => $result['user']->id]);
 
-            return redirect()->route('activation.form')->with(
-                'success',
-                'Pendaftaran akun awal berhasil. Kode OTP verifikasi 6 digit telah dikirimkan ke nomor WhatsApp orang tua/wali.'
-            );
+            if (! $result['otp_dispatched']) {
+                return redirect()->route('activation.form')->with(
+                    'warning',
+                    'Permintaan pendaftaran sudah diterima, tetapi kode verifikasi belum berhasil dikirim. Silakan periksa nomor WhatsApp atau kembali ke formulir untuk memperbaiki nomor.'
+                );
+            }
+
+            $successMessage = ! empty($result['is_recovery'])
+                ? 'Data pendaftaran dengan NIK ini berhasil dipulihkan. Nomor WhatsApp telah diperbarui dan kode OTP verifikasi baru telah dikirimkan.'
+                : 'Pendaftaran akun awal berhasil. Kode OTP verifikasi 6 digit telah dikirimkan ke nomor WhatsApp orang tua/wali.';
+
+            return redirect()->route('activation.form')->with('success', $successMessage);
         } catch (InvalidArgumentException $e) {
             return back()
                 ->withInput($request->except(['consent']))
                 ->withErrors(['nik' => $e->getMessage()]);
-        } catch (\RuntimeException $e) {
-            return back()
-                ->withInput($request->except(['consent']))
-                ->withErrors(['phone' => $e->getMessage()]);
         }
     }
 }

@@ -110,7 +110,7 @@ class ApplicantRegistrationTest extends TestCase
         $this->assertSame($user->id, session('activation_user_id'));
     }
 
-    public function test_rejects_duplicate_nik_registration(): void
+    public function test_rejects_duplicate_nik_registration_when_account_is_active(): void
     {
         $nik = '3573010101190002';
         $payload = [
@@ -126,11 +126,44 @@ class ApplicantRegistrationTest extends TestCase
         // First registration: success
         $this->post(route('register.store'), $payload)->assertRedirect(route('activation.form'));
 
-        // Second registration with identical NIK: must fail
+        // Mark account as ACTIVE (completed activation)
+        $user = User::where('nik_lookup_hash', NikManager::hash($nik))->first();
+        $user->update(['account_status' => AccountStatus::ACTIVE]);
+
+        // Second registration with identical NIK when ACTIVE: must fail
         $response = $this->post(route('register.store'), $payload);
         $response->assertSessionHasErrors(['nik']);
         $this->assertDatabaseCount('users', 1);
         $this->assertDatabaseCount('applicants', 1);
+    }
+
+    public function test_allows_pending_registration_recovery_with_same_nik(): void
+    {
+        $nik = '3573010101190003';
+        $payload = [
+            'nik' => $nik,
+            'full_name' => 'Anak Pending',
+            'gender' => 'L',
+            'birth_place' => 'Madiun',
+            'birth_date' => '2019-01-10',
+            'phone' => '081234567890',
+            'consent' => '1',
+        ];
+
+        // First registration
+        $this->post(route('register.store'), $payload)->assertRedirect(route('activation.form'));
+
+        // Second registration with same NIK but updated phone
+        $payload['phone'] = '081299998888';
+        $response = $this->post(route('register.store'), $payload);
+
+        $response->assertRedirect(route('activation.form'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseCount('users', 1);
+        $this->assertDatabaseCount('applicants', 1);
+
+        $user = User::where('nik_lookup_hash', NikManager::hash($nik))->first();
+        $this->assertSame('081299998888', $user->phone);
     }
 
     public function test_allows_sibling_registration_with_same_phone_number(): void

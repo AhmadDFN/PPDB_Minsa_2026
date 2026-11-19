@@ -180,6 +180,22 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10.2: SELESAI SECARA TEKNIS (SIAP UJI MANUAL NOMOR KENDALI PEMILIK PROYEK).** 235 tests passed, 1150 assertions. Nol pengiriman WhatsApp sungguhan pada automated test.
 
+### Fase 10.3 — Pending Registration Recovery & NIK Reuse After OTP Failure
+- [x] **[P0 - Kritis] Mekanisme Pending Registration Recovery**:
+  - *Deskripsi*: Memperbarui `app/Actions/Authentication/RegisterApplicantAction.php` untuk membedakan NIK dengan status `PENDING_ACTIVATION` vs `ACTIVE` / `SUSPENDED`. Akun `PENDING_ACTIVATION` dapat melanjutkan pendaftaran dengan NIK yang sama.
+- [x] **[P0 - Kritis] Validasi & Pencocokan Identitas**:
+  - *Deskripsi*: Verifikasi kesesuaian 4 atribut identitas (`full_name`, `gender`, `birth_place`, `birth_date`) dengan normalisasi kapital & whitespace sebelum mengizinkan pemulihan pendaftaran tertunda.
+- [x] **[P0 - Kritis] Pembaruan Nomor Telepon & Zero-Duplicate Guarantee**:
+  - *Deskripsi*: Memperbarui `users.phone` pada akun yang sudah ada, mereset `phone_verified_at = null`, menginvalider seluruh token OTP aktivasi lama, dan menerbitkan OTP baru ke nomor baru tanpa membuat duplikat `User` atau `Applicant`.
+- [x] **[P0 - Kritis] Penanganan Kegagalan Pengiriman Tanpa Mengunci Akun**:
+  - *Deskripsi*: Jika Fonnte gagal mengirim OTP, akun tetap berstatus `PENDING_ACTIVATION`, diarahkan ke `/aktivasi` dengan pesan peringatan ramah, dan disediakan tombol "Coba Kirim Ulang OTP" serta tautan "Kembali ke Formulir Pendaftaran".
+- [x] **[P0 - Kritis] Suite Pengujian Otomatis 20 Skenario**:
+  - *Deskripsi*: `tests/Feature/Auth/PendingRegistrationRecoveryTest.php` menguji 20 skenario menyeluruh menggunakan `Http::fake()`. 20 tes lulus dengan 59 asersi.
+- [x] **[P1 - Tinggi] Laporan Implementasi Fase 10.3**:
+  - *Deskripsi*: Pembuatan dokumen komprehensif `docs/phases/PHASE-10.3-IMPLEMENTATION-REPORT.md`.
+
+**Status Fase 10.3: SELESAI (100% TERUJI OTOMATIS: 256 TESTS PASSED, 1217 ASSERTIONS).** Nol duplikasi user, nol plaintext OTP/NIK bocor. Pint & Vite compliant.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)
