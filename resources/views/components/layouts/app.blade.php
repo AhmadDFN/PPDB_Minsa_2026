@@ -8,6 +8,7 @@
 
     <title>{{ isset($title) ? $title . ' — ' : '' }}{{ config('app.name') }} — MIN 1 Kota Madiun</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-minsatama.png') }}">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     @fonts
@@ -124,14 +125,14 @@
                     <div class="p-3.5 rounded-xl bg-neutral-800/80 border border-neutral-700/80 text-xs space-y-1">
                         <div class="flex items-center justify-between text-neutral-300">
                             <span>Senin – Kamis</span>
-                            <span class="font-bold text-white">08.00 – 14.00 WIB</span>
+                            <span class="font-bold text-white font-mono">07.00 – 15.00 WIB</span>
                         </div>
                         <div class="flex items-center justify-between text-neutral-300">
                             <span>Jumat</span>
-                            <span class="font-bold text-white">08.00 – 11.00 WIB</span>
+                            <span class="font-bold text-white font-mono">07.00 – 15.00 WIB</span>
                         </div>
                         <div class="pt-1.5 border-t border-neutral-700 text-[11px] text-neutral-400">
-                            Sabtu, Minggu & Hari Libur Nasional Tutup
+                            Khusus Jumat istirahat Sholat Jumat &bull; Sabtu & Minggu Tutup
                         </div>
                     </div>
                 </div>
