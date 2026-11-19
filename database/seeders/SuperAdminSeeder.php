@@ -29,7 +29,7 @@ class SuperAdminSeeder extends Seeder
                 'account_type' => AccountType::ADMIN,
                 'account_status' => AccountStatus::ACTIVE,
                 'email_verified_at' => now(),
-                'phone' => '081234567890',
+                'phone' => '0895352882228',
             ]
         );
 
