@@ -124,6 +124,34 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 9: SELESAI SECARA TEKNIS (SIAP UAT FISIK SEKOLAH & MENUNGGU ARSITEKTUR AAPANEL PRODUKSI).** Paket rilis staging siap diuji di server Hostinger, dokumentasi produksi aaPanel lengkap. Dilarang melakukan deployment produksi ke aaPanel sebelum persetujuan resmi.
 
+### Fase 10 — Dokumentasi Operasional, User Manual & SOP Kepanitiaan (Operational Docs)
+- [x] **[P0 - Kritis] Audit Repositori & Hak Akses Aktual**:
+  - *Deskripsi*: Verifikasi peran Spatie (`superadmin`, `admin_ppdb`) dan akun siswa (`applicant`), pemetaan rute, middleware, dan controller aktual tanpa asumsi peran fiktif.
+- [x] **[P1 - Tinggi] User Manual Orang Tua / Wali**:
+  - *Deskripsi*: Buku panduan lengkap 14 bab [docs/manual/01-PANDUAN-ORANG-TUA-WALI.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/01-PANDUAN-ORANG-TUA-WALI.md) dan [docs/manual/QUICK-GUIDE-ORANG-TUA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/QUICK-GUIDE-ORANG-TUA.md) (infografis teks 3 menit).
+- [x] **[P1 - Tinggi] Panduan Operasional Admin PPDB**:
+  - *Deskripsi*: Buku panduan operasional panitia [docs/manual/02-PANDUAN-ADMIN-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/02-PANDUAN-ADMIN-PPDB.md) berbasis fitur nyata (login, dasbor, reopen registration, penutupan dini, dan penegakan kedaluwarsa).
+- [x] **[P1 - Tinggi] Panduan Pengelola Superadmin**:
+  - *Deskripsi*: Buku panduan teknis [docs/manual/03-PANDUAN-SUPERADMIN.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/03-PANDUAN-SUPERADMIN.md) untuk isolasi kunci kriptografi, manajemen database, dan prosedur pembuatan akun via CLI/Tinker.
+- [x] **[P1 - Tinggi] Matriks Hak Akses Role & Permission**:
+  - *Deskripsi*: Matriks lengkap modul vs peran aktual [docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md).
+- [x] **[P1 - Tinggi] Standar Operasional Prosedur (SOP) Panitia**:
+  - *Deskripsi*: SOP kepanitiaan 3 fase (Sebelum Dibuka, Saat Pelaksanaan, dan Pasca-Penutupan) [docs/manual/05-SOP-OPERASIONAL-PANITIA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/05-SOP-OPERASIONAL-PANITIA.md) serta [docs/manual/BRIEFING-PANITIA-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/BRIEFING-PANITIA-PPDB.md).
+- [x] **[P1 - Tinggi] FAQ & Troubleshooting Terpisah**:
+  - *Deskripsi*: Tanya jawab penanganan kendala orang tua dan admin [docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md).
+- [x] **[P1 - Tinggi] Pedoman Privasi & Keamanan Data (UU PDP)**:
+  - *Deskripsi*: Pedoman kepatuhan perlindungan data pribadi anak [docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md).
+- [x] **[P1 - Tinggi] Diagram Alur Kerja Sistem (Mermaid)**:
+  - *Deskripsi*: Visualisasi alur end-to-end, OTP sequence, dan reopen workflow [docs/manual/08-ALUR-KERJA-SISTEM.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/08-ALUR-KERJA-SISTEM.md).
+- [x] **[P1 - Tinggi] Glosarium Istilah Sistem**:
+  - *Deskripsi*: Kamus istilah teknis dan madrasah [docs/manual/09-GLOSARIUM.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/09-GLOSARIUM.md).
+- [x] **[P0 - Kritis] Analisis Celah Fitur (Feature Gap Analysis)**:
+  - *Deskripsi*: Evaluasi jujur fitur tersedia vs fitur gap [docs/manual/10-DAFTAR-FITUR-DAN-GAP.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/10-DAFTAR-FITUR-DAN-GAP.md).
+- [x] **[P0 - Kritis] Laporan Komprehensif Fase 10 (16 Seksi)**:
+  - *Deskripsi*: Laporan master [docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md).
+
+**Status Fase 10: SELESAI (100% ARTEFAK DOKUMENTASI TERSEDIA & TERVALIDASI).** Nol modifikasi pada kode sumber aplikasi. Dokumen operasional siap dipakai untuk pelatihan panitia dan sosialisasi orang tua.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)

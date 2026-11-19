@@ -3,8 +3,8 @@
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
 **Terakhir Diperbarui**: 19 November 2026
-**Dokumentasi Versi**: 1.3.0
-**Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead & Deployment Engineer
+**Dokumentasi Versi**: 1.4.0
+**Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
 ---
 
@@ -12,14 +12,13 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 9 — HOSTINGER STAGING DEPLOYMENT & USER ACCEPTANCE TESTING** |
-| **Status Teknis Fase 9** | **SELESAI SECARA TEKNIS (PAKET STAGING & PANDUAN AAPANEL LENGKAP)** |
+| **Fase Berjalan Saat Ini** | **FASE 10 — OPERATIONAL DOCUMENTATION, USER MANUAL & ADMIN SOP** |
+| **Status Teknis Fase 10** | **SELESAI (100% ARTEFAK DOKUMENTASI, USER MANUAL, SOP & GAP ANALYSIS TERBIT)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
-| **Status Lingkungan Staging** | **READY (Paket ZIP 24MB, skema MySQL bersih, dan rilis GitHub tersedia)** |
+| **Status Lingkungan Staging** | **READY (Paket ZIP bersih deploy_minsatama_hostinger_clean.zip 23.9MB siap)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Gerbang Produksi (Logo/Alamat)** | **PENDING OWNER ACTION (MENUNGGU SUMBER RESMI LOGO & ALAMAT)** |
-| **Commit Baseline Sebelum Fase 9** | `774f7bc` (`test(phase-8): complete integration and production readiness audit`) |
-| **Commit Staging & Fixes Terkini** | `e42e7d0` (`fix(htaccess): add RewriteCond to prevent loop in root rewrite`) |
+| **Commit Baseline Sebelum Fase 10** | `03ebefc` (`deploy(phase-9): prepare Hostinger staging deployment, UAT results, and aaPanel production runbook`) |
 
 ---
 
@@ -63,7 +62,8 @@
 | 6 | **Alur Pendaftaran PPDB** | Validasi kesiapan, consent, submit idempoten, nomor, audit revisi, admin reopen | **SELESAI** | Submit transaksi atomik, nomor unik per tahun ajaran-program |
 | 7 | **Mesin PDF Pendaftaran** | Cetak draft ber-watermark DRAFT, bukti registrasi resmi, versioning PDF, QR verifikasi, akses privat | **SELESAI** | Dompdf sandboxed, QR SVG minimal, integritas SHA-256 |
 | 8 | **Integrasi Sistem, UAT & Kesiapan Produksi** | End-to-end testing (7 skenario), audit keamanan menyeluruh, UAT test plan, performa/benchmark, checklist produksi, panduan backup/restore | **SELESAI** | 203 tes lulus (100%); dokumen UAT, checklist produksi, panduan deployment & backup selesai |
-| 9 | **Hostinger Staging Deployment & UAT** | Pemeriksaan Hostinger, paket deploy staging, skema MySQL bersih, panduan Hostinger & aaPanel, lembar hasil UAT | **SELESAI SECARA TEKNIS** | Paket ZIP 24MB, skema `schema_clean.sql`, panduan `HOSTINGER-STAGING-GUIDE.md` & `AAPANEL-PRODUCTION-GUIDE.md` selesai; siap uji fisik |
+| 9 | **Hostinger Staging Deployment & UAT** | Pemeriksaan Hostinger, paket deploy staging, skema MySQL bersih, panduan Hostinger & aaPanel, lembar hasil UAT | **SELESAI** | Paket ZIP 23.9MB steril, skema `schema_clean.sql`, panduan `HOSTINGER-STAGING-GUIDE.md` & `AAPANEL-PRODUCTION-GUIDE.md` selesai; siap uji fisik |
+| 10 | **Operational Docs, User Manual & SOP** | 12 buku panduan operasional (Orang Tua, Admin, Superadmin, Matriks Hak Akses, SOP Panitia, FAQ, Pedoman Privasi, Glosarium, Analisis Gap, Briefing, Quick Guide) | **SELESAI** | 12 dokumen operasional di `docs/manual/`, 100% tervalidasi terhadap kode aktual repositori, nol perubahan kode aplikasi |
 
 ---
 
@@ -81,21 +81,36 @@
 
 ## 5. DOKUMEN OPERASIONAL & KESIAPAN PRODUKSI TERSEDIA
 
-1. `docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 18 seksi implementasi Fase 9.
-2. `docs/deployment/HOSTINGER-STAGING-GUIDE.md`: Panduan langkah demi langkah staging Hostinger (`sleek-forestgreen-mink-13.hostingersite.com`).
-3. `docs/deployment/AAPANEL-PRODUCTION-GUIDE.md`: Cetak biru operasional server produksi VPS dengan aaPanel (Nginx, PHP 8.3 FPM, MariaDB, Redis, SSL, Backup, Rollback).
-4. `docs/uat/UAT-TEST-PLAN.md`: Rencana uji penerimaan pengguna (UAT) untuk kelompok Pendaftar dan Panitia/Admin.
-5. `docs/uat/UAT-RESULTS.md`: Hasil evaluasi 21 skenario UAT (100% lulus teknis otomatis, status siap uji fisik komite madrasah).
-6. `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`: Matriks evaluasi runtime PHP, batas upload, memori, ekstensi, dan konfigurasi environment.
-7. `docs/deployment/DEPLOYMENT-GUIDE.md`: Panduan langkah demi langkah deployment dan pembaruan aplikasi ke Hostinger/VPS.
-8. `docs/deployment/BACKUP-AND-RESTORE.md`: Prosedur pencadangan basis data, berkas privat, dan pemulihan bencana.
-9. `docs/audits/SECURITY-AUDIT.md`: Laporan audit keamanan 18 dimensi web application security.
-10. `docs/audits/TEST-REPORT.md`: Laporan eksekusi 203 automated test cases.
-11. `docs/audits/KNOWN-ISSUES.md`: Catatan isu terbuka, prasyarat operasional hosting, dan mitigasi.
-12. `docs/phases/PHASE-8-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 8.
+1. `docs/manual/`: Direktori 12 dokumen operasional lengkap:
+   - `README.md` (Indeks master panduan)
+   - `01-PANDUAN-ORANG-TUA-WALI.md` (Buku panduan lengkap 14 bab untuk orang tua)
+   - `02-PANDUAN-ADMIN-PPDB.md` (Buku panduan operasional panitia admin)
+   - `03-PANDUAN-SUPERADMIN.md` (Buku panduan pengelola sistem superadmin)
+   - `04-MATRIKS-ROLE-DAN-PERMISSION.md` (Matriks hak akses komprehensif)
+   - `05-SOP-OPERASIONAL-PANITIA.md` (Standar operasional prosedur kepanitiaan)
+   - `06-FAQ-DAN-TROUBLESHOOTING.md` (Tanya jawab & pemecahan masalah)
+   - `07-PEDOMAN-KEAMANAN-PENGGUNA.md` (Pedoman keamanan & privasi UU PDP)
+   - `08-ALUR-KERJA-SISTEM.md` (Diagram alur kerja Mermaid)
+   - `09-GLOSARIUM.md` (Kamus istilah sistem & madrasah)
+   - `10-DAFTAR-FITUR-DAN-GAP.md` (Analisis celah fitur & workaround)
+   - `BRIEFING-PANITIA-PPDB.md` (Ringkasan materi briefing panitia)
+   - `QUICK-GUIDE-ORANG-TUA.md` (Panduan kilat pendaftaran 3 menit)
+2. `docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 16 seksi implementasi Fase 10.
+3. `docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md`: Laporan komprehensif 18 seksi implementasi Fase 9.
+4. `docs/deployment/HOSTINGER-STAGING-GUIDE.md`: Panduan langkah demi langkah staging Hostinger (`sleek-forestgreen-mink-13.hostingersite.com`).
+5. `docs/deployment/AAPANEL-PRODUCTION-GUIDE.md`: Cetak biru operasional server produksi VPS dengan aaPanel (Nginx, PHP 8.3 FPM, MariaDB, Redis, SSL, Backup, Rollback).
+6. `docs/uat/UAT-TEST-PLAN.md`: Rencana uji penerimaan pengguna (UAT) untuk kelompok Pendaftar dan Panitia/Admin.
+7. `docs/uat/UAT-RESULTS.md`: Hasil evaluasi 21 skenario UAT (100% lulus teknis otomatis, status siap uji fisik komite madrasah).
+8. `docs/deployment/PRODUCTION-READINESS-CHECKLIST.md`: Matriks evaluasi runtime PHP, batas upload, memori, ekstensi, dan konfigurasi environment.
+9. `docs/deployment/DEPLOYMENT-GUIDE.md`: Panduan langkah demi langkah deployment dan pembaruan aplikasi ke Hostinger/VPS.
+10. `docs/deployment/BACKUP-AND-RESTORE.md`: Prosedur pencadangan basis data, berkas privat, dan pemulihan bencana.
+11. `docs/audits/SECURITY-AUDIT.md`: Laporan audit keamanan 18 dimensi web application security.
+12. `docs/audits/TEST-REPORT.md`: Laporan eksekusi 203 automated test cases.
+13. `docs/audits/KNOWN-ISSUES.md`: Catatan isu terbuka, prasyarat operasional hosting, dan mitigasi.
+14. `docs/phases/PHASE-8-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 8.
 
 ---
 
 ## 6. PROTOKOL KONDISI BERHENTI (STOP CONDITION)
 
-Fase 9 selesai secara teknis. Paket staging Hostinger siap digunakan, panduan arsitektur produksi aaPanel lengkap, seluruh pengujian otomatis (203 tes) lulus 100%, dan gaya kode bersih. Tidak ada deployment ke server produksi aaPanel yang dilakukan. Agen BERHENTI dan menunggu persetujuan tertulis dari Pemilik Proyek.
+Fase 10 selesai secara penuh. Seluruh dokumen operasional, user manual, SOP, dan laporan implementasi telah lengkap dan terverifikasi terhadap kode sumber aktual. Tidak ada perubahan pada kode sumber aplikasi. Agen BERHENTI dan menunggu persetujuan tertulis dari Pemilik Proyek.
