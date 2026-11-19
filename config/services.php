@@ -34,6 +34,7 @@ return [
         'country_code' => env('FONNTE_COUNTRY_CODE', '62'),
         'connect_timeout' => (int) env('FONNTE_CONNECT_TIMEOUT', 5),
         'timeout' => (int) env('FONNTE_TIMEOUT', 10),
+        'ssl_verify' => env('FONNTE_SSL_VERIFY', true),
     ],
 
     'slack' => [

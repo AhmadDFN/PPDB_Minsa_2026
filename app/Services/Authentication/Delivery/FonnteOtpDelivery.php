@@ -34,6 +34,7 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
         $countryCode = (string) config('services.fonnte.country_code', '62');
         $connectTimeout = (int) config('services.fonnte.connect_timeout', 5);
         $timeout = (int) config('services.fonnte.timeout', 10);
+        $sslVerify = (bool) config('services.fonnte.ssl_verify', true);
 
         $normalizedPhone = self::normalizePhone($phone);
 
@@ -50,17 +51,22 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
         $message = self::buildMessage($otp, $purpose);
 
         try {
-            $response = Http::asForm()
+            $client = Http::asForm()
                 ->withHeaders([
                     'Authorization' => $token,
                 ])
                 ->connectTimeout($connectTimeout)
-                ->timeout($timeout)
-                ->post($url, [
-                    'target' => $normalizedPhone,
-                    'message' => $message,
-                    'countryCode' => $countryCode,
-                ]);
+                ->timeout($timeout);
+
+            if (! $sslVerify) {
+                $client->withoutVerifying();
+            }
+
+            $response = $client->post($url, [
+                'target' => $normalizedPhone,
+                'message' => $message,
+                'countryCode' => $countryCode,
+            ]);
 
             if ($response->successful()) {
                 $data = $response->json();
