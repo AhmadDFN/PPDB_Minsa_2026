@@ -3,6 +3,7 @@
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureApplicant;
+use App\Http\Middleware\EnsurePasswordNotTemporary;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'active' => EnsureAccountIsActive::class,
             'applicant' => EnsureApplicant::class,
+            'ensure.password.not.temporary' => EnsurePasswordNotTemporary::class,
             'admin' => EnsureAdmin::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,

@@ -8,9 +8,7 @@ use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\OtpPurpose;
 use App\Models\User;
-use App\Models\UserOtpToken;
 use App\Services\Authentication\Delivery\ArrayOtpDelivery;
-use App\Services\Authentication\OtpDeliveryService;
 use App\Services\Authentication\OtpService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -26,10 +24,10 @@ class OtpActivationTest extends TestCase
     {
         parent::setUp();
         ArrayOtpDelivery::clear();
-        $this->otpService = new OtpService(new OtpDeliveryService(new ArrayOtpDelivery));
+        $this->otpService = app(OtpService::class);
     }
 
-    public function test_cannot_view_otp_screen_without_session(): void
+    public function test_cannot_view_otp_screen_without_activation_session(): void
     {
         $response = $this->get(route('activation.form'));
 
@@ -37,11 +35,26 @@ class OtpActivationTest extends TestCase
         $response->assertSessionHas('error');
     }
 
-    public function test_can_view_otp_screen_with_valid_session(): void
+    public function test_active_user_cannot_view_otp_screen_and_is_redirected_to_login(): void
+    {
+        $user = User::factory()->create([
+            'account_status' => AccountStatus::ACTIVE,
+            'phone_verified_at' => now(),
+        ]);
+
+        $response = $this->withSession(['activation_user_id' => $user->id])
+            ->get(route('activation.form'));
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('info');
+    }
+
+    public function test_can_view_otp_screen_with_valid_activation_session(): void
     {
         $user = User::factory()->create([
             'phone' => '081234567890',
             'account_status' => AccountStatus::PENDING_ACTIVATION,
+            'phone_verified_at' => null,
         ]);
 
         $response = $this->withSession(['activation_user_id' => $user->id])
@@ -52,12 +65,13 @@ class OtpActivationTest extends TestCase
         $response->assertSee('0812*****890');
     }
 
-    public function test_valid_otp_verifies_phone_and_advances_to_password_creation(): void
+    public function test_valid_otp_activates_account_and_dispatches_temporary_password_via_whatsapp(): void
     {
         $user = User::factory()->create([
             'phone' => '081234567890',
             'account_status' => AccountStatus::PENDING_ACTIVATION,
             'phone_verified_at' => null,
+            'account_type' => AccountType::APPLICANT,
         ]);
 
         $otpData = $this->otpService->generateAndSend($user, OtpPurpose::ACTIVATION);
@@ -67,20 +81,29 @@ class OtpActivationTest extends TestCase
                 'otp' => $otpData['plain_otp'],
             ]);
 
-        $response->assertRedirect(route('activation.password.form'));
+        $response->assertRedirect(route('login'));
         $response->assertSessionHas('success');
 
-        // Verify phone_verified_at was stamped
+        // Verify user was activated
         $user->refresh();
         $this->assertNotNull($user->phone_verified_at);
+        $this->assertSame(AccountStatus::ACTIVE, $user->account_status);
+        $this->assertTrue($user->must_change_password);
+        $this->assertNull($user->password_changed_at);
 
         // Verify token is marked verified
         $token = $otpData['token']->fresh();
         $this->assertTrue($token->isVerified());
 
-        // Verify session advanced
-        $this->assertSame($user->id, session('activation_verified_user_id'));
+        // Verify temporary password was dispatched
+        $latestPw = ArrayOtpDelivery::latestPasswordFor('081234567890');
+        $this->assertNotNull($latestPw);
+        $this->assertSame(10, strlen($latestPw));
+        $this->assertTrue(Hash::check($latestPw, $user->password));
+
+        // Session activation_user_id cleared and activated_user_id set
         $this->assertNull(session('activation_user_id'));
+        $this->assertSame($user->id, session('activated_user_id'));
     }
 
     public function test_invalid_otp_is_rejected(): void
@@ -102,64 +125,15 @@ class OtpActivationTest extends TestCase
 
         $user->refresh();
         $this->assertNull($user->phone_verified_at);
+        $this->assertSame(AccountStatus::PENDING_ACTIVATION, $user->account_status);
     }
 
-    public function test_cannot_view_password_creation_without_verified_session(): void
+    public function test_legacy_password_creation_route_redirects_to_login(): void
     {
         $response = $this->get(route('activation.password.form'));
 
-        $response->assertRedirect(route('register'));
-        $response->assertSessionHas('error');
-    }
-
-    public function test_setting_password_activates_account_and_sets_active_status(): void
-    {
-        $user = User::factory()->create([
-            'phone' => '081234567890',
-            'account_status' => AccountStatus::PENDING_ACTIVATION,
-            'phone_verified_at' => now(),
-            'account_type' => AccountType::APPLICANT,
-        ]);
-
-        $response = $this->withSession(['activation_verified_user_id' => $user->id])
-            ->post(route('activation.password.store'), [
-                'password' => 'RahasiaMinsatama2026',
-                'password_confirmation' => 'RahasiaMinsatama2026',
-            ]);
-
         $response->assertRedirect(route('login'));
-        $response->assertSessionHas('success');
-
-        $user->refresh();
-        $this->assertSame(AccountStatus::ACTIVE, $user->account_status);
-        $this->assertTrue(Hash::check('RahasiaMinsatama2026', $user->password));
-
-        // Session key cleared
-        $this->assertNull(session('activation_verified_user_id'));
-    }
-
-    public function test_setting_password_requires_minimum_8_characters_and_confirmation(): void
-    {
-        $user = User::factory()->create([
-            'account_status' => AccountStatus::PENDING_ACTIVATION,
-            'phone_verified_at' => now(),
-        ]);
-
-        // Too short (< 8)
-        $shortResponse = $this->withSession(['activation_verified_user_id' => $user->id])
-            ->post(route('activation.password.store'), [
-                'password' => '12345',
-                'password_confirmation' => '12345',
-            ]);
-        $shortResponse->assertSessionHasErrors(['password']);
-
-        // Mismatched confirmation
-        $mismatchResponse = $this->withSession(['activation_verified_user_id' => $user->id])
-            ->post(route('activation.password.store'), [
-                'password' => 'Rahasia12345',
-                'password_confirmation' => 'Beda1234567',
-            ]);
-        $mismatchResponse->assertSessionHasErrors(['password']);
+        $response->assertSessionHas('info');
     }
 
     public function test_resending_otp_dispatches_new_code_and_invalidates_old_code(): void
@@ -167,21 +141,48 @@ class OtpActivationTest extends TestCase
         $user = User::factory()->create([
             'phone' => '081234567890',
             'account_status' => AccountStatus::PENDING_ACTIVATION,
+            'phone_verified_at' => null,
         ]);
 
-        $first = $this->otpService->generateAndSend($user, OtpPurpose::ACTIVATION);
+        $firstOtp = $this->otpService->generateAndSend($user, OtpPurpose::ACTIVATION);
 
         $response = $this->withSession(['activation_user_id' => $user->id])
             ->post(route('activation.resend'));
 
+        $response->assertRedirect();
         $response->assertSessionHas('success');
 
-        $firstToken = $first['token']->fresh();
-        $this->assertTrue($firstToken->isExpired());
+        // Second OTP must exist and differ
+        $secondDispatched = ArrayOtpDelivery::latestOtpFor('081234567890');
+        $this->assertNotNull($secondDispatched);
 
-        $newestToken = UserOtpToken::where('user_id', $user->id)
-            ->latest('id')
-            ->first();
-        $this->assertNotSame($firstToken->id, $newestToken->id);
+        // Verify old OTP was expired
+        $firstToken = $firstOtp['token']->fresh();
+        $this->assertTrue($firstToken->isExpired());
+    }
+
+    public function test_can_resend_temporary_password_to_verified_applicant(): void
+    {
+        $user = User::factory()->create([
+            'phone' => '081234567890',
+            'account_status' => AccountStatus::ACTIVE,
+            'phone_verified_at' => now(),
+            'account_type' => AccountType::APPLICANT,
+            'must_change_password' => true,
+            'password' => Hash::make('OldTemp1234'),
+        ]);
+
+        $response = $this->withSession(['activated_user_id' => $user->id])
+            ->post(route('activation.resend_password'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $user->refresh();
+        $newPw = ArrayOtpDelivery::latestPasswordFor('081234567890');
+        $this->assertNotNull($newPw);
+        $this->assertNotSame('OldTemp1234', $newPw);
+        $this->assertTrue(Hash::check($newPw, $user->password));
+        $this->assertFalse(Hash::check('OldTemp1234', $user->password));
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
+use App\Http\Controllers\Admin\SystemSettingController;
+use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
 use App\Http\Controllers\Applicant\DashboardController;
 use App\Http\Controllers\Applicant\DocumentController;
 use App\Http\Controllers\Applicant\RegistrationFormController;
@@ -62,36 +64,43 @@ Route::get('/verifikasi/bukti-pendaftaran/{token}', [RegistrationPdfVerification
 
 // Protected Applicant Area
 Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('applicant.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Mandatory Password Change (accessible even when on temporary password)
+    Route::get('/ganti-password', [ApplicantPasswordChangeController::class, 'show'])->name('password.change');
+    Route::post('/ganti-password', [ApplicantPasswordChangeController::class, 'update'])->name('password.change.update');
 
-    // Multi-Step Registration Profile Forms
-    Route::get('/biodata', [RegistrationFormController::class, 'editBiodata'])->name('biodata.edit');
-    Route::post('/biodata', [RegistrationFormController::class, 'updateBiodata'])->name('biodata.update');
+    // Portal Features (guarded by ensure.password.not.temporary)
+    Route::middleware('ensure.password.not.temporary')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/alamat', [RegistrationFormController::class, 'editAddress'])->name('address.edit');
-    Route::post('/alamat', [RegistrationFormController::class, 'updateAddress'])->name('address.update');
+        // Multi-Step Registration Profile Forms
+        Route::get('/biodata', [RegistrationFormController::class, 'editBiodata'])->name('biodata.edit');
+        Route::post('/biodata', [RegistrationFormController::class, 'updateBiodata'])->name('biodata.update');
 
-    Route::get('/orang-tua', [RegistrationFormController::class, 'editParents'])->name('parents.edit');
-    Route::post('/orang-tua', [RegistrationFormController::class, 'updateParents'])->name('parents.update');
+        Route::get('/alamat', [RegistrationFormController::class, 'editAddress'])->name('address.edit');
+        Route::post('/alamat', [RegistrationFormController::class, 'updateAddress'])->name('address.update');
 
-    Route::get('/pendidikan', [RegistrationFormController::class, 'editEducation'])->name('education.edit');
-    Route::post('/pendidikan', [RegistrationFormController::class, 'updateEducation'])->name('education.update');
+        Route::get('/orang-tua', [RegistrationFormController::class, 'editParents'])->name('parents.edit');
+        Route::post('/orang-tua', [RegistrationFormController::class, 'updateParents'])->name('parents.update');
 
-    Route::get('/program', [RegistrationFormController::class, 'editProgram'])->name('program.edit');
-    Route::post('/program', [RegistrationFormController::class, 'updateProgram'])->name('program.update');
+        Route::get('/pendidikan', [RegistrationFormController::class, 'editEducation'])->name('education.edit');
+        Route::post('/pendidikan', [RegistrationFormController::class, 'updateEducation'])->name('education.update');
 
-    Route::get('/pendaftaran/tinjau', [RegistrationReviewController::class, 'show'])->name('registration.review');
-    Route::post('/pendaftaran/kirim', [RegistrationSubmissionController::class, 'store'])->name('registration.submit');
-    Route::post('/pendaftaran/pdf/draft', [RegistrationPdfController::class, 'storeDraft'])->middleware('throttle:5,1')->name('registration.pdf.draft');
-    Route::post('/pendaftaran/pdf/final', [RegistrationPdfController::class, 'storeFinal'])->middleware('throttle:5,1')->name('registration.pdf.final');
-    Route::get('/pendaftaran/pdf/{pdfVersion}/unduh', [RegistrationPdfController::class, 'download'])->name('registration.pdf.download');
+        Route::get('/program', [RegistrationFormController::class, 'editProgram'])->name('program.edit');
+        Route::post('/program', [RegistrationFormController::class, 'updateProgram'])->name('program.update');
 
-    Route::get('/dokumen', [DocumentController::class, 'index'])->name('documents.index');
-    Route::post('/dokumen/{requirementId}', [DocumentController::class, 'upload'])->name('documents.upload');
-    Route::get('/dokumen/{documentId}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
-    Route::get('/dokumen/{documentId}/download', [DocumentController::class, 'download'])->name('documents.download');
-    Route::get('/dokumen/{documentId}/revisi/{revisionId}/preview', [DocumentController::class, 'previewRevision'])->name('documents.revisions.preview');
-    Route::get('/dokumen/{documentId}/revisi/{revisionId}/download', [DocumentController::class, 'downloadRevision'])->name('documents.revisions.download');
+        Route::get('/pendaftaran/tinjau', [RegistrationReviewController::class, 'show'])->name('registration.review');
+        Route::post('/pendaftaran/kirim', [RegistrationSubmissionController::class, 'store'])->name('registration.submit');
+        Route::post('/pendaftaran/pdf/draft', [RegistrationPdfController::class, 'storeDraft'])->middleware('throttle:5,1')->name('registration.pdf.draft');
+        Route::post('/pendaftaran/pdf/final', [RegistrationPdfController::class, 'storeFinal'])->middleware('throttle:5,1')->name('registration.pdf.final');
+        Route::get('/pendaftaran/pdf/{pdfVersion}/unduh', [RegistrationPdfController::class, 'download'])->name('registration.pdf.download');
+
+        Route::get('/dokumen', [DocumentController::class, 'index'])->name('documents.index');
+        Route::post('/dokumen/{requirementId}', [DocumentController::class, 'upload'])->name('documents.upload');
+        Route::get('/dokumen/{documentId}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
+        Route::get('/dokumen/{documentId}/download', [DocumentController::class, 'download'])->name('documents.download');
+        Route::get('/dokumen/{documentId}/revisi/{revisionId}/preview', [DocumentController::class, 'previewRevision'])->name('documents.revisions.preview');
+        Route::get('/dokumen/{documentId}/revisi/{revisionId}/download', [DocumentController::class, 'downloadRevision'])->name('documents.revisions.download');
+    });
 });
 
 // Protected Administrator Area
@@ -107,6 +116,11 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
         ->middleware('can:view_dashboard')
         ->name('dashboard');
+
+    Route::middleware('can:manage_system_settings')->group(function () {
+        Route::get('/pengaturan', [SystemSettingController::class, 'index'])->name('settings.index');
+        Route::post('/pengaturan', [SystemSettingController::class, 'update'])->name('settings.update');
+    });
 
     Route::middleware('can:reopen_registration')->group(function () {
         Route::get('/registrations', [RegistrationReopenController::class, 'index'])->name('registrations.index');

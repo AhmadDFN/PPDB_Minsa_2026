@@ -16,6 +16,13 @@ class ArrayOtpDelivery implements OtpDeliveryInterface
      */
     protected static array $dispatched = [];
 
+    /**
+     * In-memory store of dispatched temporary passwords.
+     *
+     * @var list<array{phone: string, temporary_password: string, user_id: int, registration_number: string, is_resend: bool}>
+     */
+    protected static array $dispatchedPasswords = [];
+
     public function send(string $phone, string $otp, string $purpose, User $user): bool
     {
         self::$dispatched[] = [
@@ -23,6 +30,24 @@ class ArrayOtpDelivery implements OtpDeliveryInterface
             'otp' => $otp,
             'purpose' => $purpose,
             'user_id' => $user->id,
+        ];
+
+        return true;
+    }
+
+    public function sendTemporaryPassword(
+        string $phone,
+        string $temporaryPassword,
+        User $user,
+        string $registrationNumber,
+        bool $isResend = false
+    ): bool {
+        self::$dispatchedPasswords[] = [
+            'phone' => $phone,
+            'temporary_password' => $temporaryPassword,
+            'user_id' => $user->id,
+            'registration_number' => $registrationNumber,
+            'is_resend' => $isResend,
         ];
 
         return true;
@@ -43,6 +68,20 @@ class ArrayOtpDelivery implements OtpDeliveryInterface
     }
 
     /**
+     * Get the latest temporary password sent to a specific phone number.
+     */
+    public static function latestPasswordFor(string $phone): ?string
+    {
+        for ($i = count(self::$dispatchedPasswords) - 1; $i >= 0; $i--) {
+            if (self::$dispatchedPasswords[$i]['phone'] === $phone) {
+                return self::$dispatchedPasswords[$i]['temporary_password'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get all dispatched OTP entries.
      *
      * @return list<array{phone: string, otp: string, purpose: string, user_id: int}>
@@ -53,10 +92,21 @@ class ArrayOtpDelivery implements OtpDeliveryInterface
     }
 
     /**
-     * Clear the dispatched store.
+     * Get all dispatched password entries.
+     *
+     * @return list<array{phone: string, temporary_password: string, user_id: int, registration_number: string, is_resend: bool}>
+     */
+    public static function allPasswords(): array
+    {
+        return self::$dispatchedPasswords;
+    }
+
+    /**
+     * Clear all recorded deliveries.
      */
     public static function clear(): void
     {
         self::$dispatched = [];
+        self::$dispatchedPasswords = [];
     }
 }

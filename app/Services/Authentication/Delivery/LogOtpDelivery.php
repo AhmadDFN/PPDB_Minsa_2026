@@ -6,33 +6,33 @@ namespace App\Services\Authentication\Delivery;
 
 use App\Contracts\OtpDeliveryInterface;
 use App\Models\User;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
 class LogOtpDelivery implements OtpDeliveryInterface
 {
-    /**
-     * Send OTP by writing to application log (development/testing only).
-     * In production, the plaintext OTP is NEVER written to logs.
-     */
     public function send(string $phone, string $otp, string $purpose, User $user): bool
     {
-        if (App::isProduction()) {
-            Log::info('Permintaan pengiriman OTP dicatat (mode produksi). Plaintext OTP dirahasiakan.', [
-                'user_id' => $user->id,
-                'purpose' => $purpose,
-                'phone_masked' => substr($phone, 0, 4).'****'.substr($phone, -3),
-            ]);
-
-            return true;
-        }
-
-        // Non-production: log clearly for developer convenience
-        Log::info('[DEV OTP SIMULATOR] Kode Verifikasi PPDB MIN 1 Kota Madiun', [
+        Log::info('Dispatched OTP code via LOG driver.', [
             'user_id' => $user->id,
-            'phone' => $phone,
-            'otp' => $otp,
+            'phone_masked' => FonnteOtpDelivery::maskPhone($phone),
             'purpose' => $purpose,
+        ]);
+
+        return true;
+    }
+
+    public function sendTemporaryPassword(
+        string $phone,
+        string $temporaryPassword,
+        User $user,
+        string $registrationNumber,
+        bool $isResend = false
+    ): bool {
+        Log::info('Dispatched temporary password via LOG driver.', [
+            'user_id' => $user->id,
+            'phone_masked' => FonnteOtpDelivery::maskPhone($phone),
+            'registration_number' => $registrationNumber,
+            'is_resend' => $isResend,
         ]);
 
         return true;

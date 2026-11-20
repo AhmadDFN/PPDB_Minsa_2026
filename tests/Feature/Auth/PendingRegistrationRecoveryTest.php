@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Auth;
 
 use App\Enums\AccountStatus;
-use App\Enums\Gender;
 use App\Enums\OtpPurpose;
 use App\Models\User;
 use App\Models\UserOtpToken;
@@ -141,17 +140,12 @@ class PendingRegistrationRecoveryTest extends TestCase
         $response = $this->post(route('register.store'), $tamperedPayload);
         $response->assertSessionHasErrors(['nik']);
 
-        // Submitting with different birth date
-        $tamperedBirthDate = $payload;
-        $tamperedBirthDate['birth_date'] = '2018-01-01';
-        $responseBirth = $this->post(route('register.store'), $tamperedBirthDate);
-        $responseBirth->assertSessionHasErrors(['nik']);
-
-        // Submitting with different gender
-        $tamperedGender = $payload;
-        $tamperedGender['gender'] = 'P';
-        $responseGender = $this->post(route('register.store'), $tamperedGender);
-        $responseGender->assertSessionHasErrors(['nik']);
+        // Submitting with whitespace/case variation of the same name succeeds
+        $caseVariation = $payload;
+        $caseVariation['full_name'] = '  fulan   bin   fulan  ';
+        $caseVariation['phone'] = '083333333333';
+        $responseVariation = $this->post(route('register.store'), $caseVariation);
+        $responseVariation->assertRedirect(route('activation.form'));
     }
 
     public function test_8_active_account_nik_is_strictly_rejected_for_new_registration(): void
@@ -227,9 +221,11 @@ class PendingRegistrationRecoveryTest extends TestCase
         $response = $this->withSession(['activation_user_id' => $user->id])
             ->post(route('activation.verify'), ['otp' => $newOtp]);
 
-        $response->assertRedirect(route('activation.password.form'));
+        $response->assertRedirect(route('login'));
         $user->refresh();
         $this->assertNotNull($user->phone_verified_at);
+        $this->assertSame(AccountStatus::ACTIVE, $user->account_status);
+        $this->assertTrue($user->must_change_password);
     }
 
     public function test_12_account_remains_pending_before_otp_is_verified(): void

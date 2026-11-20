@@ -123,7 +123,9 @@ class SubmitRegistrationAction
                 throw new RuntimeException('Pernyataan dan versi persetujuan pendaftaran belum dikonfigurasi.');
             }
 
-            $registrationNumber = $this->numberGenerator->next($periodProgram);
+            if (empty($registration->registration_number)) {
+                $registration->registration_number = $this->numberGenerator->generateForPeriod($period);
+            }
 
             $registration->consent()->updateOrCreate(
                 ['registration_id' => $registration->id],
@@ -138,7 +140,6 @@ class SubmitRegistrationAction
                 ],
             );
 
-            $registration->registration_number = $registrationNumber;
             $registration->status = RegistrationStatus::SUBMITTED;
             $registration->submitted_at = now();
             $registration->save();

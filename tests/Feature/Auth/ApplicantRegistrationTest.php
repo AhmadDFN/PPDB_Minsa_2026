@@ -6,7 +6,6 @@ namespace Tests\Feature\Auth;
 
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
-use App\Enums\Gender;
 use App\Models\Applicant;
 use App\Models\User;
 use App\Services\Authentication\Delivery\ArrayOtpDelivery;
@@ -40,9 +39,6 @@ class ApplicantRegistrationTest extends TestCase
         $response->assertSessionHasErrors([
             'nik',
             'full_name',
-            'gender',
-            'birth_place',
-            'birth_date',
             'phone',
             'consent',
         ]);
@@ -97,9 +93,9 @@ class ApplicantRegistrationTest extends TestCase
         $applicant = Applicant::where('user_id', $user->id)->first();
         $this->assertNotNull($applicant);
         $this->assertSame('Fulan bin Fulan', $applicant->full_name);
-        $this->assertSame(Gender::MALE, $applicant->gender);
-        $this->assertSame('Kota Madiun', $applicant->birth_place);
-        $this->assertSame('2019-03-20', $applicant->birth_date->format('Y-m-d'));
+        $this->assertNull($applicant->gender);
+        $this->assertNull($applicant->birth_place);
+        $this->assertNull($applicant->birth_date);
 
         // Verify OTP was dispatched via delivery abstraction
         $dispatchedOtp = ArrayOtpDelivery::latestOtpFor('081234567890');

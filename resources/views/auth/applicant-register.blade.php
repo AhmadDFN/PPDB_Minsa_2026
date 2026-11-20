@@ -1,15 +1,13 @@
-<x-layouts.app title="Pendaftaran Akun Baru — PPDB MIN 1 Kota Madiun">
+<x-layouts.app title="Pendaftaran Akun Baru — {{ \App\Models\SystemSetting::getInstitutionName() }}">
     <div class="min-h-[calc(100vh-16rem)] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-xl">
             <!-- Header Brand Card -->
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-50 text-primary-600 shadow-sm border border-primary-100 mb-4">
-                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
+                <div class="inline-flex items-center justify-center w-20 h-20 mb-3">
+                    <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain drop-shadow-xs">
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-neutral-800 tracking-tight">Pendaftaran Akun Baru</h1>
-                <p class="mt-2 text-sm text-neutral-600">Sistem Informasi PPDB MIN 1 Kota Madiun</p>
+                <p class="mt-2 text-sm text-neutral-600">{{ \App\Models\SystemSetting::getInstitutionName() }}</p>
             </div>
 
             <!-- Notification Messages -->
@@ -37,9 +35,10 @@
                         <svg class="w-5 h-5 text-primary-700 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <div class="text-xs text-primary-900 leading-relaxed">
-                            <p class="font-semibold mb-1">Panduan Pendaftaran Awal:</p>
-                            <p>Satu akun mewakili satu calon siswa. Masukkan NIK calon siswa sesuai dengan <strong>Kartu Keluarga (KK)</strong> atau <strong>Akta Kelahiran</strong>. NIK akan digunakan sebagai username untuk masuk ke sistem.</p>
+                        <div class="text-xs text-primary-900 leading-relaxed space-y-1">
+                            <p class="font-semibold">Panduan Pendaftaran Awal:</p>
+                            <p>Cukup masukkan NIK dan nama lengkap calon siswa sesuai <strong>Kartu Keluarga (KK) / Akta Kelahiran</strong>, serta nomor WhatsApp aktif.</p>
+                            <p class="text-primary-800">Setelah kode OTP WhatsApp berhasil diverifikasi, sistem akan <strong>otomatis membuat kata sandi sementara</strong> dan mengirimkannya ke WhatsApp Anda.</p>
                         </div>
                     </div>
                 </div>
@@ -67,47 +66,20 @@
                         type="text"
                         placeholder="Nama lengkap calon siswa sesuai Akta Kelahiran"
                         required
-                        help="Gunakan huruf kapital sesuai akta kelahiran resmi."
+                        help="Gunakan nama lengkap resmi sesuai dokumen kependudukan."
                     />
 
-                    <!-- Jenis Kelamin -->
-                    <x-forms.select
-                        name="gender"
-                        label="Jenis Kelamin"
-                        placeholder="-- Pilih Jenis Kelamin --"
-                        :options="['L' => 'Laki-laki', 'P' => 'Perempuan']"
-                        required
-                    />
-
-                    <!-- Tempat & Tanggal Lahir -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <x-forms.input
-                            name="birth_place"
-                            label="Tempat Lahir"
-                            type="text"
-                            placeholder="Kota / Kabupaten lahir"
-                            required
-                        />
-
-                        <x-forms.input
-                            name="birth_date"
-                            label="Tanggal Lahir"
-                            type="date"
-                            required
-                        />
-                    </div>
-
-                    <!-- Nomor Telepon / WhatsApp Orang Tua -->
+                    <!-- Nomor WhatsApp Orang Tua / Wali -->
                     <x-forms.input
                         name="phone"
                         label="Nomor WhatsApp Orang Tua / Wali"
                         type="tel"
                         placeholder="Contoh: 081234567890"
                         required
-                        help="Nomor aktif untuk pengiriman kode OTP verifikasi dan informasi pendaftaran."
+                        help="Nomor WhatsApp aktif untuk menerima kode OTP verifikasi dan kata sandi masuk."
                     />
 
-                    <!-- Pernyataan Persetujuan -->
+                    <!-- Pernyataan Persetujuan Kebenaran Data -->
                     <div class="pt-2">
                         <label class="flex items-start gap-3 cursor-pointer">
                             <input
@@ -119,7 +91,7 @@
                                 required
                             />
                             <span class="text-xs text-neutral-600 leading-relaxed">
-                                Saya menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan sesuai dokumen resmi, serta menyetujui ketentuan pendaftaran PPDB MIN 1 Kota Madiun. <span class="text-red-500 font-bold">*</span>
+                                Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan. <span class="text-red-500 font-bold">*</span>
                             </span>
                         </label>
                         <x-forms.error name="consent" />
@@ -128,7 +100,7 @@
                     <!-- Submit Button -->
                     <div class="pt-3">
                         <x-ui.button type="submit" variant="primary" class="w-full justify-center py-3 text-base shadow-md font-semibold">
-                            Lanjut ke Verifikasi OTP &rarr;
+                            Daftar & Kirim Kode OTP &rarr;
                         </x-ui.button>
                     </div>
                 </form>
@@ -145,4 +117,3 @@
         </div>
     </div>
 </x-layouts.app>
-

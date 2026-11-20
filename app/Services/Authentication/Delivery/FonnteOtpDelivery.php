@@ -6,6 +6,7 @@ namespace App\Services\Authentication\Delivery;
 
 use App\Contracts\OtpDeliveryInterface;
 use App\Enums\OtpPurpose;
+use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
@@ -48,7 +49,7 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
             return false;
         }
 
-        $message = self::buildMessage($otp, $purpose);
+        $message = self::buildMessage($otp, $purpose, $user);
 
         try {
             $client = Http::asForm()
@@ -117,8 +118,6 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
 
             return false;
         } catch (ConnectionException) {
-            // Ambiguous condition: connection timed out or network failed.
-            // Do NOT retry automatically to avoid duplicate messages.
             Log::warning('Fonnte OTP delivery connection timed out or unreachable. Message status ambiguous.', [
                 'user_id' => $user->id,
                 'purpose' => $purpose,
@@ -130,6 +129,124 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
             Log::error('Fonnte OTP delivery encountered unexpected exception.', [
                 'user_id' => $user->id,
                 'purpose' => $purpose,
+                'phone_masked' => self::maskPhone($phone),
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
+     * Send temporary password in a SEPARATE message to the verified recipient WhatsApp number.
+     */
+    public function sendTemporaryPassword(
+        string $phone,
+        string $temporaryPassword,
+        User $user,
+        string $registrationNumber,
+        bool $isResend = false
+    ): bool {
+        $token = config('services.fonnte.token');
+
+        if (empty($token) || ! is_string($token)) {
+            Log::error('Fonnte temporary password delivery failed: FONNTE_TOKEN is not configured.', [
+                'user_id' => $user->id,
+            ]);
+
+            return false;
+        }
+
+        $url = (string) config('services.fonnte.url', 'https://api.fonnte.com/send');
+        $countryCode = (string) config('services.fonnte.country_code', '62');
+        $connectTimeout = (int) config('services.fonnte.connect_timeout', 5);
+        $timeout = (int) config('services.fonnte.timeout', 10);
+        $sslVerify = (bool) config('services.fonnte.ssl_verify', true);
+
+        $normalizedPhone = self::normalizePhone($phone);
+
+        if (! self::isValidIndonesianPhone($normalizedPhone)) {
+            Log::warning('Fonnte temporary password delivery rejected: Invalid phone number format.', [
+                'user_id' => $user->id,
+                'phone_masked' => self::maskPhone($phone),
+            ]);
+
+            return false;
+        }
+
+        $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $isResend);
+
+        try {
+            $client = Http::asForm()
+                ->withHeaders([
+                    'Authorization' => $token,
+                ])
+                ->connectTimeout($connectTimeout)
+                ->timeout($timeout);
+
+            if (! $sslVerify) {
+                $client->withoutVerifying();
+            }
+
+            $response = $client->post($url, [
+                'target' => $normalizedPhone,
+                'message' => $message,
+                'countryCode' => $countryCode,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (! is_array($data)) {
+                    Log::error('Fonnte temporary password delivery failed: Response is not valid JSON.', [
+                        'user_id' => $user->id,
+                        'phone_masked' => self::maskPhone($phone),
+                        'http_status' => $response->status(),
+                    ]);
+
+                    return false;
+                }
+
+                $status = $data['status'] ?? null;
+                $isSuccess = ($status === true || $status === 'true' || (is_string($status) && strtolower($status) === 'true'));
+
+                if ($isSuccess) {
+                    Log::info('Fonnte temporary password message accepted by provider.', [
+                        'user_id' => $user->id,
+                        'phone_masked' => self::maskPhone($phone),
+                        'is_resend' => $isResend,
+                    ]);
+
+                    return true;
+                }
+
+                $reason = $data['reason'] ?? $data['message'] ?? 'Unknown provider rejection';
+
+                Log::warning('Fonnte temporary password delivery rejected by provider.', [
+                    'user_id' => $user->id,
+                    'phone_masked' => self::maskPhone($phone),
+                    'reason' => (string) $reason,
+                ]);
+
+                return false;
+            }
+
+            Log::error('Fonnte temporary password delivery failed with HTTP error.', [
+                'user_id' => $user->id,
+                'phone_masked' => self::maskPhone($phone),
+                'http_status' => $response->status(),
+            ]);
+
+            return false;
+        } catch (ConnectionException) {
+            Log::warning('Fonnte temporary password delivery connection timed out or unreachable.', [
+                'user_id' => $user->id,
+                'phone_masked' => self::maskPhone($phone),
+            ]);
+
+            return false;
+        } catch (Throwable) {
+            Log::error('Fonnte temporary password delivery encountered unexpected exception.', [
+                'user_id' => $user->id,
                 'phone_masked' => self::maskPhone($phone),
             ]);
 
@@ -165,7 +282,6 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
      */
     public static function isValidIndonesianPhone(string $normalizedPhone): bool
     {
-        // Must start with 628 and have 10 to 16 total digits
         return (bool) preg_match('/^628[0-9]{8,13}$/', $normalizedPhone);
     }
 
@@ -185,14 +301,46 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
     }
 
     /**
-     * Build localized professional message template based on purpose.
+     * Build localized professional OTP message template based on purpose and system settings.
      */
-    public static function buildMessage(string $otp, string $purpose): string
+    public static function buildMessage(string $otp, string $purpose, ?User $user = null): string
     {
+        $brandName = SystemSetting::getInstitutionName();
+
         if ($purpose === OtpPurpose::PASSWORD_RESET->value || $purpose === 'password_reset') {
-            return "PPDB ONLINE MIN 1 KOTA MADIUN\n\nAssalamu'alaikum.\n\nKode OTP untuk pemulihan kata sandi akun Anda:\n\n{$otp}\n\nKode berlaku selama 5 menit.\nJangan berikan kode ini kepada siapa pun.\n\nApabila Anda tidak merasa melakukan permintaan ini, abaikan pesan ini.\n\nTerima kasih.\nPPDB MIN 1 KOTA MADIUN";
+            return "{$brandName}\n\nKode OTP untuk pemulihan kata sandi akun Anda:\n\n{$otp}\n\nKode berlaku selama 5 menit.\nJangan berikan kode ini kepada siapa pun.\n\nTerima kasih.";
         }
 
-        return "PPDB ONLINE MIN 1 KOTA MADIUN\n\nAssalamu'alaikum.\n\nKode OTP untuk aktivasi akun PPDB Anda:\n\n{$otp}\n\nKode berlaku selama 5 menit.\nJangan berikan kode ini kepada siapa pun.\n\nApabila Anda tidak merasa melakukan permintaan ini, abaikan pesan ini.\n\nTerima kasih.\nPPDB MIN 1 KOTA MADIUN";
+        $regNumber = '—';
+        $maskedNik = '—';
+        $applicantName = 'Calon Siswa';
+
+        if ($user) {
+            $maskedNik = $user->getMaskedNik();
+            $applicant = $user->applicant;
+            if ($applicant) {
+                $applicantName = $applicant->full_name ?: $user->name;
+                $registration = $applicant->registrations()->latest()->first();
+                if ($registration && $registration->registration_number) {
+                    $regNumber = $registration->registration_number;
+                }
+            }
+        }
+
+        return "{$brandName}\n\nKode OTP aktivasi akun PPDB Anda:\n\n{$otp}\n\nNomor Pendaftaran: {$regNumber}\nNIK: {$maskedNik}\nNama Lengkap: {$applicantName}\n\nKode berlaku selama 5 menit.\nJangan berikan kode ini kepada siapa pun.\n\nTerima kasih.";
+    }
+
+    /**
+     * Build temporary password message template (Template B / C).
+     */
+    public static function buildTemporaryPasswordMessage(string $temporaryPassword, string $registrationNumber, bool $isResend = false): string
+    {
+        $brandName = SystemSetting::getInstitutionName();
+
+        if ($isResend) {
+            return "{$brandName}\n\nBerikut password sementara baru untuk akun PPDB Anda:\n\nPassword: {$temporaryPassword}\n\nNomor Pendaftaran: {$registrationNumber}\n\nPassword sebelumnya sudah tidak berlaku lagi.\nGunakan NIK anak sebagai username login.\n\nPassword ini wajib diganti saat pertama kali login.\n\nJangan berikan password kepada siapa pun.";
+        }
+
+        return "{$brandName}\n\nVerifikasi akun PPDB Anda berhasil.\n\nBerikut password sementara untuk masuk ke aplikasi:\n\nPassword: {$temporaryPassword}\n\nNomor Pendaftaran: {$registrationNumber}\n\nGunakan NIK anak sebagai username login.\n\nPassword ini wajib diganti saat pertama kali login.\n\nJangan berikan password kepada siapa pun.";
     }
 }

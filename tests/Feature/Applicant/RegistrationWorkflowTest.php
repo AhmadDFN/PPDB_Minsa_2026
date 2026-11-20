@@ -273,7 +273,7 @@ class RegistrationWorkflowTest extends TestCase
 
         $registration = $data['registration']->fresh();
         $this->assertSame(RegistrationStatus::SUBMITTED, $registration->status);
-        $this->assertSame('PPDB/2026-2027/REGULER/00001', $registration->registration_number);
+        $this->assertSame('27001', $registration->registration_number);
         $this->assertNotNull($registration->submitted_at);
         $this->assertSame(1, $registration->data_revision);
 
@@ -317,7 +317,7 @@ class RegistrationWorkflowTest extends TestCase
         $this->assertSame($submittedAt, $registration->submitted_at?->toISOString());
         $this->assertDatabaseCount('registration_consents', 1);
         $this->assertDatabaseCount('registration_logs', 1);
-        $this->assertDatabaseCount('registration_number_sequences', 1);
+        $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 
     public function test_sequence_is_unique_and_increments_within_the_same_period_program(): void
@@ -337,9 +337,9 @@ class RegistrationWorkflowTest extends TestCase
             ])->assertRedirect(route('applicant.registration.review'));
         }
 
-        $this->assertSame('PPDB/2026-2027/REGULER/00001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('PPDB/2026-2027/REGULER/00002', $second['registration']->fresh()->registration_number);
-        $this->assertDatabaseCount('registration_number_sequences', 1);
+        $this->assertSame('27001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('27002', $second['registration']->fresh()->registration_number);
+        $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 
     public function test_registration_number_sequence_is_scoped_to_each_program(): void
@@ -355,9 +355,9 @@ class RegistrationWorkflowTest extends TestCase
             ])->assertRedirect(route('applicant.registration.review'));
         }
 
-        $this->assertSame('PPDB/2026-2027/REGULER/00001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('PPDB/2026-2027/UNGGULAN/00001', $second['registration']->fresh()->registration_number);
-        $this->assertDatabaseCount('registration_number_sequences', 2);
+        $this->assertSame('27001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('27002', $second['registration']->fresh()->registration_number);
+        $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 
     public function test_registration_number_sequence_does_not_reset_across_periods_in_the_same_academic_year(): void
@@ -395,9 +395,9 @@ class RegistrationWorkflowTest extends TestCase
             ])->assertRedirect(route('applicant.registration.review'));
         }
 
-        $this->assertSame('PPDB/2026-2027/REGULER/00001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('PPDB/2026-2027/REGULER/00002', $second['registration']->fresh()->registration_number);
-        $this->assertDatabaseCount('registration_number_sequences', 1);
+        $this->assertSame('27001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('27002', $second['registration']->fresh()->registration_number);
+        $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 
     public function test_migration_backfills_the_highest_legacy_sequence_per_academic_year_and_program(): void

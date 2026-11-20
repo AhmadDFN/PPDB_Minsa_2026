@@ -1,21 +1,25 @@
-<x-layouts.app title="Masuk Calon Siswa — PPDB MIN 1 Kota Madiun">
+<x-layouts.app title="Masuk Calon Siswa — {{ \App\Models\SystemSetting::getInstitutionName() }}">
     <div class="min-h-[calc(100vh-16rem)] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
             <!-- Header Brand -->
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-50 text-primary-600 shadow-sm border border-primary-100 mb-4">
-                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
+                <div class="inline-flex items-center justify-center w-20 h-20 mb-3">
+                    <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain drop-shadow-xs">
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-neutral-800 tracking-tight">Masuk Akun Calon Siswa</h1>
-                <p class="mt-2 text-sm text-neutral-600">Gunakan NIK calon siswa dan kata sandi yang telah dibuat</p>
+                <p class="mt-2 text-sm text-neutral-600">Gunakan NIK calon siswa dan kata sandi yang telah dikirimkan ke WhatsApp</p>
             </div>
 
             <!-- Notifications -->
             @if (session('success'))
                 <div class="mb-5">
                     <x-ui.alert type="success" dismissible>{{ session('success') }}</x-ui.alert>
+                </div>
+            @endif
+
+            @if (session('warning'))
+                <div class="mb-5">
+                    <x-ui.alert type="warning" dismissible>{{ session('warning') }}</x-ui.alert>
                 </div>
             @endif
 
@@ -104,13 +108,23 @@
                     </div>
                 </form>
 
-                <div class="mt-6 pt-6 border-t border-neutral-100 text-center">
-                    <p class="text-sm text-neutral-600">
+                <div class="mt-6 pt-6 border-t border-neutral-100 flex flex-col gap-2 text-center text-xs text-neutral-600">
+                    <div>
+                        Belum menerima password sementara dari WhatsApp?
+                        <form method="POST" action="{{ route('activation.resend_password') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="font-semibold text-primary-600 hover:text-primary-700 hover:underline">
+                                Kirim ulang ke WhatsApp
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="pt-2 border-t border-neutral-50 text-sm">
                         Belum memiliki akun pendaftaran?
                         <a href="{{ route('register') }}" class="font-semibold text-primary-600 hover:text-primary-700 underline underline-offset-2">
                             Daftar Sekarang
                         </a>
-                    </p>
+                    </div>
                 </div>
             </x-ui.card>
         </div>
@@ -126,4 +140,3 @@
         }
     </script>
 </x-layouts.app>
-

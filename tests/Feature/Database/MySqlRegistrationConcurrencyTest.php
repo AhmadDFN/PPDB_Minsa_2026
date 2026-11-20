@@ -18,6 +18,7 @@ use App\Models\Program;
 use App\Models\Registration;
 use App\Models\RegistrationLog;
 use App\Models\User;
+use App\Services\Registration\RegistrationNumberGeneratorService;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -91,6 +92,7 @@ class MySqlRegistrationConcurrencyTest extends TestCase
 
         config(['database.default' => 'mysql_test']);
         DB::purge();
+        DB::table('yearly_registration_sequences')->delete();
     }
 
     protected function tearDown(): void
@@ -100,6 +102,7 @@ class MySqlRegistrationConcurrencyTest extends TestCase
             && config('database.default') === 'mysql_test'
             && config('database.connections.mysql_test.database') === self::TEST_DATABASE
         ) {
+            DB::table('yearly_registration_sequences')->delete();
             Registration::query()->whereIn('applicant_id', $this->applicantIds)->delete();
             foreach ($this->registrationSequenceScopes as $scope) {
                 DB::table('registration_number_sequences')
@@ -121,12 +124,12 @@ class MySqlRegistrationConcurrencyTest extends TestCase
 
         $results = $this->runWorkers([$registration->id, $registration->id]);
 
+        $intakeYear = app(RegistrationNumberGeneratorService::class)->extractIntakeYear($registration->admissionPeriod);
         $this->assertSame($results[0]['registration_number'], $results[1]['registration_number']);
         $this->assertSame(RegistrationStatus::SUBMITTED->value, $results[0]['status']);
         $this->assertDatabaseCount('registration_consents', 1);
         $this->assertDatabaseCount('registration_logs', 1);
-        $this->assertDatabaseCount('registration_number_sequences', 1);
-        $this->assertSame(1, (int) DB::table('registration_number_sequences')->value('last_sequence'));
+        $this->assertSame(1, (int) DB::table('yearly_registration_sequences')->where('intake_year', $intakeYear)->value('last_sequence'));
     }
 
     public function test_parallel_applicants_for_one_period_and_program_receive_distinct_sequential_numbers(): void
@@ -142,16 +145,19 @@ class MySqlRegistrationConcurrencyTest extends TestCase
         $numbers = array_column($results, 'registration_number');
         sort($numbers);
 
+        $intakeYear = app(RegistrationNumberGeneratorService::class)->extractIntakeYear($firstRegistration->admissionPeriod);
+        $prefix = substr($intakeYear, -2);
+
         $this->assertSame(
             [
-                'PPDB/'.str_replace('/', '-', $firstRegistration->admissionPeriod->academic_year).'/REGULER/00001',
-                'PPDB/'.str_replace('/', '-', $firstRegistration->admissionPeriod->academic_year).'/REGULER/00002',
+                $prefix.'001',
+                $prefix.'002',
             ],
             $numbers,
         );
         $this->assertDatabaseCount('registration_consents', 2);
         $this->assertDatabaseCount('registration_logs', 2);
-        $this->assertSame(2, (int) DB::table('registration_number_sequences')->value('last_sequence'));
+        $this->assertSame(2, (int) DB::table('yearly_registration_sequences')->where('intake_year', $intakeYear)->value('last_sequence'));
     }
 
     public function test_parallel_submissions_in_different_periods_same_year_and_program_keep_numbers_unique(): void
@@ -188,21 +194,24 @@ class MySqlRegistrationConcurrencyTest extends TestCase
         $numbers = array_column($results, 'registration_number');
         sort($numbers);
 
+        $intakeYear = app(RegistrationNumberGeneratorService::class)->extractIntakeYear($firstRegistration->admissionPeriod);
+        $prefix = substr($intakeYear, -2);
+
         $this->assertSame(
             [
-                'PPDB/'.str_replace('/', '-', $firstRegistration->admissionPeriod->academic_year).'/REGULER/00001',
-                'PPDB/'.str_replace('/', '-', $firstRegistration->admissionPeriod->academic_year).'/REGULER/00002',
+                $prefix.'001',
+                $prefix.'002',
             ],
             $numbers,
         );
-        $this->assertDatabaseCount('registration_number_sequences', 1);
-        $this->assertSame(2, (int) DB::table('registration_number_sequences')->value('last_sequence'));
+        $this->assertSame(2, (int) DB::table('yearly_registration_sequences')->where('intake_year', $intakeYear)->value('last_sequence'));
     }
 
     public function test_failure_during_audit_rolls_back_submission_and_retry_uses_the_first_number(): void
     {
         $registration = $this->createReadyRegistration();
         $user = $registration->applicant->user;
+        $intakeYear = app(RegistrationNumberGeneratorService::class)->extractIntakeYear($registration->admissionPeriod);
 
         RegistrationLog::creating(function (): void {
             throw new RuntimeException('Forced audit write failure.');
@@ -225,7 +234,7 @@ class MySqlRegistrationConcurrencyTest extends TestCase
         $this->assertSame(RegistrationStatus::DRAFT, $registration->fresh()->status);
         $this->assertDatabaseCount('registration_consents', 0);
         $this->assertDatabaseCount('registration_logs', 0);
-        $this->assertDatabaseCount('registration_number_sequences', 0);
+        $this->assertNull(DB::table('yearly_registration_sequences')->where('intake_year', $intakeYear)->first());
 
         $submitted = app(SubmitRegistrationAction::class)->execute(
             $user,
@@ -234,14 +243,16 @@ class MySqlRegistrationConcurrencyTest extends TestCase
             'mysql-concurrency-test',
         );
 
+        $prefix = substr($intakeYear, -2);
+
         $this->assertSame(
-            'PPDB/'.str_replace('/', '-', $registration->admissionPeriod->academic_year).'/REGULER/00001',
+            $prefix.'001',
             $submitted->registration_number,
         );
         $this->assertSame(RegistrationStatus::SUBMITTED, $submitted->status);
         $this->assertDatabaseCount('registration_consents', 1);
         $this->assertDatabaseCount('registration_logs', 1);
-        $this->assertSame(1, (int) DB::table('registration_number_sequences')->value('last_sequence'));
+        $this->assertSame(1, (int) DB::table('yearly_registration_sequences')->where('intake_year', $intakeYear)->value('last_sequence'));
     }
 
     private function createReadyRegistration(

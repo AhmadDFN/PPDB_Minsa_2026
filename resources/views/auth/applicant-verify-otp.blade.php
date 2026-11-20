@@ -1,19 +1,24 @@
-<x-layouts.app title="Verifikasi Kode OTP — PPDB MIN 1 Kota Madiun">
+<x-layouts.app title="Verifikasi Kode OTP — {{ \App\Models\SystemSetting::getInstitutionName() }}">
     <div class="min-h-[calc(100vh-16rem)] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
             <!-- Header -->
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary-50 text-secondary-600 shadow-sm border border-secondary-100 mb-4">
-                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
+                <div class="inline-flex items-center justify-center w-20 h-20 mb-3">
+                    <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain drop-shadow-xs">
                 </div>
                 <h1 class="text-2xl font-extrabold text-neutral-800 tracking-tight">Verifikasi Nomor WhatsApp</h1>
                 <p class="mt-2 text-sm text-neutral-600">
                     Masukkan 6 digit kode OTP yang dikirimkan ke nomor WhatsApp:
                 </p>
-                <div class="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-primary-50 text-primary-700 border border-primary-200">
-                    {{ $maskedPhone ?? '08**********' }}
+                <div class="mt-2 flex flex-wrap items-center justify-center gap-2">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-primary-50 text-primary-700 border border-primary-200">
+                        {{ $maskedPhone ?? '08**********' }}
+                    </span>
+                    @if (! empty($registrationNumber) && $registrationNumber !== '—')
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            No. Pendaftaran: <strong class="ml-1 font-mono text-emerald-700">{{ $registrationNumber }}</strong>
+                        </span>
+                    @endif
                 </div>
             </div>
 
@@ -76,7 +81,7 @@
                         <button
                             type="submit"
                             id="btn-resend"
-                            class="text-sm font-semibold text-primary-600 hover:text-primary-700 hover:underline transition"
+                            class="text-sm font-semibold text-primary-600 hover:text-primary-700 hover:underline transition cursor-pointer"
                         >
                             Coba Kirim Ulang OTP
                         </button>
@@ -92,4 +97,3 @@
         </div>
     </div>
 </x-layouts.app>
-

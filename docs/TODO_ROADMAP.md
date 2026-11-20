@@ -196,6 +196,26 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10.3: SELESAI (100% TERUJI OTOMATIS: 256 TESTS PASSED, 1217 ASSERTIONS).** Nol duplikasi user, nol plaintext OTP/NIK bocor. Pint & Vite compliant.
 
+### Fase 10.4 — Simplifikasi Registrasi, Auto-Generated Password, Nomor 5-Digit (YYNNN) & Dynamic Branding
+- [x] **[P0 - Kritis] Simplifikasi Formulir Registrasi Akun Baru**:
+  - *Deskripsi*: Mengubah `/daftar` hanya menerima 4 field (`nik`, `full_name`, `phone`, `consent`). Menghapus input kata sandi, konfirmasi kata sandi, dan input biodata siswa. Biodata dialihkan ke Langkah 1 dashboard.
+- [x] **[P0 - Kritis] Penghapusan Pembuatan Kata Sandi Manual Pasca-OTP**:
+  - *Deskripsi*: Menghapus form `/aktivasi/buat-password` dan langsung mengarahkan pengguna ke `/login` setelah aktivasi OTP berhasil.
+- [x] **[P0 - Kritis] Penerbitan Kata Sandi Sementara Kriptografis Otomatis**:
+  - *Deskripsi*: Menghasilkan 10 karakter alfanumerik acak aman, menyimpan hash `Hash::make()` dengan `must_change_password = true`, dan mengirimkan kata sandi sementara dalam pesan WhatsApp Fonnte terpisah dari OTP.
+- [x] **[P0 - Kritis] Penegakan Wajib Ganti Kata Sandi (Mandatory Password Change)**:
+  - *Deskripsi*: Middleware `EnsurePasswordNotTemporary` mengunci dashboard dan form pendaftaran bagi akun dengan `must_change_password = true`, mengarahkan ke form `/pendaftar/ganti-password` hingga kata sandi permanen tersimpan.
+- [x] **[P0 - Kritis] Format Nomor Pendaftaran 5 Digit (YYNNN)**:
+  - *Deskripsi*: Format `YYNNN` (misal `27001` - `27999`), urutan global lintas program (Reguler & Unggulan berbagi sequence), batas kuota maks 999, dialokasikan sejak registrasi awal dan dipertahankan saat pending recovery.
+- [x] **[P0 - Kritis] Pengaturan Branding Sistem Dinamis (Superadmin)**:
+  - *Deskripsi*: Hak akses khusus `manage_system_settings` bagi Superadmin untuk mengatur `institution_display_name` melalui `/admin/pengaturan`, dengan pencatatan audit log `system_setting_logs` dan proteksi 403 Forbidden bagi Admin PPDB.
+- [x] **[P0 - Kritis] Suite Pengujian Otomatis 9 Skenario Spesifik**:
+  - *Deskripsi*: `tests/Feature/Auth/RegistrationSimplificationAndGeneratedPasswordTest.php` menguji seluruh dimensi Fase 10.4 dengan 9 tes lulus dan 75 asersi.
+- [x] **[P1 - Tinggi] Laporan Implementasi Fase 10.4**:
+  - *Deskripsi*: Pembuatan dokumen komprehensif `docs/phases/PHASE-10.4-IMPLEMENTATION-REPORT.md`.
+
+**Status Fase 10.4: SELESAI (100% TERUJI OTOMATIS: 265 TESTS PASSED, 1302 ASSERTIONS).** Pint & Vite compliant, composer/npm audit clean.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)

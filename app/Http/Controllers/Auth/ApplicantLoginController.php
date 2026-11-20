@@ -62,6 +62,11 @@ class ApplicantLoginController extends Controller
         // Prevent session fixation
         $request->session()->regenerate();
 
+        if ($result['user']->must_change_password) {
+            return redirect()->route('applicant.password.change')
+                ->with('warning', 'Anda masuk menggunakan kata sandi sementara. Demi keamanan akun, silakan buat kata sandi baru terlebih dahulu.');
+        }
+
         return redirect()->intended(route('applicant.dashboard'));
     }
 }

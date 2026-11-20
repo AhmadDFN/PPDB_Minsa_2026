@@ -6,13 +6,17 @@ namespace App\Actions\Authentication;
 
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
+use App\Enums\AdmissionPeriodStatus;
 use App\Enums\Gender;
 use App\Enums\OtpPurpose;
+use App\Enums\RegistrationStatus;
+use App\Models\AdmissionPeriod;
 use App\Models\Applicant;
+use App\Models\Registration;
 use App\Models\User;
 use App\Services\Authentication\OtpService;
+use App\Services\Registration\RegistrationNumberGeneratorService;
 use App\Support\NikManager;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -22,14 +26,15 @@ use RuntimeException;
 class RegisterApplicantAction
 {
     public function __construct(
-        protected OtpService $otpService
+        protected OtpService $otpService,
+        protected RegistrationNumberGeneratorService $numberGenerator
     ) {}
 
     /**
      * Atomically register a new applicant user or recover a pending registration.
      *
-     * @param  array{nik: string, full_name: string, gender: string|Gender, birth_place: string, birth_date: string, phone: string}  $data
-     * @return array{user: User, applicant: Applicant, plain_otp: string, is_recovery: bool, otp_dispatched: bool}
+     * @param  array{nik: string, full_name: string, phone: string, consent?: mixed, gender?: string|Gender|null, birth_place?: string|null, birth_date?: string|null}  $data
+     * @return array{user: User, applicant: Applicant, plain_otp: string, is_recovery: bool, otp_dispatched: bool, registration_number: ?string}
      *
      * @throws InvalidArgumentException
      */
@@ -44,6 +49,11 @@ class RegisterApplicantAction
             /** @var User|null $existingUser */
             $existingUser = User::where('nik_lookup_hash', $nikHash)
                 ->lockForUpdate()
+                ->first();
+
+            $activePeriod = AdmissionPeriod::query()
+                ->where('status', AdmissionPeriodStatus::ACTIVE)
+                ->where('is_active', true)
                 ->first();
 
             if ($existingUser) {
@@ -66,9 +76,9 @@ class RegisterApplicantAction
                     throw new InvalidArgumentException('Profil pendaftar untuk NIK ini tidak ditemukan. Silakan hubungi panitia PPDB.');
                 }
 
-                // Rule B.3: Verify identity fields match the initial registration
+                // Rule B.3: Verify identity matches initial registration
                 if (! $this->verifyIdentityMatches($applicant, $data)) {
-                    throw new InvalidArgumentException('Data identitas (nama, jenis kelamin, atau tanggal/tempat lahir) tidak sesuai dengan data awal yang didaftarkan untuk NIK ini.');
+                    throw new InvalidArgumentException('Data nama lengkap tidak sesuai dengan data awal yang didaftarkan untuk NIK ini.');
                 }
 
                 // Rule B.7-8: Update phone number and ensure phone_verified_at remains null
@@ -77,6 +87,43 @@ class RegisterApplicantAction
                     'phone' => $normalizedPhone,
                     'phone_verified_at' => null,
                 ]);
+
+                // Ensure registration number is preserved and exists
+                $registration = null;
+                $regNumber = null;
+                if ($activePeriod) {
+                    $registration = Registration::query()
+                        ->where('applicant_id', $applicant->id)
+                        ->where('admission_period_id', $activePeriod->id)
+                        ->first();
+
+                    if (! $registration) {
+                        $regNumber = $this->numberGenerator->generateForPeriod($activePeriod);
+                        $registration = Registration::create([
+                            'applicant_id' => $applicant->id,
+                            'admission_period_id' => $activePeriod->id,
+                            'registration_number' => $regNumber,
+                            'status' => RegistrationStatus::DRAFT,
+                            'data_revision' => 1,
+                        ]);
+                    } else {
+                        $regNumber = $registration->registration_number;
+                    }
+
+                    // Record or update initial consent
+                    $registration->consent()->updateOrCreate(
+                        ['registration_id' => $registration->id],
+                        [
+                            'statement_text' => config('ppdb.registration.consent_statement', 'Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.'),
+                            'consent_version' => config('ppdb.registration.consent_version', 'v1.0'),
+                            'accepted_by_name' => trim($data['full_name']),
+                            'is_agreed' => true,
+                            'agreed_at' => now(),
+                            'ip_address' => request()?->ip() ?? '127.0.0.1',
+                            'user_agent' => request()?->userAgent() ?? 'Registration Form',
+                        ]
+                    );
+                }
 
                 // Invalidate previous unconsumed activation OTP tokens
                 $this->otpService->invalidatePrevious($existingUser, OtpPurpose::ACTIVATION->value);
@@ -98,6 +145,7 @@ class RegisterApplicantAction
                     'plain_otp' => $plainOtp,
                     'is_recovery' => true,
                     'otp_dispatched' => $otpDispatched,
+                    'registration_number' => $regNumber,
                 ];
             }
 
@@ -111,18 +159,44 @@ class RegisterApplicantAction
                 'account_type' => AccountType::APPLICANT,
                 'account_status' => AccountStatus::PENDING_ACTIVATION,
                 'password' => Hash::make(Str::random(40)),
+                'must_change_password' => false,
             ]);
 
-            $gender = $data['gender'] instanceof Gender ? $data['gender']->value : $data['gender'];
+            $gender = isset($data['gender'])
+                ? ($data['gender'] instanceof Gender ? $data['gender']->value : $data['gender'])
+                : null;
 
             /** @var Applicant $applicant */
             $applicant = Applicant::create([
                 'user_id' => $user->id,
                 'full_name' => trim($data['full_name']),
                 'gender' => $gender,
-                'birth_place' => trim($data['birth_place']),
-                'birth_date' => $data['birth_date'],
+                'birth_place' => isset($data['birth_place']) ? trim((string) $data['birth_place']) : null,
+                'birth_date' => $data['birth_date'] ?? null,
             ]);
+
+            $regNumber = null;
+            if ($activePeriod) {
+                $regNumber = $this->numberGenerator->generateForPeriod($activePeriod);
+                $registration = Registration::create([
+                    'applicant_id' => $applicant->id,
+                    'admission_period_id' => $activePeriod->id,
+                    'registration_number' => $regNumber,
+                    'status' => RegistrationStatus::DRAFT,
+                    'data_revision' => 1,
+                ]);
+
+                // Record initial consent
+                $registration->consent()->create([
+                    'statement_text' => config('ppdb.registration.consent_statement', 'Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.'),
+                    'consent_version' => config('ppdb.registration.consent_version', 'v1.0'),
+                    'accepted_by_name' => trim($data['full_name']),
+                    'is_agreed' => true,
+                    'agreed_at' => now(),
+                    'ip_address' => request()?->ip() ?? '127.0.0.1',
+                    'user_agent' => request()?->userAgent() ?? 'Registration Form',
+                ]);
+            }
 
             $otpDispatched = true;
             $plainOtp = '';
@@ -140,48 +214,58 @@ class RegisterApplicantAction
                 'plain_otp' => $plainOtp,
                 'is_recovery' => false,
                 'otp_dispatched' => $otpDispatched,
+                'registration_number' => $regNumber,
             ];
         });
     }
 
     /**
-     * Verify if re-submitted identity fields match the initial registration for this NIK.
+     * Check if submitted identity matches the applicant record on pending recovery.
      *
-     * @param  array{full_name: string, gender: string|Gender, birth_place: string, birth_date: string}  $data
+     * @param  array<string, mixed>  $data
      */
-    protected function verifyIdentityMatches(Applicant $applicant, array $data): bool
+    private function verifyIdentityMatches(Applicant $applicant, array $data): bool
     {
-        // 1. Compare Full Name (case-insensitive, trimmed, collapsed whitespace)
-        $storedName = mb_strtoupper(preg_replace('/\s+/', ' ', trim($applicant->full_name)) ?? '');
-        $inputName = mb_strtoupper(preg_replace('/\s+/', ' ', trim($data['full_name'])) ?? '');
+        $normalize = fn (string $value): string => mb_strtoupper(preg_replace('/\s+/', ' ', trim($value)));
 
-        if ($storedName !== $inputName) {
+        $submittedName = $normalize((string) $data['full_name']);
+        $existingName = $normalize((string) $applicant->full_name);
+
+        if ($submittedName !== $existingName) {
             return false;
         }
 
-        // 2. Compare Gender
-        $inputGender = $data['gender'] instanceof Gender ? $data['gender']->value : (string) $data['gender'];
-        $storedGender = $applicant->gender instanceof Gender ? $applicant->gender->value : (string) $applicant->gender;
-
-        if ($storedGender !== $inputGender) {
-            return false;
+        // If gender was optionally provided and existing has gender
+        if (! empty($data['gender']) && ! empty($applicant->gender)) {
+            $submittedGender = is_object($data['gender']) ? $data['gender']->value : (string) $data['gender'];
+            $existingGender = is_object($applicant->gender) ? $applicant->gender->value : (string) $applicant->gender;
+            if ($submittedGender !== $existingGender) {
+                return false;
+            }
         }
 
-        // 3. Compare Birth Place (case-insensitive, trimmed)
-        $storedPlace = mb_strtoupper(trim($applicant->birth_place));
-        $inputPlace = mb_strtoupper(trim($data['birth_place']));
-
-        if ($storedPlace !== $inputPlace) {
-            return false;
+        // If birth place was optionally provided and existing has birth place
+        if (! empty($data['birth_place']) && ! empty($applicant->birth_place)) {
+            if ($normalize((string) $data['birth_place']) !== $normalize((string) $applicant->birth_place)) {
+                return false;
+            }
         }
 
-        // 4. Compare Birth Date (normalized to Y-m-d)
-        $storedDate = $applicant->birth_date instanceof \DateTimeInterface
-            ? $applicant->birth_date->format('Y-m-d')
-            : Carbon::parse((string) $applicant->birth_date)->format('Y-m-d');
+        // If birth date was optionally provided and existing has birth date
+        if (! empty($data['birth_date']) && ! empty($applicant->birth_date)) {
+            $submittedBirthDate = $data['birth_date'] instanceof \DateTimeInterface
+                ? $data['birth_date']->format('Y-m-d')
+                : (string) $data['birth_date'];
 
-        $inputDate = Carbon::parse((string) $data['birth_date'])->format('Y-m-d');
+            $existingBirthDate = $applicant->birth_date instanceof \DateTimeInterface
+                ? $applicant->birth_date->format('Y-m-d')
+                : (string) $applicant->birth_date;
 
-        return $storedDate === $inputDate;
+            if ($submittedBirthDate !== $existingBirthDate) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -13,9 +13,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(OtpDeliveryInterface::class, function () {
+        $this->app->singleton(OtpDeliveryService::class, function () {
             return new OtpDeliveryService;
         });
+
+        $this->app->bind(OtpDeliveryInterface::class, OtpDeliveryService::class);
     }
 
     /**

@@ -31,6 +31,7 @@ class RoleAndPermissionSeeder extends Seeder
             'manage_programs',
             'manage_document_requirements',
             'manage_admin_users',
+            'manage_system_settings',
             'view_activity_logs',
         ];
 

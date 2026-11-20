@@ -4,23 +4,27 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Actions\Authentication\CompleteApplicantActivationAction;
 use App\Actions\Authentication\VerifyOtpAction;
 use App\Enums\AccountStatus;
 use App\Enums\OtpPurpose;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\CompleteActivationRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Models\User;
+use App\Services\Authentication\OtpDeliveryService;
 use App\Services\Authentication\OtpService;
+use App\Support\NikManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
-use InvalidArgumentException;
 
 class ApplicantActivationController extends Controller
 {
+    public function __construct(
+        protected OtpDeliveryService $deliveryService
+    ) {}
+
     /**
      * Show OTP verification screen for account activation.
      */
@@ -50,15 +54,19 @@ class ApplicantActivationController extends Controller
         }
 
         $maskedPhone = $this->maskPhone((string) $user->phone);
+        $registrationNumber = $user->applicant?->registrations()->latest()->first()?->registration_number ?? '—';
+        $applicantName = $user->applicant?->full_name ?? $user->name;
 
         return view('auth.applicant-verify-otp', [
             'user' => $user,
             'maskedPhone' => $maskedPhone,
+            'registrationNumber' => $registrationNumber,
+            'applicantName' => $applicantName,
         ]);
     }
 
     /**
-     * Verify submitted OTP code for account activation.
+     * Verify submitted OTP code, activate account, and dispatch auto-generated temporary password via WhatsApp.
      */
     public function verifyOtp(
         VerifyOtpRequest $request,
@@ -92,15 +100,51 @@ class ApplicantActivationController extends Controller
 
         RateLimiter::clear($throttleKey);
 
-        // Move to password creation step
-        session([
-            'activation_verified_user_id' => $user->id,
-        ]);
-        session()->forget('activation_user_id');
+        // 1. Generate strong cryptographically secure temporary password (10 alphanumeric chars)
+        $plainTempPassword = self::generateTemporaryPassword(10);
 
-        return redirect()->route('activation.password.form')->with(
-            'success',
-            'Nomor telepon berhasil diverifikasi! Sekarang silakan buat kata sandi untuk akun pendaftaran Anda.'
+        // 2. Persist account activation and temporary password flags
+        $user->update([
+            'account_status' => AccountStatus::ACTIVE,
+            'phone_verified_at' => now(),
+            'password' => Hash::make($plainTempPassword),
+            'must_change_password' => true,
+            'password_changed_at' => null,
+        ]);
+
+        $regNumber = $user->applicant?->registrations()->latest()->first()?->registration_number ?? '—';
+
+        // 3. Dispatch temporary password via WhatsApp Fonnte (separate message)
+        $pwDispatched = false;
+        try {
+            $pwDispatched = $this->deliveryService->sendTemporaryPassword(
+                phone: (string) $user->phone,
+                temporaryPassword: $plainTempPassword,
+                user: $user,
+                registrationNumber: $regNumber,
+                isResend: false
+            );
+        } catch (\Throwable) {
+            $pwDispatched = false;
+        }
+
+        // Clean up OTP activation session
+        session()->forget('activation_user_id');
+        session([
+            'activated_user_id' => $user->id,
+            'password_dispatched' => $pwDispatched,
+        ]);
+
+        if ($pwDispatched) {
+            return redirect()->route('login')->with(
+                'success',
+                'Verifikasi nomor WhatsApp berhasil! Password sementara telah dikirimkan ke WhatsApp Anda. Silakan masuk menggunakan NIK dan password tersebut.'
+            );
+        }
+
+        return redirect()->route('login')->with(
+            'warning',
+            'Verifikasi nomor WhatsApp berhasil dan akun Anda telah aktif. Namun pengiriman WhatsApp password sementara belum dapat dipastikan. Jika belum menerima pesan, silakan gunakan fitur kirim ulang password sementara.'
         );
     }
 
@@ -138,70 +182,114 @@ class ApplicantActivationController extends Controller
     }
 
     /**
-     * Show password creation screen.
+     * Resend a new temporary password to an activated applicant whose phone is verified.
      */
-    public function showPasswordForm(): View|RedirectResponse
+    public function resendTemporaryPassword(Request $request): RedirectResponse
     {
-        $userId = session('activation_verified_user_id');
+        $userId = session('activated_user_id');
+        $user = null;
 
-        if (! $userId) {
-            return redirect()->route('register')
-                ->with('error', 'Sesi pembuatan kata sandi tidak ditemukan atau belum diverifikasi.');
+        if ($userId) {
+            $user = User::find($userId);
         }
 
-        $user = User::find($userId);
-
-        if (! $user) {
-            session()->forget('activation_verified_user_id');
-
-            return redirect()->route('register');
+        if (! $user && $request->filled('nik')) {
+            $nikHash = NikManager::hash(NikManager::normalize((string) $request->input('nik')));
+            $user = User::where('nik_lookup_hash', $nikHash)->first();
         }
 
-        return view('auth.applicant-set-password', [
-            'user' => $user,
+        if (! $user || ! $user->isApplicant() || $user->account_status !== AccountStatus::ACTIVE || ! $user->phone_verified_at) {
+            return back()->with('error', 'Akun pendaftar tidak ditemukan atau belum menyelesaikan verifikasi nomor WhatsApp.');
+        }
+
+        if (! $user->must_change_password) {
+            return redirect()->route('login')->with('info', 'Akun Anda sudah memiliki kata sandi permanen. Silakan gunakan fitur Lupa Kata Sandi jika tidak mengingatnya.');
+        }
+
+        $throttleKey = 'resend-temp-pw:'.$user->id.'|'.$request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            return back()->with('error', "Mohon tunggu {$seconds} detik sebelum meminta pengiriman ulang password sementara.");
+        }
+
+        RateLimiter::hit($throttleKey, 600);
+
+        // Rotate temporary password
+        $newPlainPassword = self::generateTemporaryPassword(10);
+        $user->update([
+            'password' => Hash::make($newPlainPassword),
+            'must_change_password' => true,
         ]);
-    }
 
-    /**
-     * Save new password and activate applicant account.
-     */
-    public function savePassword(
-        CompleteActivationRequest $request,
-        CompleteApplicantActivationAction $action
-    ): RedirectResponse {
-        $userId = session('activation_verified_user_id');
+        $regNumber = $user->applicant?->registrations()->latest()->first()?->registration_number ?? '—';
 
-        if (! $userId) {
-            return redirect()->route('register')
-                ->with('error', 'Sesi pembuatan kata sandi tidak valid.');
-        }
-
-        $user = User::findOrFail($userId);
-
+        $dispatched = false;
         try {
-            $action->execute($user, $request->validated('password'));
-
-            session()->forget('activation_verified_user_id');
-
-            return redirect()->route('login')->with(
-                'success',
-                'Aktivasi akun berhasil! Akun Anda telah aktif. Silakan masuk menggunakan NIK dan kata sandi yang telah Anda buat.'
+            $dispatched = $this->deliveryService->sendTemporaryPassword(
+                phone: (string) $user->phone,
+                temporaryPassword: $newPlainPassword,
+                user: $user,
+                registrationNumber: $regNumber,
+                isResend: true
             );
-        } catch (InvalidArgumentException $e) {
-            return back()->withErrors(['password' => $e->getMessage()]);
+        } catch (\Throwable) {
+            $dispatched = false;
         }
+
+        if ($dispatched) {
+            return back()->with('success', 'Password sementara baru telah dikirimkan ke WhatsApp Anda. Password lama kini sudah tidak berlaku.');
+        }
+
+        return back()->with('warning', 'Password sementara baru telah diterbitkan, namun koneksi pengiriman pesan WhatsApp mengalami kendala. Silakan coba kembali dalam beberapa saat.');
     }
 
     /**
-     * Mask phone number for privacy (e.g. 0812****7890).
+     * Legacy password form redirect for backward compatibility.
      */
-    protected function maskPhone(string $phone): string
+    public function showPasswordForm(): RedirectResponse
     {
-        $len = strlen($phone);
-        if ($len < 8) {
-            return '********';
+        return redirect()->route('login')
+            ->with('info', 'Password sementara dibuat otomatis dan dikirim melalui WhatsApp setelah verifikasi OTP.');
+    }
+
+    /**
+     * Legacy save password redirect for backward compatibility.
+     */
+    public function savePassword(): RedirectResponse
+    {
+        return redirect()->route('login');
+    }
+
+    /**
+     * Generate cryptographically secure alphanumeric temporary password.
+     */
+    public static function generateTemporaryPassword(int $length = 10): string
+    {
+        // Unambiguous characters avoiding 0, O, 1, I, l
+        $chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
+        $max = strlen($chars) - 1;
+        $password = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $chars[random_int(0, $max)];
         }
 
-        return substr($phone, 0, 4).str_repeat('*', max(4, $len - 7)).substr($phone, -3);
+        return $password;
+    }
+
+    /**
+     * Mask phone number for UI display.
+     */
+    private function maskPhone(string $phone): string
+    {
+        $clean = preg_replace('/\D/', '', $phone) ?? '';
+        $len = strlen($clean);
+
+        if ($len <= 4) {
+            return '****';
+        }
+
+        return substr($clean, 0, 4).str_repeat('*', max(1, $len - 7)).substr($clean, -3);
     }
 }

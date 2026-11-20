@@ -16,10 +16,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/daftar', [ApplicantRegisterController::class, 'create'])->name('register');
     Route::post('/daftar', [ApplicantRegisterController::class, 'store'])->name('register.store');
 
-    // Aktivasi Akun (OTP & Buat Password)
+    // Aktivasi Akun & Password Sementara
     Route::get('/aktivasi', [ApplicantActivationController::class, 'showOtpForm'])->name('activation.form');
     Route::post('/aktivasi/verifikasi', [ApplicantActivationController::class, 'verifyOtp'])->name('activation.verify');
     Route::post('/aktivasi/kirim-ulang', [ApplicantActivationController::class, 'resendOtp'])->name('activation.resend');
+    Route::post('/aktivasi/kirim-ulang-password', [ApplicantActivationController::class, 'resendTemporaryPassword'])->name('activation.resend_password');
     Route::get('/aktivasi/buat-password', [ApplicantActivationController::class, 'showPasswordForm'])->name('activation.password.form');
     Route::post('/aktivasi/buat-password', [ApplicantActivationController::class, 'savePassword'])->name('activation.password.store');
 

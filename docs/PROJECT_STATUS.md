@@ -2,8 +2,8 @@
 ## Sumber Kebenaran Tunggal Progres Pengembangan Sistem
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
-**Terakhir Diperbarui**: 19 November 2026
-**Dokumentasi Versi**: 1.4.0
+**Terakhir Diperbarui**: 20 November 2026
+**Dokumentasi Versi**: 1.5.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
 ---
@@ -12,34 +12,34 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 10.3 — PENDING REGISTRATION RECOVERY & RESILIENT NIK REUSE AFTER OTP FAILURE** |
-| **Status Teknis Fase 10.3** | **SELESAI (100% TERUJI OTOMATIS: 256 TESTS PASSED, 1217 ASSERTIONS, PINT & VITE COMPLIANT)** |
+| **Fase Berjalan Saat Ini** | **FASE 10.4 — SIMPLIFIKASI REGISTRASI, AUTO-GENERATED TEMPORARY PASSWORD, 5-DIGIT REGISTRATION NUMBER (YYNNN) & DYNAMIC SYSTEM BRANDING** |
+| **Status Teknis Fase 10.4** | **SELESAI (100% TERUJI OTOMATIS: 265 TESTS PASSED, 1302 ASSERTIONS, PINT & VITE COMPLIANT)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
-| **Status Lingkungan Staging** | **READY (Paket ZIP bersih deploy_minsatama_hostinger_clean.zip 23.9MB siap)** |
+| **Status Lingkungan Staging** | **READY (Paket siap dideploy ke staging setelah commit disetujui)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
-| **Status Gerbang Produksi (Logo/Alamat)** | **PENDING OWNER ACTION (MENUNGGU SUMBER RESMI LOGO & ALAMAT)** |
-| **Commit Baseline Sebelum Fase 10.3** | `11e2a81` (`feat(otp): integrate Fonnte WhatsApp API delivery driver with resilient error handling (phase 10.2)`) |
+| **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
+| **Commit Baseline Sebelum Fase 10.4** | `11e2a81` |
 
 ---
 
-## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.3)
+## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.4)
 
 - **Perintah Pengujian**: `php artisan test`
-- **Waktu Eksekusi**: 19 November 2026
-- **Total Pengujian**: **256 pengujian**
-- **Lulus (Passed)**: **256 pengujian (100%)**
+- **Waktu Eksekusi**: 20 November 2026
+- **Total Pengujian**: **265 pengujian**
+- **Lulus (Passed)**: **265 pengujian (100%)**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **0 pengujian**
-- **Total Asersi**: **1.217 asersi**
-- **Durasi Eksekusi**: ~11.0 detik
+- **Total Asersi**: **1.302 asersi**
+- **Durasi Eksekusi**: ~10.0 detik
 - **Kepatuhan Format Kode (Pint)**: **PASSED (0 issues)** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 advisories** (`composer audit`)
 - **Audit Dependensi NPM Produksi**: **0 vulnerabilities** (`npm.cmd audit --omit=dev`)
-- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 93.10 kB, JS 1.72 kB)
+- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 115.74 kB, JS 1.72 kB)
 
-### Rincian Suite Pengujian Tambahan Fase 10.3:
-1. **Pending Registration Recovery Suite** (`tests/Feature/Auth/PendingRegistrationRecoveryTest.php`):
-   - 20 pengujian pemulihan pendaftaran tertunda dan penggunaan kembali NIK setelah kegagalan OTP (pemulihan nomor sama/baru, pencegahan duplikat User/Applicant, invalidasi token lama, reset timestamp verifikasi, verifikasi identitas nama/gender/tempat/tanggal lahir, penolakan akun aktif/suspended, toleransi case/whitespace, degradasi graceful saat Fonnte gagal, aktivasi sukses pasca-recovery, proteksi token kedaluwarsa, pemulihan berulang, tautan koreksi nomor, dan penegakan rate limit).
+### Rincian Suite Pengujian Tambahan Fase 10.4:
+1. **Registration Simplification & Temporary Password Suite** (`tests/Feature/Auth/RegistrationSimplificationAndGeneratedPasswordTest.php`):
+   - 9 pengujian spesifik mencakup penyederhanaan form `/daftar` (hanya 4 input, tanpa password/biodata), validasi wajib, pembuatan user pending dan alokasi nomor pendaftaran 5 digit (`YYNNN`), penomoran global lintas program, penegakan kuota maks 999, pembuatan dan pengiriman kata sandi sementara 10 karakter via WhatsApp dalam pesan terpisah pasca verifikasi OTP, intersepsi login pertama kali untuk wajib ganti kata sandi, rotasi kata sandi sementara saat kirim ulang, serta proteksi otorisasi pengaturan branding dinamis (khusus Superadmin, larangan keras untuk Admin PPDB).
 
 ---
 
@@ -62,6 +62,7 @@
 | 10.1 | **Admin Dashboard Real Data & Resilient Navigation** | Controller dashboard data riil, UI dashboard informatif (5 metrik, hero periode, tabel pendaftar terbaru, quick actions), sidebar aman bebas 404 | **SELESAI** | `AdminDashboardController` + Blade view riil, 12 feature tests baru, 215 tests passed, 0 failed, Pint & Vite compliant |
 | 10.2 | **Integrasi Gateway WhatsApp Fonnte API** | Driver `FonnteOtpDelivery`, normalisasi nomor Indonesia, validasi status Fonnte, penanganan error/timeout, template aktivasi & pemulihan, 20 test cases otomatis | **SELESAI** | 235 tests passed (100%), 1150 assertions, panduan operasional `FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`, siap uji manual pemilik proyek |
 | 10.3 | **Pending Registration Recovery & NIK Reuse** | Mekanisme recovery pendaftaran tertunda, verifikasi identitas, update nomor WA, invalidasi OTP lama, zero-duplicate guarantee, 20 test cases otomatis | **SELESAI** | 256 tests passed (100%), 1217 assertions, laporan komprehensif `PHASE-10.3-IMPLEMENTATION-REPORT.md`, siap deploy |
+| 10.4 | **Simplifikasi Registrasi, Auto-Password, No. 5-Digit & Dynamic Branding** | Formulir 4 input tanpa password/biodata, temporary password otomatis via WA, wajib ganti password di awal login, no reg 5-digit `YYNNN` lintas program maks 999, settings branding Superadmin | **SELESAI** | 265 tests passed (100%), 1302 assertions, laporan komprehensif `PHASE-10.4-IMPLEMENTATION-REPORT.md`, siap deploy |
 
 ---
 

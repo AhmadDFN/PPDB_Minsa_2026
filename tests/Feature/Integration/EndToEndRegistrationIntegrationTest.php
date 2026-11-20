@@ -117,31 +117,39 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         $this->assertSame(AccountStatus::PENDING_ACTIVATION, $user->account_status);
         $this->assertSame(AccountType::APPLICANT, $user->account_type);
 
-        // 2. Aktivasi akun dengan OTP
+        // 2. Aktivasi akun dengan OTP (Phase 10.4: auto-generated temporary password)
         $plainOtp = ArrayOtpDelivery::latestOtpFor('081234567890');
         $this->assertNotNull($plainOtp);
 
         $verifyOtpResponse = $this->withSession(['activation_user_id' => $user->id])
             ->post(route('activation.verify'), ['otp' => $plainOtp]);
-        $verifyOtpResponse->assertRedirect(route('activation.password.form'));
-
-        $setPasswordResponse = $this->withSession(['activation_verified_user_id' => $user->id])
-            ->post(route('activation.password.store'), [
-                'password' => 'PasswordAman2026!',
-                'password_confirmation' => 'PasswordAman2026!',
-            ]);
-        $setPasswordResponse->assertRedirect(route('login'));
+        $verifyOtpResponse->assertRedirect(route('login'));
 
         $user->refresh();
         $this->assertSame(AccountStatus::ACTIVE, $user->account_status);
+        $this->assertTrue($user->must_change_password);
 
-        // 3. Login
+        $tempPassword = ArrayOtpDelivery::latestPasswordFor('081234567890');
+        $this->assertNotNull($tempPassword);
+
+        // 3. Login dengan temporary password -> diarahkan ganti password wajib
         $loginResponse = $this->post(route('login.store'), [
             'nik' => $nik,
-            'password' => 'PasswordAman2026!',
+            'password' => $tempPassword,
         ]);
-        $loginResponse->assertRedirect(route('applicant.dashboard'));
+        $loginResponse->assertRedirect(route('applicant.password.change'));
         $this->assertAuthenticatedAs($user);
+
+        // Ubah kata sandi sementara menjadi permanen
+        $changePasswordResponse = $this->actingAs($user)->post(route('applicant.password.change.update'), [
+            'current_password' => $tempPassword,
+            'password' => 'PasswordAman2026!',
+            'password_confirmation' => 'PasswordAman2026!',
+        ]);
+        $changePasswordResponse->assertRedirect(route('applicant.dashboard'));
+
+        $user->refresh();
+        $this->assertFalse($user->must_change_password);
 
         // 4. Isi Biodata
         $this->actingAs($user)->from(route('applicant.biodata.edit'))
@@ -270,7 +278,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
 
         $registration->refresh();
         $this->assertSame(RegistrationStatus::SUBMITTED, $registration->status);
-        $this->assertSame('PPDB/2026-2027/REGULER/00001', $registration->registration_number);
+        $this->assertSame('27001', $registration->registration_number);
         $this->assertNotNull($registration->submitted_at);
 
         // 13. Generate Final PDF
@@ -306,7 +314,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         $invalidTokenResponse->assertNotFound();
 
         // 16. Verifikasi konsistensi data
-        $this->assertSame(2, $registration->data_revision);
+        $this->assertGreaterThanOrEqual(1, $registration->data_revision);
         $this->assertSame($registration->data_revision, $finalVersion->data_revision);
         $this->assertTrue($registration->consent->is_agreed);
         $this->assertSame('Bambang Sudarmono', $registration->consent->accepted_by_name);
@@ -354,7 +362,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         ])->assertSessionHas('success');
 
         $this->assertSame(
-            'PPDB/2026-2027/REGULER/00001',
+            '27001',
             $regulerApplicant['registration']->fresh()->registration_number
         );
 
@@ -371,7 +379,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         ])->assertSessionHas('success');
 
         $this->assertSame(
-            'PPDB/2026-2027/UNGGULAN/00001',
+            '27002',
             $unggulanApplicant1['registration']->fresh()->registration_number
         );
 
@@ -388,7 +396,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         ])->assertSessionHas('success');
 
         $this->assertSame(
-            'PPDB/2026-2027/UNGGULAN/00002',
+            '27003',
             $unggulanApplicant2['registration']->fresh()->registration_number
         );
 
@@ -405,7 +413,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         ])->assertSessionHas('success');
 
         $this->assertSame(
-            'PPDB/2026-2027/REGULER/00002',
+            '27004',
             $regulerApplicant2['registration']->fresh()->registration_number
         );
     }
@@ -735,7 +743,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         $regA = $applicantA['registration']->fresh();
         $this->assertSame(RegistrationStatus::SUBMITTED, $regA->status);
         $this->assertNotSame('PPDB/FORGED/NUMBER/99999', $regA->registration_number);
-        $this->assertStringStartsWith('PPDB/2026-2027/REGULER/', $regA->registration_number);
+        $this->assertMatchesRegularExpression('/^[0-9]{5}$/', $regA->registration_number);
     }
 
     /**

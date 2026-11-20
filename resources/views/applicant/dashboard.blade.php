@@ -40,11 +40,13 @@
 
                 {{-- Action / Status Chip --}}
                 <div class="shrink-0 flex items-center gap-3">
-                    @if ($registration?->isSubmitted())
+                    @if ($registration?->registration_number)
                         <div class="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 text-right">
-                            <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider block">No. Registrasi Resmi</span>
+                            <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider block">No. Pendaftaran</span>
                             <span class="font-mono text-sm sm:text-base font-extrabold text-white block">{{ $registration->registration_number }}</span>
-                            <span class="text-[10px] text-emerald-300/80 font-medium block mt-0.5">Sudah Terkirim ke Loket PTSP</span>
+                            <span class="text-[10px] {{ $registration->isSubmitted() ? 'text-emerald-300/80 font-medium' : 'text-amber-400 font-medium' }} block mt-0.5">
+                                {{ $registration->isSubmitted() ? 'Sudah Terkirim ke Loket PTSP' : ($completion['is_all_complete'] ? 'Siap Dikirim' : $completion['overall_percentage'].'% Terisi') }}
+                            </span>
                         </div>
                     @else
                         <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 text-right">

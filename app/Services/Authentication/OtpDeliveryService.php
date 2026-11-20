@@ -18,7 +18,16 @@ class OtpDeliveryService implements OtpDeliveryInterface
 
     public function __construct(?OtpDeliveryInterface $driver = null)
     {
+        if ($driver instanceof self) {
+            $driver = $driver->getDriver();
+        }
+
         $this->driver = $driver ?? $this->resolveDriver();
+    }
+
+    public function getDriver(): ?OtpDeliveryInterface
+    {
+        return $this->driver;
     }
 
     /**
@@ -42,11 +51,44 @@ class OtpDeliveryService implements OtpDeliveryInterface
      */
     public function setDriver(OtpDeliveryInterface $driver): void
     {
+        if ($driver instanceof self) {
+            $driver = $driver->getDriver() ?? $driver;
+        }
+
         $this->driver = $driver;
     }
 
     public function send(string $phone, string $otp, string $purpose, User $user): bool
     {
-        return $this->driver->send($phone, $otp, $purpose, $user);
+        $activeDriver = $this->driver instanceof self ? $this->driver->getDriver() : $this->driver;
+
+        return $activeDriver ? $activeDriver->send($phone, $otp, $purpose, $user) : true;
+    }
+
+    /**
+     * Send temporary password via configured driver.
+     */
+    public function sendTemporaryPassword(
+        string $phone,
+        string $temporaryPassword,
+        User $user,
+        string $registrationNumber,
+        bool $isResend = false
+    ): bool {
+        $activeDriver = $this->driver instanceof self ? $this->driver->getDriver() : $this->driver;
+
+        if ($activeDriver instanceof FonnteOtpDelivery) {
+            return $activeDriver->sendTemporaryPassword($phone, $temporaryPassword, $user, $registrationNumber, $isResend);
+        }
+
+        if ($activeDriver instanceof ArrayOtpDelivery) {
+            return $activeDriver->sendTemporaryPassword($phone, $temporaryPassword, $user, $registrationNumber, $isResend);
+        }
+
+        if ($activeDriver instanceof LogOtpDelivery) {
+            return $activeDriver->sendTemporaryPassword($phone, $temporaryPassword, $user, $registrationNumber, $isResend);
+        }
+
+        return true;
     }
 }

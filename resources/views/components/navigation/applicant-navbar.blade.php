@@ -24,7 +24,7 @@
                     <div class="flex flex-col min-w-0">
                         <div class="flex items-center gap-2">
                             <span class="text-sm sm:text-base font-extrabold text-white tracking-tight group-hover:text-emerald-300 transition-colors truncate">
-                                MIN 1 Kota Madiun
+                                {{ \App\Models\SystemSetting::getInstitutionName() }}
                             </span>
                             <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
                                 Portal Pendaftar
