@@ -48,19 +48,31 @@
             <span>Dashboard</span>
         </a>
 
-        {{-- Pendaftar PPDB (Upcoming) --}}
-        <div
-            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
-            title="Modul Data Pendaftar dijadwalkan pada fase berikutnya"
-        >
-            <div class="flex items-center gap-3">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {{-- Data Pendaftar --}}
+        @can('view_applicants')
+            <a
+                href="{{ route('admin.applicants.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.applicants*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
+            >
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.applicants*') ? 'text-primary-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 <span>Data Pendaftar</span>
+            </a>
+        @else
+            <div
+                class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
+                title="Modul Data Pendaftar dibatasi untuk akun Anda"
+            >
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span>Data Pendaftar</span>
+                </div>
+                <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Terkunci</span>
             </div>
-            <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
-        </div>
+        @endcan
 
         @can('reopen_registration')
             <a

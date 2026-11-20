@@ -216,6 +216,24 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10.4: SELESAI (100% TERUJI OTOMATIS: 265 TESTS PASSED, 1302 ASSERTIONS).** Pint & Vite compliant, composer/npm audit clean.
 
+### Fase 10.5 — Admin Dashboard Dinamis & Manajemen Data Pendaftar
+- [x] **[P0 - Kritis] Admin Dashboard Dinamis Berbasis Data Riil**:
+  - *Deskripsi*: Menampilkan metrik statistik global pendaftar (total akun, total pendaftaran, total draft, total submitted), metrik periode aktif, tabel 5 pendaftar terkini dengan tautan detail, serta log aktivitas audit registrasi terkini.
+- [x] **[P0 - Kritis] Manajemen Daftar Pendaftar (/admin/pendaftar)**:
+  - *Deskripsi*: Tampilan tabular pendaftar dengan paginasi 15 data per halaman, multi-search (nama siswa, nomor pendaftaran 5-digit `YYNNN`, NIK 16 digit via deterministik HMAC lookup hash tanpa kebocoran plaintext NIK), filter periode, program, dan status.
+- [x] **[P0 - Kritis] Halaman Detail Pendaftar Komprehensif (/admin/pendaftar/{id})**:
+  - *Deskripsi*: 11 kartu seksi informasi (Identitas Siswa dengan perhitungan usia dinamis runtime, Alamat Domisili, Data Ayah, Data Ibu, Data Wali, Riwayat Pendidikan TK/RA, Pilihan Program & Periode, Kelengkapan Dokumen & Persyaratan, Status & Persetujuan, Riwayat Log Pendaftaran, Status Akses Buka Ulang).
+- [x] **[P0 - Kritis] Pratinjau & Unduh Dokumen Terotorisasi Anti-IDOR**:
+  - *Deskripsi*: Akses pratinjau inline dan unduh berkas privat melalui `/admin/pendaftar/{registration}/dokumen/{document}/preview` dan `/download` dengan verifikasi ketat kepemilikan berkas `abort_unless($document->registration_id === $registration->id, 404)`.
+- [x] **[P0 - Kritis] Navigasi Admin Aktif & Proteksi Spatie Role/Permission**:
+  - *Deskripsi*: Sidebar mengaktifkan rute `admin.applicants.index` berpelindung `@can('view_applicants')`, penanda status menu aktif, pencegahan 404 dengan rute fallback terproteksi.
+- [x] **[P0 - Kritis] Suite Pengujian Otomatis 14 Skenario**:
+  - *Deskripsi*: `tests/Feature/Admin/ApplicantManagementTest.php` menguji seluruh dimensi otorisasi, paginasi, pencarian aman, filter, rendering 11 kartu detail, dan proteksi IDOR berkas. 14 tes lulus dengan 63 asersi.
+- [x] **[P1 - Tinggi] Laporan Implementasi Fase 10.5**:
+  - *Deskripsi*: Pembuatan dokumen komprehensif `docs/phases/PHASE-10.5-IMPLEMENTATION-REPORT.md`.
+
+**Status Fase 10.5: SELESAI (100% TERUJI OTOMATIS: 279 TESTS PASSED, 1365 ASSERTIONS).** Pint & Vite compliant, composer/npm audit clean.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)

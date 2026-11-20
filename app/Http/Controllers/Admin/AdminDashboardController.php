@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AccountType;
 use App\Enums\AdmissionPeriodStatus;
 use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\AdmissionPeriod;
 use App\Models\Registration;
+use App\Models\RegistrationLog;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,12 +30,22 @@ class AdminDashboardController extends Controller
             ->with(['periodPrograms.program'])
             ->first();
 
+        // Global metrics
+        $totalAccounts = User::query()->where('account_type', AccountType::APPLICANT->value)->count();
+        $totalDraftAll = Registration::query()->where('status', RegistrationStatus::DRAFT->value)->count();
+        $totalSubmittedAll = Registration::query()->where('status', RegistrationStatus::SUBMITTED->value)->count();
+        $totalRegistrationsAll = Registration::query()->count();
+
         $stats = [
             'total' => 0,
             'submitted' => 0,
             'draft' => 0,
             'reguler' => 0,
             'unggulan' => 0,
+            'total_accounts' => $totalAccounts,
+            'total_draft_all' => $totalDraftAll,
+            'total_submitted_all' => $totalSubmittedAll,
+            'total_registrations_all' => $totalRegistrationsAll,
         ];
 
         $latestSubmissions = collect();
@@ -69,7 +82,7 @@ class AdminDashboardController extends Controller
             $stats['reguler'] = (int) ($programCounts->reguler_count ?? 0);
             $stats['unggulan'] = (int) ($programCounts->unggulan_count ?? 0);
 
-            // Latest 5 officially submitted registrations
+            // Latest 5 officially submitted registrations for active period
             $latestSubmissions = Registration::query()
                 ->where('admission_period_id', $periodId)
                 ->where('status', RegistrationStatus::SUBMITTED)
@@ -121,12 +134,32 @@ class AdminDashboardController extends Controller
                 'time_status' => $timeStatus,
                 'countdown_text' => $countdownText,
             ];
+        } else {
+            // When no active period, show overall latest submitted registrations
+            $latestSubmissions = Registration::query()
+                ->where('status', RegistrationStatus::SUBMITTED)
+                ->with([
+                    'applicant:id,full_name',
+                    'admissionPeriodProgram.program:id,name,code',
+                ])
+                ->orderByDesc('submitted_at')
+                ->orderByDesc('id')
+                ->limit(5)
+                ->get();
         }
+
+        // Recent audit activity logs (5 latest activities)
+        $recentActivities = RegistrationLog::query()
+            ->with(['user:id,name,email', 'registration.applicant:id,full_name', 'registration:id,registration_number'])
+            ->latest('id')
+            ->limit(5)
+            ->get();
 
         return view('admin.dashboard', [
             'activePeriod' => $activePeriod,
             'stats' => $stats,
             'latestSubmissions' => $latestSubmissions,
+            'recentActivities' => $recentActivities,
             'periodTimeInfo' => $periodTimeInfo,
         ]);
     }

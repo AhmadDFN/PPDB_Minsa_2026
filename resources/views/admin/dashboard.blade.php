@@ -16,6 +16,18 @@
                 @else
                     <x-ui.badge variant="danger" dot>Tidak Ada Periode Aktif</x-ui.badge>
                 @endif
+
+                @can('view_applicants')
+                    <a
+                        href="{{ route('admin.applicants.index') }}"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary-600 text-white hover:bg-primary-700 shadow-xs transition-colors"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span>Data Pendaftar</span>
+                    </a>
+                @endcan
             </div>
         </div>
     </x-slot:header>
@@ -182,9 +194,17 @@
                             <h2 class="text-base font-bold text-gray-900">Pendaftaran Terbaru</h2>
                             <p class="text-xs text-gray-500 mt-0.5">5 formulir pendaftaran terakhir yang dikirim secara resmi</p>
                         </div>
-                        <span class="text-xs font-semibold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-md">
-                            Terkirim Resmi
-                        </span>
+                        <div class="flex items-center gap-2">
+                            @can('view_applicants')
+                                <a
+                                    href="{{ route('admin.applicants.index') }}"
+                                    class="text-xs font-semibold text-primary-600 hover:text-primary-700 hover:underline flex items-center gap-1"
+                                >
+                                    <span>Lihat Semua</span>
+                                    <span>&rarr;</span>
+                                </a>
+                            @endcan
+                        </div>
                     </div>
 
                     @if ($latestSubmissions->isNotEmpty())
@@ -196,7 +216,8 @@
                                         <th scope="col" class="py-3 px-4">Nama Calon Siswa</th>
                                         <th scope="col" class="py-3 px-4">Program</th>
                                         <th scope="col" class="py-3 px-4">Waktu Kirim</th>
-                                        <th scope="col" class="py-3 px-4 sm:px-6 text-right">Status</th>
+                                        <th scope="col" class="py-3 px-4">Status</th>
+                                        <th scope="col" class="py-3 px-4 sm:px-6 text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
@@ -226,8 +247,18 @@
                                             <td class="py-3.5 px-4 text-xs text-gray-500 whitespace-nowrap">
                                                 {{ $submission->submitted_at ? $submission->submitted_at->setTimezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') . ' WIB' : '-' }}
                                             </td>
-                                            <td class="py-3.5 px-4 sm:px-6 text-right whitespace-nowrap">
+                                            <td class="py-3.5 px-4 whitespace-nowrap">
                                                 <x-ui.badge variant="success" dot>Terkirim</x-ui.badge>
+                                            </td>
+                                            <td class="py-3.5 px-4 sm:px-6 text-right whitespace-nowrap">
+                                                @can('view_applicants')
+                                                    <a
+                                                        href="{{ route('admin.applicants.show', $submission) }}"
+                                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold text-primary-700 bg-primary-50 hover:bg-primary-100 border border-primary-200 transition-colors"
+                                                    >
+                                                        <span>Detail</span>
+                                                    </a>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -248,6 +279,54 @@
                         </div>
                     @endif
                 </div>
+
+                {{-- Activity Log Summary Card --}}
+                <div class="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-gray-900">Aktivitas Pendaftaran Terbaru</h2>
+                            <p class="text-xs text-gray-500 mt-0.5">Catatan audit riwayat pengisian dan perubahan data formulir</p>
+                        </div>
+                        <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2.5 py-1 rounded-md">
+                            Audit Trail
+                        </span>
+                    </div>
+
+                    @if ($recentActivities->isNotEmpty())
+                        <div class="divide-y divide-gray-100">
+                            @foreach ($recentActivities as $activity)
+                                <div class="p-4 hover:bg-gray-50/70 transition-colors flex items-start justify-between gap-3 text-xs">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-gray-900 capitalize">{{ str_replace('_', ' ', $activity->action) }}</span>
+                                            @if ($activity->registration?->registration_number)
+                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-100 text-gray-700">
+                                                    {{ $activity->registration->registration_number }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <div class="text-gray-600">
+                                            Pendaftar: <strong>{{ $activity->registration?->applicant?->full_name ?? '-' }}</strong>
+                                            &bull; Aktor: {{ $activity->user?->name ?? 'Sistem' }}
+                                        </div>
+                                        @if (!empty($activity->changes['fields']))
+                                            <div class="text-[11px] text-gray-400">
+                                                Field: {{ implode(', ', $activity->changes['fields']) }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <span class="text-[11px] text-gray-400 whitespace-nowrap font-mono shrink-0">
+                                        {{ $activity->created_at ? $activity->created_at->setTimezone('Asia/Jakarta')->diffForHumans() : '-' }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="p-6 text-center text-xs text-gray-400 italic">
+                            Belum ada riwayat aktivitas pendaftaran di sistem.
+                        </div>
+                    @endif
+                </div>
             </div>
 
             {{-- Right Column (1 Col): Quick Actions & System Information --}}
@@ -256,6 +335,27 @@
                 <div class="bg-white rounded-xl border border-gray-200 shadow-xs p-5">
                     <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">Aksi Operasional Cepat</h2>
                     <div class="space-y-3">
+                        @can('view_applicants')
+                            <a
+                                href="{{ route('admin.applicants.index') }}"
+                                class="flex items-start gap-3 p-3 rounded-lg border border-primary-200 bg-primary-50/70 hover:bg-primary-100/70 transition group"
+                            >
+                                <div class="w-9 h-9 rounded-lg bg-primary-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="text-xs font-bold text-primary-900 group-hover:text-primary-700 transition block">
+                                        Kelola Data Pendaftar
+                                    </span>
+                                    <span class="text-[11px] text-primary-700/80 line-clamp-2 mt-0.5">
+                                        Pencarian pendaftar, penyaringan status, dan verifikasi berkas formulir.
+                                    </span>
+                                </div>
+                            </a>
+                        @endcan
+
                         @can('reopen_registration')
                             <a
                                 href="{{ route('admin.registrations.index') }}"

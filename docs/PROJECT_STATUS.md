@@ -12,34 +12,34 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 10.4 — SIMPLIFIKASI REGISTRASI, AUTO-GENERATED TEMPORARY PASSWORD, 5-DIGIT REGISTRATION NUMBER (YYNNN) & DYNAMIC SYSTEM BRANDING** |
-| **Status Teknis Fase 10.4** | **SELESAI (100% TERUJI OTOMATIS: 265 TESTS PASSED, 1302 ASSERTIONS, PINT & VITE COMPLIANT)** |
+| **Fase Berjalan Saat Ini** | **FASE 10.5 — ADMIN DASHBOARD DINAMIS & MANAJEMEN DATA PENDAFTAR** |
+| **Status Teknis Fase 10.5** | **SELESAI (100% TERUJI OTOMATIS: 279 TESTS PASSED, 1365 ASSERTIONS, PINT & VITE COMPLIANT)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
 | **Status Lingkungan Staging** | **READY (Paket siap dideploy ke staging setelah commit disetujui)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
-| **Commit Baseline Sebelum Fase 10.4** | `11e2a81` |
+| **Commit Baseline Sebelum Fase 10.5** | `8665755` |
 
 ---
 
-## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.4)
+## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.5)
 
 - **Perintah Pengujian**: `php artisan test`
 - **Waktu Eksekusi**: 20 November 2026
-- **Total Pengujian**: **265 pengujian**
-- **Lulus (Passed)**: **265 pengujian (100%)**
+- **Total Pengujian**: **279 pengujian**
+- **Lulus (Passed)**: **279 pengujian (100%)**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **0 pengujian**
-- **Total Asersi**: **1.302 asersi**
-- **Durasi Eksekusi**: ~10.0 detik
+- **Total Asersi**: **1.365 asersi**
+- **Durasi Eksekusi**: ~11.6 detik
 - **Kepatuhan Format Kode (Pint)**: **PASSED (0 issues)** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 advisories** (`composer audit`)
 - **Audit Dependensi NPM Produksi**: **0 vulnerabilities** (`npm.cmd audit --omit=dev`)
-- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 115.74 kB, JS 1.72 kB)
+- **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 117.44 kB, JS 1.72 kB)
 
-### Rincian Suite Pengujian Tambahan Fase 10.4:
-1. **Registration Simplification & Temporary Password Suite** (`tests/Feature/Auth/RegistrationSimplificationAndGeneratedPasswordTest.php`):
-   - 9 pengujian spesifik mencakup penyederhanaan form `/daftar` (hanya 4 input, tanpa password/biodata), validasi wajib, pembuatan user pending dan alokasi nomor pendaftaran 5 digit (`YYNNN`), penomoran global lintas program, penegakan kuota maks 999, pembuatan dan pengiriman kata sandi sementara 10 karakter via WhatsApp dalam pesan terpisah pasca verifikasi OTP, intersepsi login pertama kali untuk wajib ganti kata sandi, rotasi kata sandi sementara saat kirim ulang, serta proteksi otorisasi pengaturan branding dinamis (khusus Superadmin, larangan keras untuk Admin PPDB).
+### Rincian Suite Pengujian Tambahan Fase 10.5:
+1. **Applicant Management & Admin Dashboard Suite** (`tests/Feature/Admin/ApplicantManagementTest.php`):
+   - 14 pengujian komprehensif mencakup otorisasi role Superadmin dan Admin PPDB (`view_applicants`), penolakan user tanpa permission & applicant (403), paginasi daftar pendaftar (15 data/halaman), pencarian multi-kriteria (nama siswa, nomor registrasi 5-digit `YYNNN`, NIK 16 digit via deterministik HMAC lookup hash `nik_lookup_hash`), filter pendaftaran (periode, program, status DRAFT/SUBMITTED), rendering 11 kartu informasi pada detail pendaftar lengkap dengan perhitungan umur runtime dinamis, pratinjau dan unduh berkas privat dengan proteksi IDOR lintas pendaftar.
 
 ---
 
@@ -63,6 +63,7 @@
 | 10.2 | **Integrasi Gateway WhatsApp Fonnte API** | Driver `FonnteOtpDelivery`, normalisasi nomor Indonesia, validasi status Fonnte, penanganan error/timeout, template aktivasi & pemulihan, 20 test cases otomatis | **SELESAI** | 235 tests passed (100%), 1150 assertions, panduan operasional `FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`, siap uji manual pemilik proyek |
 | 10.3 | **Pending Registration Recovery & NIK Reuse** | Mekanisme recovery pendaftaran tertunda, verifikasi identitas, update nomor WA, invalidasi OTP lama, zero-duplicate guarantee, 20 test cases otomatis | **SELESAI** | 256 tests passed (100%), 1217 assertions, laporan komprehensif `PHASE-10.3-IMPLEMENTATION-REPORT.md`, siap deploy |
 | 10.4 | **Simplifikasi Registrasi, Auto-Password, No. 5-Digit & Dynamic Branding** | Formulir 4 input tanpa password/biodata, temporary password otomatis via WA, wajib ganti password di awal login, no reg 5-digit `YYNNN` lintas program maks 999, settings branding Superadmin | **SELESAI** | 265 tests passed (100%), 1302 assertions, laporan komprehensif `PHASE-10.4-IMPLEMENTATION-REPORT.md`, siap deploy |
+| 10.5 | **Admin Dashboard Dinamis & Manajemen Data Pendaftar** | Dashboard metrik riil (global & periode), daftar pendaftar paginasi 15/hal, multi-search (nama, reg YYNNN, NIK 16 digit via HMAC hash), filter (periode, program, status), detail pendaftar 11 seksi kartu info, hitung umur dinamis runtime, pratinjau & unduh berkas privat dengan proteksi IDOR lintas pendaftar, audit logs aktivitas terkini | **SELESAI** | 279 tests passed (100%), 1365 assertions, 14 feature tests baru di `ApplicantManagementTest`, laporan komprehensif `PHASE-10.5-IMPLEMENTATION-REPORT.md`, siap deploy |
 
 ---
 
@@ -80,8 +81,10 @@
 
 ## 5. DOKUMEN OPERASIONAL & KESIAPAN PRODUKSI TERSEDIA
 
-1. `docs/phases/PHASE-10.3-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.3 (Pending Registration Recovery & NIK Reuse).
-2. `docs/phases/PHASE-10.2-IMPLEMENTATION-REPORT.md` / `docs/manual/FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`: Panduan & laporan integrasi WhatsApp Fonnte API.
+1. `docs/phases/PHASE-10.5-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.5 (Admin Dashboard Dinamis & Manajemen Data Pendaftar).
+2. `docs/phases/PHASE-10.4-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.4 (Simplifikasi Registrasi, Auto-Generated Password, Nomor 5-Digit & Dynamic Branding).
+3. `docs/phases/PHASE-10.3-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.3 (Pending Registration Recovery & NIK Reuse).
+4. `docs/phases/PHASE-10.2-IMPLEMENTATION-REPORT.md` / `docs/manual/FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`: Panduan & laporan integrasi WhatsApp Fonnte API.
 3. `docs/manual/`: Direktori 12 dokumen operasional lengkap:
    - `README.md` (Indeks master panduan)
    - `01-PANDUAN-ORANG-TUA-WALI.md` (Buku panduan lengkap 14 bab untuk orang tua)
@@ -114,4 +117,4 @@
 
 ## 6. PROTOKOL KONDISI BERHENTI (STOP CONDITION)
 
-Fase 10.3 selesai secara penuh. Mekanisme pemulihan pendaftaran tertunda dan penggunaan kembali NIK setelah kegagalan OTP telah teruji 100% lulus (256 pengujian, 1.217 asersi, 0 gagal). Seluruh dokumentasi diperbarui secara faktual. Agen BERHENTI dan menunggu persetujuan atau instruksi dari Pemilik Proyek.
+Fase 10.5 selesai secara penuh. Admin Dashboard dinamis, daftar pendaftar dengan paginasi, pencarian multi-kriteria aman (nama, nomor reg YYNNN, NIK 16 digit via HMAC lookup hash), filter (periode, program, status), serta halaman detail pendaftar 11 seksi kartu info dengan pratinjau dan unduh berkas privat terotorisasi anti-IDOR telah teruji 100% lulus (279 pengujian, 1.365 asersi, 0 gagal). Seluruh dokumentasi diperbarui secara faktual. Agen BERHENTI dan menunggu persetujuan atau instruksi dari Pemilik Proyek.

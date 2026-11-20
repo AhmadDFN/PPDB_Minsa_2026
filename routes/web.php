@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\ApplicantManagementController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
@@ -117,6 +118,13 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         ->middleware('can:view_dashboard')
         ->name('dashboard');
 
+    Route::middleware('can:view_applicants')->group(function () {
+        Route::get('/pendaftar', [ApplicantManagementController::class, 'index'])->name('applicants.index');
+        Route::get('/pendaftar/{registration}', [ApplicantManagementController::class, 'show'])->name('applicants.show');
+        Route::get('/pendaftar/{registration}/dokumen/{document}/preview', [ApplicantManagementController::class, 'previewDocument'])->name('applicants.documents.preview');
+        Route::get('/pendaftar/{registration}/dokumen/{document}/download', [ApplicantManagementController::class, 'downloadDocument'])->name('applicants.documents.download');
+    });
+
     Route::middleware('can:manage_system_settings')->group(function () {
         Route::get('/pengaturan', [SystemSettingController::class, 'index'])->name('settings.index');
         Route::post('/pengaturan', [SystemSettingController::class, 'update'])->name('settings.update');
@@ -132,7 +140,6 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
     // Fallback handler for upcoming modules to prevent 404 during navigation testing
     Route::get('/{module}', function (string $module) {
         $moduleNames = [
-            'pendaftar' => 'Data Pendaftar',
             'dokumen' => 'Verifikasi Berkas',
             'periode' => 'Periode Pendaftaran',
             'program' => 'Program MI',
@@ -144,5 +151,5 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
 
         return redirect()->route('admin.dashboard')
             ->with('warning', "Modul {$name} dijadwalkan pada fase pengembangan berikutnya.");
-    })->where('module', 'pendaftar|dokumen|periode|program|laporan|pengguna');
+    })->where('module', 'dokumen|periode|program|laporan|pengguna');
 });
