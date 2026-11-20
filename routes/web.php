@@ -16,6 +16,7 @@ use App\Http\Controllers\Applicant\RegistrationReviewController;
 use App\Http\Controllers\Applicant\RegistrationSubmissionController;
 use App\Http\Controllers\RegistrationPdfVerificationController;
 use App\Models\AdmissionPeriod;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 
@@ -152,4 +153,38 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         return redirect()->route('admin.dashboard')
             ->with('warning', "Modul {$name} dijadwalkan pada fase pengembangan berikutnya.");
     })->where('module', 'dokumen|periode|program|laporan|pengguna');
+});
+
+// One-click secure migration recovery route for production hosting
+Route::get('/maintenance/migrate-production/{token}', function (string $token) {
+    abort_unless($token === 'minsatama2026-secure-migrate', 403, 'Akses ditolak.');
+
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        $migrateOutput = Artisan::output();
+
+        Artisan::call('optimize:clear');
+        $optimizeOutput = Artisan::output();
+
+        return response(
+            '<div style="font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 24px; border: 1px solid #10b981; border-radius: 8px; background: #ecfdf5;">'
+            .'<h2 style="color: #065f46; margin-top: 0;">âœ… Migrasi Berhasil Dijalankan!</h2>'
+            .'<p style="color: #047857;">Seluruh tabel dan kolom basis data terbaru telah berhasil dibuat dan diperbarui di Hostinger.</p>'
+            .'<pre style="background: #ffffff; padding: 12px; border: 1px solid #a7f3d0; border-radius: 4px; overflow-x: auto; font-size: 13px;">'.htmlspecialchars($migrateOutput.$optimizeOutput).'</pre>'
+            .'<div style="margin-top: 20px;">'
+            .'<a href="/login" style="display: inline-block; background: #059669; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">Ke Halaman Login &rarr;</a> '
+            .'<a href="/daftar" style="display: inline-block; background: #0284c7; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-left: 10px;">Ke Form Pendaftaran &rarr;</a>'
+            .'</div>'
+            .'</div>',
+            200
+        )->header('Content-Type', 'text/html');
+    } catch (Throwable $e) {
+        return response(
+            '<div style="font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 24px; border: 1px solid #ef4444; border-radius: 8px; background: #fef2f2;">'
+            .'<h2 style="color: #991b1b; margin-top: 0;">âŒ Gagal Menjalankan Migrasi</h2>'
+            .'<pre style="background: #ffffff; padding: 12px; border: 1px solid #fecaca; border-radius: 4px; overflow-x: auto; color: #b91c1c;">'.htmlspecialchars($e->getMessage()).'</pre>'
+            .'</div>',
+            500
+        )->header('Content-Type', 'text/html');
+    }
 });
