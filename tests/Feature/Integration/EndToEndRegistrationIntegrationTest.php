@@ -132,15 +132,15 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         $tempPassword = ArrayOtpDelivery::latestPasswordFor('081234567890');
         $this->assertNotNull($tempPassword);
 
-        // 3. Login dengan temporary password -> diarahkan ganti password wajib
+        // 3. Login dengan temporary password -> langsung ke dashboard (ganti password bersifat opsional di dashboard)
         $loginResponse = $this->post(route('login.store'), [
             'nik' => $nik,
             'password' => $tempPassword,
         ]);
-        $loginResponse->assertRedirect(route('applicant.password.change'));
+        $loginResponse->assertRedirect(route('applicant.dashboard'));
         $this->assertAuthenticatedAs($user);
 
-        // Ubah kata sandi sementara menjadi permanen
+        // Ubah kata sandi sementara menjadi permanen (opsional)
         $changePasswordResponse = $this->actingAs($user)->post(route('applicant.password.change.update'), [
             'current_password' => $tempPassword,
             'password' => 'PasswordAman2026!',

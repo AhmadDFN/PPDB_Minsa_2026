@@ -56,6 +56,24 @@ class RegisterApplicantAction
                 ->where('is_active', true)
                 ->first();
 
+            // Ensure an active period is always available so that registration number is always generated
+            if (! $activePeriod) {
+                $activePeriod = AdmissionPeriod::query()->latest('id')->first();
+            }
+
+            if (! $activePeriod) {
+                $activePeriod = AdmissionPeriod::create([
+                    'academic_year' => '2026/2027',
+                    'name' => 'PPDB MIN 1 Kota Madiun TP 2026/2027',
+                    'start_date' => now()->subDay(),
+                    'end_date' => now()->addDays(60),
+                    'age_reference_date' => '2026-07-01',
+                    'status' => AdmissionPeriodStatus::ACTIVE,
+                    'is_active' => true,
+                    'description' => 'Penerimaan Peserta Didik Baru MIN 1 Kota Madiun Tahun Pelajaran 2026/2027',
+                ]);
+            }
+
             if ($existingUser) {
                 // Rule C: Active account is strictly rejected
                 if ($existingUser->account_status === AccountStatus::ACTIVE) {

@@ -15,6 +15,7 @@ use App\Models\Registration;
 use App\Models\SystemSetting;
 use App\Models\User;
 use App\Services\Authentication\Delivery\ArrayOtpDelivery;
+use App\Services\Authentication\Delivery\FonnteOtpDelivery;
 use App\Services\Registration\RegistrationNumberGeneratorService;
 use App\Support\NikManager;
 use Database\Seeders\RoleAndPermissionSeeder;
@@ -210,21 +211,20 @@ class RegistrationSimplificationAndGeneratedPasswordTest extends TestCase
         $tempPassword = ArrayOtpDelivery::latestPasswordFor($phone);
         $user->refresh();
 
-        // Login attempt
+        // Login attempt redirects directly to dashboard (password change is optional)
         $loginResponse = $this->post(route('login.store'), [
             'nik' => $nik,
             'password' => $tempPassword,
         ]);
 
-        $loginResponse->assertRedirect(route('applicant.password.change'));
+        $loginResponse->assertRedirect(route('applicant.dashboard'));
         $this->assertAuthenticatedAs($user);
 
-        // Attempting to access dashboard directly is intercepted by middleware
+        // Dashboard access is immediately permitted without mandatory redirection
         $dashboardResponse = $this->actingAs($user)->get(route('applicant.dashboard'));
-        $dashboardResponse->assertRedirect(route('applicant.password.change'));
-        $dashboardResponse->assertSessionHas('warning', 'Anda menggunakan kata sandi sementara. Demi keamanan akun, Anda wajib membuat kata sandi baru terlebih dahulu.');
+        $dashboardResponse->assertOk();
 
-        // Update password
+        // Update password (optional feature from dashboard)
         $changeResponse = $this->actingAs($user)->post(route('applicant.password.change.update'), [
             'current_password' => $tempPassword,
             'password' => 'KataSandiBaru2026!',
@@ -238,7 +238,7 @@ class RegistrationSimplificationAndGeneratedPasswordTest extends TestCase
         $this->assertFalse($user->must_change_password);
         $this->assertNotNull($user->password_changed_at);
 
-        // Subsequent dashboard access is permitted
+        // Subsequent dashboard access remains permitted
         $this->actingAs($user)->get(route('applicant.dashboard'))->assertOk();
     }
 
@@ -322,5 +322,63 @@ class RegistrationSimplificationAndGeneratedPasswordTest extends TestCase
             'user_id' => $superadmin->id,
             'new_value' => 'PPDB MADRASAH IBTIDAIYAH NEGERI 1 KOTA MADIUN',
         ]);
+    }
+
+    public function test_multiple_applicants_can_use_the_same_phone_number_for_sibling_support(): void
+    {
+        $sharedPhone = '0895352882228';
+        $nik1 = '3573010101200011';
+        $nik2 = '3573010101200012';
+
+        // 1. Sibling 1 registers with shared phone
+        $response1 = $this->post(route('register.store'), [
+            'nik' => $nik1,
+            'full_name' => 'Kakak Pertama',
+            'phone' => $sharedPhone,
+            'consent' => '1',
+        ]);
+        $response1->assertRedirect(route('activation.form'));
+
+        $user1 = User::where('nik_lookup_hash', NikManager::hash($nik1))->firstOrFail();
+        $this->assertSame($sharedPhone, $user1->phone);
+
+        // 2. Sibling 2 registers with the EXACT SAME shared phone
+        $response2 = $this->post(route('register.store'), [
+            'nik' => $nik2,
+            'full_name' => 'Adik Kedua',
+            'phone' => $sharedPhone,
+            'consent' => '1',
+        ]);
+        $response2->assertRedirect(route('activation.form'));
+
+        $user2 = User::where('nik_lookup_hash', NikManager::hash($nik2))->firstOrFail();
+        $this->assertSame($sharedPhone, $user2->phone);
+        $this->assertNotSame($user1->id, $user2->id);
+
+        // Both accounts exist independently with the same phone
+        $this->assertDatabaseHas('users', ['id' => $user1->id, 'phone' => $sharedPhone]);
+        $this->assertDatabaseHas('users', ['id' => $user2->id, 'phone' => $sharedPhone]);
+    }
+
+    public function test_whatsapp_message_contains_nik_password_and_registration_number(): void
+    {
+        $nik = '3573010101200099';
+        $registrationNumber = '27005';
+        $password = 'SecretPass99';
+
+        $message = FonnteOtpDelivery::buildTemporaryPasswordMessage(
+            temporaryPassword: $password,
+            registrationNumber: $registrationNumber,
+            nik: $nik,
+            isResend: false
+        );
+
+        $this->assertStringContainsString($nik, $message);
+        $this->assertStringContainsString($password, $message);
+        $this->assertStringContainsString($registrationNumber, $message);
+        $this->assertStringContainsString('NIK (Username)', $message);
+        $this->assertStringContainsString('Password', $message);
+        $this->assertStringContainsString('Nomor Pendaftaran', $message);
+        $this->assertStringContainsString('Ganti kata sandi bersifat pilihan (opsional)', $message);
     }
 }

@@ -1,4 +1,4 @@
-<x-layouts.app title="Ganti Kata Sandi Wajib — PPDB Minsatama">
+<x-layouts.app title="Ganti Kata Sandi — PPDB Minsatama">
     <div class="min-h-[calc(100vh-16rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
             {{-- Header Brand --}}
@@ -6,9 +6,9 @@
                 <div class="inline-flex items-center justify-center w-20 h-20 mb-3">
                     <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain drop-shadow-xs">
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-neutral-800 tracking-tight">Buat Kata Sandi Baru</h1>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-neutral-800 tracking-tight">Ganti Kata Sandi</h1>
                 <p class="mt-2 text-sm text-neutral-600">
-                    Anda masuk menggunakan kata sandi sementara. Demi keamanan data calon siswa, Anda wajib membuat kata sandi permanen baru sebelum melanjutkan ke portal pendaftar.
+                    Anda dapat memperbarui kata sandi akun pendaftaran Anda kapan saja. Silakan masukkan kata sandi baru di bawah ini.
                 </p>
             </div>
 
@@ -84,7 +84,9 @@
                 </form>
 
                 <div class="mt-6 pt-5 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
-                    <span>Masuk sebagai: <strong>{{ auth()->user()->getMaskedNik() }}</strong></span>
+                    <a href="{{ route('applicant.dashboard') }}" class="text-emerald-600 hover:text-emerald-700 font-semibold hover:underline flex items-center gap-1">
+                        &larr; Kembali ke Dasbor
+                    </a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-red-600 hover:text-red-700 font-semibold hover:underline">

@@ -173,7 +173,8 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
             return false;
         }
 
-        $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $isResend);
+        $nik = $user->getDecryptedNik() ?? '—';
+        $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $nik, $isResend);
 
         try {
             $client = Http::asForm()
@@ -331,16 +332,21 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
     }
 
     /**
-     * Build temporary password message template (Template B / C).
+     * Build temporary password message template containing NIK, Password, and Registration Number.
      */
-    public static function buildTemporaryPasswordMessage(string $temporaryPassword, string $registrationNumber, bool $isResend = false): string
-    {
+    public static function buildTemporaryPasswordMessage(
+        string $temporaryPassword,
+        string $registrationNumber,
+        ?string $nik = null,
+        bool $isResend = false
+    ): string {
         $brandName = SystemSetting::getInstitutionName();
+        $nikDisplay = $nik ?: '—';
 
         if ($isResend) {
-            return "{$brandName}\n\nBerikut password sementara baru untuk akun PPDB Anda:\n\nPassword: {$temporaryPassword}\n\nNomor Pendaftaran: {$registrationNumber}\n\nPassword sebelumnya sudah tidak berlaku lagi.\nGunakan NIK anak sebagai username login.\n\nPassword ini wajib diganti saat pertama kali login.\n\nJangan berikan password kepada siapa pun.";
+            return "{$brandName}\n\nBerikut data akun baru PPDB Anda:\n\n*NIK (Username)*: {$nikDisplay}\n*Password*: {$temporaryPassword}\n*Nomor Pendaftaran*: {$registrationNumber}\n\nPassword sebelumnya sudah tidak berlaku lagi.\nGunakan NIK sebagai username dan password di atas untuk masuk ke akun pendaftar.\n\nGanti kata sandi bersifat pilihan (opsional) melalui Dashboard.\nJangan berikan password kepada siapa pun.";
         }
 
-        return "{$brandName}\n\nVerifikasi akun PPDB Anda berhasil.\n\nBerikut password sementara untuk masuk ke aplikasi:\n\nPassword: {$temporaryPassword}\n\nNomor Pendaftaran: {$registrationNumber}\n\nGunakan NIK anak sebagai username login.\n\nPassword ini wajib diganti saat pertama kali login.\n\nJangan berikan password kepada siapa pun.";
+        return "{$brandName}\n\nVerifikasi akun PPDB Anda berhasil.\n\nBerikut data akun untuk masuk ke aplikasi PPDB:\n\n*NIK (Username)*: {$nikDisplay}\n*Password*: {$temporaryPassword}\n*Nomor Pendaftaran*: {$registrationNumber}\n\nGunakan NIK sebagai username dan password di atas untuk masuk ke akun pendaftar.\n\nGanti kata sandi bersifat pilihan (opsional) melalui Dashboard.\nJangan berikan password kepada siapa pun.";
     }
 }

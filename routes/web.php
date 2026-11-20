@@ -163,6 +163,12 @@ Route::get('/maintenance/migrate-production/{token}', function (string $token) {
         Artisan::call('migrate', ['--force' => true]);
         $migrateOutput = Artisan::output();
 
+        // Ensure active admission period 2026/2027 exists
+        if (AdmissionPeriod::query()->where('is_active', true)->doesntExist()) {
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\AdmissionPeriodSeeder', '--force' => true]);
+            $migrateOutput .= "\n".Artisan::output();
+        }
+
         Artisan::call('optimize:clear');
         $optimizeOutput = Artisan::output();
 

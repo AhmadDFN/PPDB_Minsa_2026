@@ -6,12 +6,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Authentication\VerifyOtpAction;
 use App\Enums\AccountStatus;
+use App\Enums\AdmissionPeriodStatus;
 use App\Enums\OtpPurpose;
+use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\VerifyOtpRequest;
+use App\Models\AdmissionPeriod;
+use App\Models\Registration;
 use App\Models\User;
 use App\Services\Authentication\OtpDeliveryService;
 use App\Services\Authentication\OtpService;
+use App\Services\Registration\RegistrationNumberGeneratorService;
 use App\Support\NikManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -112,7 +117,42 @@ class ApplicantActivationController extends Controller
             'password_changed_at' => null,
         ]);
 
-        $regNumber = $user->applicant?->registrations()->latest()->first()?->registration_number ?? '—';
+        $registration = $user->applicant?->registrations()->latest()->first();
+        if (! $registration || empty($registration->registration_number)) {
+            $period = AdmissionPeriod::query()->where('is_active', true)->first()
+                ?? AdmissionPeriod::query()->latest('id')->first();
+
+            if (! $period) {
+                $period = AdmissionPeriod::create([
+                    'academic_year' => '2026/2027',
+                    'name' => 'PPDB MIN 1 Kota Madiun TP 2026/2027',
+                    'start_date' => now()->subDay(),
+                    'end_date' => now()->addDays(60),
+                    'age_reference_date' => '2026-07-01',
+                    'status' => AdmissionPeriodStatus::ACTIVE,
+                    'is_active' => true,
+                    'description' => 'Penerimaan Peserta Didik Baru MIN 1 Kota Madiun Tahun Pelajaran 2026/2027',
+                ]);
+            }
+
+            if ($user->applicant) {
+                $numberGen = app(RegistrationNumberGeneratorService::class);
+                $generatedNumber = $numberGen->generateForPeriod($period);
+
+                if ($registration) {
+                    $registration->update(['registration_number' => $generatedNumber]);
+                } else {
+                    $registration = Registration::create([
+                        'applicant_id' => $user->applicant->id,
+                        'admission_period_id' => $period->id,
+                        'registration_number' => $generatedNumber,
+                        'status' => RegistrationStatus::DRAFT,
+                        'data_revision' => 1,
+                    ]);
+                }
+            }
+        }
+        $regNumber = $registration?->registration_number ?? '—';
 
         // 3. Dispatch temporary password via WhatsApp Fonnte (separate message)
         $pwDispatched = false;

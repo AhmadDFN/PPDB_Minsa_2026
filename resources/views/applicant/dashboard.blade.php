@@ -36,6 +36,19 @@
                     <p class="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
                         Portal Pendaftaran Peserta Didik Baru MIN 1 Kota Madiun. Lengkapi biodata, orang tua, riwayat pendidikan, pilihan program, dan unggah dokumen persyaratan secara mandiri.
                     </p>
+
+                    <div class="pt-1 flex items-center gap-3">
+                        <a
+                            href="{{ route('applicant.password.change') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 transition hover:border-emerald-500/40"
+                            title="Ganti Kata Sandi (Opsional)"
+                        >
+                            <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                            </svg>
+                            <span>Ganti Kata Sandi (Opsional)</span>
+                        </a>
+                    </div>
                 </div>
 
                 {{-- Action / Status Chip --}}

@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ProgramSeeder::class,
             RoleAndPermissionSeeder::class,
             SuperAdminSeeder::class,
+            AdmissionPeriodSeeder::class,
         ]);
     }
 }

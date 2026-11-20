@@ -46,6 +46,7 @@ class ArrayOtpDelivery implements OtpDeliveryInterface
             'phone' => $phone,
             'temporary_password' => $temporaryPassword,
             'user_id' => $user->id,
+            'nik' => $user->getDecryptedNik(),
             'registration_number' => $registrationNumber,
             'is_resend' => $isResend,
         ];
