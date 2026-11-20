@@ -108,4 +108,14 @@ Pengujian penetrasi terarah pada E2E Scenario 6 membuktikan:
 
 Sistem Informasi PPDB MIN 1 Kota Madiun telah memenuhi seluruh standar keamanan aplikasi web pemerintahan dan madrasah:
 - **Tingkat Risiko Kerentanan**: **LOW / MINIMAL**
-- **Kesiapan Keamanan untuk Produksi**: **APPROVED**
+- **Kesiapan Keamanan untuk Produksi**: **CONDITIONAL — PENDING LIVE ACCEPTANCE AND OWNER GO-LIVE APPROVAL**
+
+## 7. REKONSILIASI KEAMANAN 20 NOVEMBER 2026
+
+### Endpoint Migrasi Produksi
+
+Audit menemukan endpoint GET migrasi production dengan token statis tertanam pada `routes/web.php`. Endpoint tersebut dapat menjalankan migrasi, seeding, dan pembersihan cache. Endpoint telah dihapus dari source lokal, dan regression test memastikan URL maintenance tersebut mengembalikan 404. Endpoint tidak diakses pada Hostinger. Migrasi operasional wajib melalui CLI SSH setelah backup.
+
+### Privasi Uji Live
+
+Credential QA, OTP, token gateway, NIK lengkap, nomor WhatsApp lengkap, dan dokumen pribadi tidak dicatat dalam laporan live. Credential yang pernah dibagikan dalam percakapan harus dianggap terekspos dan diganti sebelum dipakai untuk operasi resmi.

@@ -263,3 +263,16 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P1 - Operasional] Dokumentasi batas unggah server**: Rekomendasi konfigurasi server produksi (`upload_max_filesize=10M`, `post_max_size=16M`) didokumentasikan di `PRODUCTION-READINESS-CHECKLIST.md`.
 - [x] **[P1 - Operasional] Verifikasi MariaDB fisik**: Sepuluh tes lulus pada MariaDB 10.4.32/InnoDB dan database uji khusus `ppdb_phase6_test`. Gerbang MySQL 8 mandiri dicatat BLOCKED.
 - [x] **[P1 - Kebijakan] Implementasi kebijakan admin reopen**: Hak akses per pendaftaran dengan alasan, waktu kedaluwarsa, penutupan dini, penegakan server-side, dan audit telah diterapkan dan diuji E2E.
+
+## 5. PRIORITAS REKONSILIASI 20 NOVEMBER 2026
+
+- [x] **[P0] Hapus endpoint HTTP migrasi ber-token statis** dari `routes/web.php` dan tambahkan regression test route tidak tersedia.
+- [x] **[P1] Catat hasil live applicant Hostinger** sampai PDF draft dan halaman tinjau.
+- [ ] **[P1] Verifikasi consent dan Final Submit** pada Hostinger dengan akun QA.
+- [ ] **[P1] Verifikasi PDF final dan QR** tanpa membocorkan PII.
+- [ ] **[P2] Uji live Admin/Superadmin**: login, dashboard, daftar/detail pendaftar, dokumen, reopen, settings, dan permission boundary.
+- [ ] **[P2] Verifikasi database engine/version dan runtime Hostinger** tanpa menyimpan credential.
+- [ ] **[P2] Lengkapi UAT sekolah** dan validasi branding, alamat resmi, backup/restore, serta prosedur operasional.
+- [ ] **[P3] Reconcile dokumentasi lama** yang masih memuat angka test atau status fitur yang tidak sesuai checkout aktual.
+
+Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.

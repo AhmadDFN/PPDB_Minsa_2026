@@ -133,14 +133,8 @@ class SystemSettingRecoveryTest extends TestCase
         $this->get(route('admin.applicants.index'))->assertOk();
     }
 
-    public function test_maintenance_migration_route_security(): void
+    public function test_production_migration_is_not_exposed_over_http(): void
     {
-        // Invalid token returns 403
-        $this->get('/maintenance/migrate-production/wrong-token')->assertForbidden();
-
-        // Valid token executes successfully and returns 200 HTML response
-        $response = $this->get('/maintenance/migrate-production/minsatama2026-secure-migrate');
-        $response->assertOk();
-        $response->assertSee('Migrasi Berhasil Dijalankan!');
+        $this->get('/maintenance/migrate-production/test-token')->assertNotFound();
     }
 }

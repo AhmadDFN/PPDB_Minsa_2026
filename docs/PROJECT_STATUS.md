@@ -3,7 +3,7 @@
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
 **Terakhir Diperbarui**: 20 November 2026
-**Dokumentasi Versi**: 1.5.0
+**Dokumentasi Versi**: 1.6.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
 ---
@@ -12,10 +12,10 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **HOTFIX 10.5.1 — PRODUCTION DATABASE MIGRATION & RUNTIME RECOVERY** |
+| **Fase Berjalan Saat Ini** | **REKONSILIASI STATUS & LIVE ACCEPTANCE HOSTINGER** |
 | **Status Teknis Hotfix 10.5.1** | **SELESAI (100% TERUJI OTOMATIS: 286 TESTS PASSED, 1386 ASSERTIONS, PINT & VITE COMPLIANT)** |
-| **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
-| **Status Lingkungan Staging** | **READY (Panduan migrasi & pemulihan runtime siap dieksekusi di Hostinger)** |
+| **Status UAT Sekolah** | **APPLICANT LIVE TEST PASS WITH BLOCKER; ADMIN/SUPERADMIN LIVE TEST PENDING** |
+| **Status Lingkungan Staging** | **ONLINE/TESTED DI HOSTINGER: https://ahmaddanyfn.biz.id** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
 | **Commit Baseline Sebelum Hotfix** | `550d0e2` |
@@ -23,6 +23,8 @@
 ---
 
 ## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (HOTFIX 10.5.1)
+
+> Angka pada bagian hotfix ini adalah snapshot historis laporan hotfix. Hasil checkout aktual 20 November 2026 dicatat pada Bagian 7 dan laporan `docs/audits/STATUS-RECONCILIATION-2026-11-20.md`.
 
 - **Perintah Pengujian**: `php artisan test`
 - **Waktu Eksekusi**: 20 November 2026
@@ -120,3 +122,15 @@
 ## 6. PROTOKOL KONDISI BERHENTI (STOP CONDITION)
 
 Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (tabel `system_settings` belum termigrasi pada Hostinger), pemulihan runtime tanpa pencemaran cache terimplementasi dan teruji, 5 migrasi tertunda teridentifikasi aman/non-destruktif, dan panduan eksekusi pemilik proyek tersusun lengkap (286 pengujian, 1.386 asersi, 0 gagal). Agen BERHENTI dan menunggu pemilik proyek menerapkan migrasi di Hostinger. DILARANG melakukan `git push` atau deploy ke server produksi secara mandiri.
+
+## 7. REKONSILIASI AKTUAL 20 NOVEMBER 2026
+
+- Hostinger online/testing pada `https://ahmaddanyfn.biz.id`; GitHub Auto Deploy dan penggunaan database/upload telah dikonfirmasi pemilik proyek.
+- Integrasi Fonnte diklasifikasikan **IMPLEMENTED + LIVE TESTED + OWNER CONFIRMED** berdasarkan pengiriman OTP yang berhasil pada uji langsung.
+- Applicant E2E live berjalan sampai pengisian data, upload tiga dokumen, PDF draft, dan halaman tinjau.
+- Consent, Final Submit, status `SUBMITTED`, PDF final, dan QR masih **PENDING VERIFICATION** pada laporan live terakhir.
+- Admin dan Superadmin telah memiliki implementasi kode, tetapi pengujian operasional live belum memadai.
+- Endpoint HTTP migrasi produksi ber-token statis telah dihapus dari source lokal dan diuji agar tidak tersedia melalui HTTP. Migrasi berikutnya wajib melalui CLI SSH setelah backup.
+- Automated test checkout saat ini: 289 tests, 278 passed, 11 skipped, 1.273 assertions. Skipped berasal dari integrasi MySQL/pdo_mysql dan satu skenario GD/PNG sesuai kondisi test.
+- Laporan live applicant: `docs/uat/LIVE-APPLICANT-E2E-REPORT-2026-11-20.md`.
+- Catatan environment Hostinger: `docs/deployment/CURRENT-HOSTINGER-ENVIRONMENT.md`.

@@ -36,13 +36,13 @@
 - **Rencana Mitigasi**:
   Administrator server wajib mengatur `upload_max_filesize = 16M` dan `post_max_size = 20M` pada `php.ini` atau panel cPanel/Hostinger/aaPanel sebagaimana dirinci dalam `docs/deployment/HOSTINGER-STAGING-GUIDE.md`.
 
-### 1.5 Driver Pengiriman OTP WhatsApp Masih Driver Log/Array
-- **Status**: SESUAI DESAIN ARSITEKTUR FASE 1–9 (BY-DESIGN)
+### 1.5 Integrasi Pengiriman OTP WhatsApp Fonnte
+- **Status**: IMPLEMENTED + LIVE TESTED + OWNER CONFIRMED
 - **Tingkat Keparahan**: Info / Operasional
 - **Deskripsi**:
-  Sistem saat ini menggunakan driver `log` (mencatat kode OTP ke log lokal) dan driver `array` (untuk pengujian otomatis). Integrasi langsung dengan vendor gateway WhatsApp resmi (seperti Fonnte, Twilio, atau Zenziva) belum dihubungkan karena menunggu akun dan API key resmi dari madrasah.
+  Driver Fonnte tersedia dan pemilik proyek mengonfirmasi pengiriman OTP berhasil pada pengujian langsung. Driver `log`/`array` tetap digunakan untuk mode lokal dan automated test.
 - **Rencana Mitigasi**:
-  Abstraksi `OtpDeliveryInterface` telah disiapkan. Ketika pihak madrasah menyerahkan API key resmi, pengembang hanya perlu mengimplementasikan kelas baru (misal `FonnteOtpDelivery`) tanpa mengubah logika bisnis autentikasi atau basis data.
+  Pertahankan timeout, validasi respons, redaksi log, dan uji regresi. Jangan mencatat token gateway atau OTP plaintext pada laporan.
 
 ### 1.6 Aset Identitas Resmi Madrasah (Logo & Alamat Lengkap)
 - **Status**: PENDING OWNER ACTION
@@ -90,3 +90,13 @@ Jika ditemukan anomali baru:
 3. Buat skenario automated test yang mereplikasi anomali tersebut.
 4. Lakukan perbaikan kode hingga seluruh test suite (203+ tests) lulus.
 5. Perbarui berkas `KNOWN-ISSUES.md`.
+
+### 1.10 Status Rekonsiliasi Hostinger dan UAT
+- **Status**: APPLICANT PASS WITH BLOCKER; ADMIN/SUPERADMIN PENDING VERIFICATION
+- Hostinger online/testing telah dikonfirmasi pada `https://ahmaddanyfn.biz.id` dengan Auto Deploy dan database aktif.
+- Applicant live test berhasil sampai upload dokumen, PDF draft, dan halaman tinjau.
+- Consent, Final Submit, PDF final, QR, serta uji operasional Admin/Superadmin belum dikonfirmasi pada laporan live terakhir.
+
+### 1.11 Endpoint Migrasi HTTP
+- **Status**: DIHAPUS DARI SOURCE LOKAL
+- Endpoint GET migrasi produksi dengan token statis telah dihapus. Migrasi hanya boleh dijalankan melalui CLI setelah backup dan review.

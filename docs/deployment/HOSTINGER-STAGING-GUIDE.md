@@ -1,4 +1,6 @@
 # PANDUAN DEPLOYMENT STAGING HOSTINGER
+
+> Pembaruan 20 November 2026: Hostinger online/testing telah dikonfirmasi pemilik proyek pada `https://ahmaddanyfn.biz.id` dengan GitHub Auto Deploy. Domain lama di bawah tetap menjadi catatan historis dan tidak boleh dianggap sebagai domain kanonis tanpa verifikasi baru.
 ## Sistem Informasi PPDB MIN 1 Kota Madiun (PPDB Minsatama)
 ### Tahun Ajaran 2026/2027
 
@@ -121,8 +123,8 @@ SESSION_HTTP_ONLY=true
 SESSION_SAME_SITE=lax
 
 # KUNCI KRIPTOGRAFI MANDIRI MINSATAMA (CSPRNG 256-bit)
-NIK_HMAC_KEY=2c655b9f752c6ac39c03e102a774f935d53ed2b3b4ad8f6abf891b473701084f
-OTP_HMAC_KEY=3d2d2011d778bacc913a1f283d4d3827715e8fe01519442f174a5823898364f1
+NIK_HMAC_KEY=<GENERATE_RANDOM_64_HEX_VALUE>
+OTP_HMAC_KEY=<GENERATE_DIFFERENT_RANDOM_64_HEX_VALUE>
 
 # Kredensial Pengujian WhatsApp OTP (Staging Sandbox)
 WHATSAPP_GATEWAY_PROVIDER=log

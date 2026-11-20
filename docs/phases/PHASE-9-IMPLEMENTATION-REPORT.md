@@ -136,8 +136,8 @@ Konfigurasi berikut diterapkan pada root repositori dan paket staging untuk meng
 ### C. Isolasi Kunci Kriptografi Staging
 Kunci kriptografi unik hasil generasi generator CSPRNG 256-bit telah dipersiapkan khusus untuk staging:
 - `APP_KEY=base64:Z2Q3YBw+eEt02s0cjEuQINqVWKWC72MI1d+pV3bZq9s=`
-- `NIK_HMAC_KEY=2c655b9f752c6ac39c03e102a774f935d53ed2b3b4ad8f6abf891b473701084f`
-- `OTP_HMAC_KEY=3d2d2011d778bacc913a1f283d4d3827715e8fe01519442f174a5823898364f1`
+- `NIK_HMAC_KEY=<REDACTED_IN_DOCUMENTATION>`
+- `OTP_HMAC_KEY=<REDACTED_IN_DOCUMENTATION>`
 
 ---
 
