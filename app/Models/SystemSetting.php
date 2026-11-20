@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cache;
 
 class SystemSetting extends Model
@@ -22,14 +23,48 @@ class SystemSetting extends Model
 
     /**
      * Get a setting value with caching and fallback.
+     * Includes graceful recovery when migration is temporarily pending.
      */
     public static function get(string $key, ?string $default = null): ?string
     {
-        return Cache::rememberForever(self::CACHE_PREFIX.$key, function () use ($key, $default) {
-            $setting = static::query()->where('key', $key)->first();
+        $cacheKey = self::CACHE_PREFIX.$key;
 
-            return $setting?->value ?? $default;
-        });
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
+        try {
+            $setting = static::query()->where('key', $key)->first();
+            $value = $setting?->value ?? $default;
+
+            // Only cache in application cache when table exists and query succeeds
+            Cache::put($cacheKey, $value, now()->addHours(24));
+
+            return $value;
+        } catch (QueryException $e) {
+            // Graceful degradation ONLY for missing table during deployment/migration window:
+            // SQLSTATE 42S02 (Base table or view not found) / MySQL error 1146 / SQLite "no such table".
+            // Return fallback default directly WITHOUT caching it permanently,
+            // so the database setting is immediately used once the migration runs.
+            if ($e->getCode() === '42S02' || str_contains($e->getMessage(), '1146') || str_contains($e->getMessage(), 'no such table')) {
+                return $default;
+            }
+
+            // Do NOT suppress other database failures (connection loss, auth errors, deadlocks, etc.)
+            throw $e;
+        }
+    }
+
+    /**
+     * Clear cached setting value.
+     */
+    public static function clearCache(?string $key = null): void
+    {
+        if ($key !== null) {
+            Cache::forget(self::CACHE_PREFIX.$key);
+        } else {
+            Cache::forget(self::CACHE_PREFIX.'institution_display_name');
+        }
     }
 
     /**

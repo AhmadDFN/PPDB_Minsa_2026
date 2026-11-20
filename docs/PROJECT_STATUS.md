@@ -12,34 +12,34 @@
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **FASE 10.5 — ADMIN DASHBOARD DINAMIS & MANAJEMEN DATA PENDAFTAR** |
-| **Status Teknis Fase 10.5** | **SELESAI (100% TERUJI OTOMATIS: 279 TESTS PASSED, 1365 ASSERTIONS, PINT & VITE COMPLIANT)** |
+| **Fase Berjalan Saat Ini** | **HOTFIX 10.5.1 — PRODUCTION DATABASE MIGRATION & RUNTIME RECOVERY** |
+| **Status Teknis Hotfix 10.5.1** | **SELESAI (100% TERUJI OTOMATIS: 286 TESTS PASSED, 1386 ASSERTIONS, PINT & VITE COMPLIANT)** |
 | **Status UAT Sekolah** | **UAT TEST PLAN & RESULTS DITERBITKAN; MENUNGGU SESI FISIK BERSAMA PANITIA SEKOLAH** |
-| **Status Lingkungan Staging** | **READY (Paket siap dideploy ke staging setelah commit disetujui)** |
+| **Status Lingkungan Staging** | **READY (Panduan migrasi & pemulihan runtime siap dieksekusi di Hostinger)** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
-| **Commit Baseline Sebelum Fase 10.5** | `8665755` |
+| **Commit Baseline Sebelum Hotfix** | `550d0e2` |
 
 ---
 
-## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (FASE 10.5)
+## 2. HASIL EKSEKUSI PENGUJIAN OTOMATIS TERAKHIR (HOTFIX 10.5.1)
 
 - **Perintah Pengujian**: `php artisan test`
 - **Waktu Eksekusi**: 20 November 2026
-- **Total Pengujian**: **279 pengujian**
-- **Lulus (Passed)**: **279 pengujian (100%)**
+- **Total Pengujian**: **286 pengujian**
+- **Lulus (Passed)**: **286 pengujian (100%)**
 - **Gagal (Failed)**: **0 pengujian**
 - **Dilewati (Skipped)**: **0 pengujian**
-- **Total Asersi**: **1.365 asersi**
-- **Durasi Eksekusi**: ~11.6 detik
+- **Total Asersi**: **1.386 asersi**
+- **Durasi Eksekusi**: ~14.4 detik
 - **Kepatuhan Format Kode (Pint)**: **PASSED (0 issues)** (`vendor/bin/pint --test`)
 - **Audit Dependensi Composer**: **0 advisories** (`composer audit`)
 - **Audit Dependensi NPM Produksi**: **0 vulnerabilities** (`npm.cmd audit --omit=dev`)
 - **Asset Build Vite**: **PASSED** (3 modules transformed, CSS 117.44 kB, JS 1.72 kB)
 
-### Rincian Suite Pengujian Tambahan Fase 10.5:
-1. **Applicant Management & Admin Dashboard Suite** (`tests/Feature/Admin/ApplicantManagementTest.php`):
-   - 14 pengujian komprehensif mencakup otorisasi role Superadmin dan Admin PPDB (`view_applicants`), penolakan user tanpa permission & applicant (403), paginasi daftar pendaftar (15 data/halaman), pencarian multi-kriteria (nama siswa, nomor registrasi 5-digit `YYNNN`, NIK 16 digit via deterministik HMAC lookup hash `nik_lookup_hash`), filter pendaftaran (periode, program, status DRAFT/SUBMITTED), rendering 11 kartu informasi pada detail pendaftar lengkap dengan perhitungan umur runtime dinamis, pratinjau dan unduh berkas privat dengan proteksi IDOR lintas pendaftar.
+### Rincian Suite Pengujian Tambahan Hotfix 10.5.1:
+1. **System Setting Recovery Suite** (`tests/Feature/SystemSettingRecoveryTest.php`):
+   - 7 pengujian komprehensif mencakup pembacaan default fallback nama institusi, pembacaan nilai kustom hasil konfigurasi Superadmin, simulasi ketahanan runtime saat tabel `system_settings` belum terbentuk (menolak HTTP 500 dan mencegah pencemaran cache permanen), penegakan agar error database non-tabel tidak disembunyikan, perenderan bersih halaman `/login` dan `/daftar`, serta verifikasi nol regresi autentikasi pendaftar maupun admin.
 
 ---
 
@@ -64,6 +64,7 @@
 | 10.3 | **Pending Registration Recovery & NIK Reuse** | Mekanisme recovery pendaftaran tertunda, verifikasi identitas, update nomor WA, invalidasi OTP lama, zero-duplicate guarantee, 20 test cases otomatis | **SELESAI** | 256 tests passed (100%), 1217 assertions, laporan komprehensif `PHASE-10.3-IMPLEMENTATION-REPORT.md`, siap deploy |
 | 10.4 | **Simplifikasi Registrasi, Auto-Password, No. 5-Digit & Dynamic Branding** | Formulir 4 input tanpa password/biodata, temporary password otomatis via WA, wajib ganti password di awal login, no reg 5-digit `YYNNN` lintas program maks 999, settings branding Superadmin | **SELESAI** | 265 tests passed (100%), 1302 assertions, laporan komprehensif `PHASE-10.4-IMPLEMENTATION-REPORT.md`, siap deploy |
 | 10.5 | **Admin Dashboard Dinamis & Manajemen Data Pendaftar** | Dashboard metrik riil (global & periode), daftar pendaftar paginasi 15/hal, multi-search (nama, reg YYNNN, NIK 16 digit via HMAC hash), filter (periode, program, status), detail pendaftar 11 seksi kartu info, hitung umur dinamis runtime, pratinjau & unduh berkas privat dengan proteksi IDOR lintas pendaftar, audit logs aktivitas terkini | **SELESAI** | 279 tests passed (100%), 1365 assertions, 14 feature tests baru di `ApplicantManagementTest`, laporan komprehensif `PHASE-10.5-IMPLEMENTATION-REPORT.md`, siap deploy |
+| 10.5.1 | **Hotfix Pemulihan Basis Data & Runtime Recovery** | Menangani kegagalan HTTP 500 akibat tabel `system_settings` belum termigrasi di Hostinger, degradasi anggun aman tanpa mencemari cache, identifikasi 5 migrasi pending non-destruktif, audit keamanan `APP_DEBUG=false` | **SELESAI** | 286 tests passed (100%), 1386 assertions, 7 feature tests baru di `SystemSettingRecoveryTest`, panduan migrasi komprehensif `HOTFIX-10.5.1-PRODUCTION-DATABASE-RECOVERY.md` |
 
 ---
 
@@ -81,7 +82,8 @@
 
 ## 5. DOKUMEN OPERASIONAL & KESIAPAN PRODUKSI TERSEDIA
 
-1. `docs/phases/PHASE-10.5-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.5 (Admin Dashboard Dinamis & Manajemen Data Pendaftar).
+1. `docs/phases/HOTFIX-10.5.1-PRODUCTION-DATABASE-RECOVERY.md`: Laporan dan panduan pemulihan basis data produksi dan runtime recovery Hostinger.
+2. `docs/phases/PHASE-10.5-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.5 (Admin Dashboard Dinamis & Manajemen Data Pendaftar).
 2. `docs/phases/PHASE-10.4-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.4 (Simplifikasi Registrasi, Auto-Generated Password, Nomor 5-Digit & Dynamic Branding).
 3. `docs/phases/PHASE-10.3-IMPLEMENTATION-REPORT.md`: Laporan komprehensif implementasi Fase 10.3 (Pending Registration Recovery & NIK Reuse).
 4. `docs/phases/PHASE-10.2-IMPLEMENTATION-REPORT.md` / `docs/manual/FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`: Panduan & laporan integrasi WhatsApp Fonnte API.
@@ -117,4 +119,4 @@
 
 ## 6. PROTOKOL KONDISI BERHENTI (STOP CONDITION)
 
-Fase 10.5 selesai secara penuh. Admin Dashboard dinamis, daftar pendaftar dengan paginasi, pencarian multi-kriteria aman (nama, nomor reg YYNNN, NIK 16 digit via HMAC lookup hash), filter (periode, program, status), serta halaman detail pendaftar 11 seksi kartu info dengan pratinjau dan unduh berkas privat terotorisasi anti-IDOR telah teruji 100% lulus (279 pengujian, 1.365 asersi, 0 gagal). Seluruh dokumentasi diperbarui secara faktual. Agen BERHENTI dan menunggu persetujuan atau instruksi dari Pemilik Proyek.
+Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (tabel `system_settings` belum termigrasi pada Hostinger), pemulihan runtime tanpa pencemaran cache terimplementasi dan teruji, 5 migrasi tertunda teridentifikasi aman/non-destruktif, dan panduan eksekusi pemilik proyek tersusun lengkap (286 pengujian, 1.386 asersi, 0 gagal). Agen BERHENTI dan menunggu pemilik proyek menerapkan migrasi di Hostinger. DILARANG melakukan `git push` atau deploy ke server produksi secara mandiri.

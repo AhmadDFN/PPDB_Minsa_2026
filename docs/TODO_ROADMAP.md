@@ -234,6 +234,22 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10.5: SELESAI (100% TERUJI OTOMATIS: 279 TESTS PASSED, 1365 ASSERTIONS).** Pint & Vite compliant, composer/npm audit clean.
 
+### Hotfix 10.5.1 — Production Database Migration & Runtime Recovery
+- [x] **[P0 - Kritis] Investigasi & Pembuktian Root Cause HTTP 500 di Hostinger**:
+  - *Deskripsi*: Terbukti bahwa tabel `system_settings` belum ada di basis data Hostinger karena webhook GitHub Auto Deploy tidak menjalankan `php artisan migrate --force`.
+- [x] **[P0 - Kritis] Degradasi Anggun Model SystemSetting (Graceful Runtime Fallback)**:
+  - *Deskripsi*: Menangkap `QueryException` khusus tabel hilang (`SQLSTATE 42S02` / 1146 / `no such table`) untuk mengembalikan default `'PPDBM MIN 1 KOTA MADIUN'` tanpa mencemari cache secara permanen dan tanpa menyembunyikan kesalahan database lainnya.
+- [x] **[P0 - Kritis] Identifikasi 5 Migrasi Tertunda Non-Destruktif**:
+  - *Deskripsi*: Pemetaan 5 migrasi Fase 10.4 yang berstatus pending di Hostinger, memastikan 100% aman dan tidak merusak/menghapus data pendaftar existing.
+- [x] **[P0 - Kritis] Penguatan Keamanan Lingkungan Produksi (APP_DEBUG=false)**:
+  - *Deskripsi*: Dokumentasi dan instruksi pengamanan `.env` Hostinger untuk menonaktifkan debug trace yang mengekspos struktur basis data dan query SQL.
+- [x] **[P0 - Kritis] Suite Pengujian Otomatis 7 Skenario**:
+  - *Deskripsi*: `tests/Feature/SystemSettingRecoveryTest.php` menguji seluruh dimensi fallback, non-swallowing database error, rendering login/register, dan verifikasi nol regresi autentikasi. 7 tes lulus dengan 21 asersi.
+- [x] **[P1 - Tinggi] Dokumen Panduan Pemulihan Hostinger**:
+  - *Deskripsi*: Pembuatan dokumen komprehensif `docs/phases/HOTFIX-10.5.1-PRODUCTION-DATABASE-RECOVERY.md`.
+
+**Status Hotfix 10.5.1: SELESAI (100% TERUJI OTOMATIS: 286 TESTS PASSED, 1386 ASSERTIONS).** Pint & Vite compliant, composer/npm audit clean.
+
 ---
 
 ## 4. TUGAS KEAMANAN & PEMELIHARAAN (SECURITY & MAINTENANCE)
