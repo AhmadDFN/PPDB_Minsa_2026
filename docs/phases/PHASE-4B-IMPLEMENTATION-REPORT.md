@@ -44,3 +44,12 @@
 - Last-login metadata is not shown because the existing schema does not record it.
 - Password reset and invitation delivery depend on the existing configured mail/password broker infrastructure; automated tests fake notifications and do not prove production delivery.
 - No production migration is required by Phase 4B.
+
+## Phase 4B.4 release checkpoint
+
+- Commit SHA: `03b7c28` (`fix(admin): enforce password reset throttling`)
+- Branch: `feature/admin-user-access-management`
+- Status: **COMMITTED locally**
+- Push: **PENDING**
+- Deployment: **PENDING / UNCONFIRMED**
+- Live verification: **PENDING** and explicitly outside this task.
