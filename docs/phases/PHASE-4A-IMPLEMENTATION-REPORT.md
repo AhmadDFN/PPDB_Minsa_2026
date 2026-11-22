@@ -23,6 +23,15 @@
 
 The Hostinger target MySQL/MariaDB version must be confirmed before applying the generated-column migration in production. Runtime MySQL/MariaDB concurrency validation has not been claimed.
 
+## Local commit checkpoint
+
+- Commit SHA: `326bc0c` (`feat(admin): harden PPDB configuration management`)
+- Branch: `feature/admin-ppdb-configuration`
+- Status: **COMMITTED locally**
+- Push: **NOT YET PUSHED**
+- Deployment: **NOT DEPLOYED**
+- Live acceptance: **PENDING**
+
 ## Implemented
 
 - Admission Period Management with date validation, single active period enforcement, historical date protection, pagination, and audit events.
