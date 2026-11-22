@@ -4,6 +4,8 @@
 
 Dokumen panduan ini ditujukan bagi **Super Administrator** (`superadmin`), yaitu penanggung jawab teknis tertinggi, koordinator IT madrasah, atau kepala sistem informasi PPDB Minsatama.
 
+> **Status 20 November 2026:** Pengaturan branding tersedia. Manajemen periode/program/persyaratan, akun admin, audit viewer, dan health dashboard adalah target roadmap, bukan kemampuan produksi yang sudah tersedia.
+
 ---
 
 ## 1. DEFINISI & KEDUDUKAN PERAN SUPERADMIN

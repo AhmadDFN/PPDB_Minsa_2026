@@ -2,11 +2,11 @@
 ## Hostinger Staging Deployment & User Acceptance Testing
 ### Sistem Informasi PPDB Online MIN 1 Kota Madiun (PPDB Minsatama)
 
-**Tanggal Penyusunan**: 19 November 2026  
-**Versi Dokumen**: 1.0.0  
-**Status Fase**: **SELESAI SECARA TEKNIS (SIAP UAT FISIK SEKOLAH & MENUNGGU ARSITEKTUR AAPANEL PRODUKSI)**  
-**Peran Auditor / Engineer**: Senior Laravel DevOps Engineer, Deployment Engineer, QA Lead, Application Security Engineer, Database Engineer  
-**Lingkungan Staging**: `https://sleek-forestgreen-mink-13.hostingersite.com`  
+**Tanggal Penyusunan**: 19 November 2026
+**Versi Dokumen**: 1.0.0
+**Status Fase**: **SELESAI SECARA TEKNIS (SIAP UAT FISIK SEKOLAH & MENUNGGU ARSITEKTUR AAPANEL PRODUKSI)**
+**Peran Auditor / Engineer**: Senior Laravel DevOps Engineer, Deployment Engineer, QA Lead, Application Security Engineer, Database Engineer
+**Lingkungan Staging**: `https://sleek-forestgreen-mink-13.hostingersite.com`
 **Target Produksi Masa Depan**: VPS Linux Mandiri dengan aaPanel (Ubuntu 22.04/24.04 LTS, Nginx, PHP 8.3 FPM, MariaDB 10.11+/MySQL 8)
 
 ---
@@ -22,7 +22,7 @@ Tujuan utama fase ini meliputi:
 4. Memetakan hasil pengujian penerimaan pengguna (*User Acceptance Testing*) terhadap 21 skenario formal pada `UAT-TEST-PLAN.md`.
 5. Menyusun cetak biru lengkap (*production runbook*) untuk deployment final di server VPS aaPanel tanpa melanggar batasan larangan deployment produksi sebelum persetujuan resmi.
 
-**Readiness Score Kesiapan Staging**: **96/100**  
+**Readiness Score Kesiapan Staging**: **96/100**
 (4 poin tertahan pada ketersediaan berkas logo resolusi tinggi resmi madrasah, teks alamat lengkap SK madrasah, dan penandatanganan fisik lembar UAT oleh komite madrasah).
 
 ---
@@ -223,7 +223,7 @@ Seluruh pengujian alur bisnis tersebut berhasil divalidasi pada pengujian integr
 
 ## 10. USER ACCEPTANCE TESTING (UAT) EXECUTION
 
-Mengacu pada dokumen [docs/uat/UAT-RESULTS.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/uat/UAT-RESULTS.md), berikut adalah rekapitulasi status pengujian penerimaan pengguna:
+Mengacu pada dokumen [docs/uat/UAT-RESULTS.md](../uat/UAT-RESULTS.md), berikut adalah rekapitulasi status pengujian penerimaan pengguna:
 
 - **Total Skenario UAT**: 21 Skenario.
   - Skenario Pendaftar/Wali Murid (`UAT-APP-01` s.d. `UAT-APP-15`): **15 Skenario Lulus Verifikasi Teknis**.
@@ -296,7 +296,7 @@ Sesuai arahan arsitektur, lingkungan produksi resmi akan menggunakan **VPS Mandi
 
 ## 15. AAPANEL PRODUCTION DEPLOYMENT PLAN
 
-Panduan operasional lengkap telah disusun di [docs/deployment/AAPANEL-PRODUCTION-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/AAPANEL-PRODUCTION-GUIDE.md).
+Panduan operasional lengkap telah disusun di [docs/deployment/AAPANEL-PRODUCTION-GUIDE.md](../deployment/AAPANEL-PRODUCTION-GUIDE.md).
 
 Ringkasan tahapan deployment produksi kelak:
 1. **Penyediaan Server & aaPanel**: Instalasi aaPanel pada VPS Ubuntu bersih.
@@ -342,10 +342,10 @@ Ringkasan tahapan deployment produksi kelak:
 
 ### Rekomendasi Teknis:
 1. **Eksekusi Demonstrasi Staging**:
-   Pemilik proyek disarankan mengunggah paket `D:\Dany\PPDB\deploy_minsatama_hostinger.zip` ke Hostinger File Manager dan mengimpor `database/schema_clean.sql` ke phpMyAdmin sesuai panduan [HOSTINGER-STAGING-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/HOSTINGER-STAGING-GUIDE.md) untuk melakukan demo interaktif bersama panitia.
+   Pemilik proyek disarankan mengunggah paket `D:\Dany\PPDB\deploy_minsatama_hostinger.zip` ke Hostinger File Manager dan mengimpor `database/schema_clean.sql` ke phpMyAdmin sesuai panduan [HOSTINGER-STAGING-GUIDE.md](../deployment/HOSTINGER-STAGING-GUIDE.md) untuk melakukan demo interaktif bersama panitia.
 2. **Penyediaan Aset Resmi**:
    Menyerahkan berkas logo resmi dan data alamat madrasah untuk disematkan pada kop surat formulir PDF sebelum Go-Live produksi.
 3. **Jadwal Sesi UAT Bersama**:
-   Mengisi kolom hasil fisik pada dokumen [UAT-RESULTS.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/uat/UAT-RESULTS.md) bersama panitia PPDB MIN 1 Kota Madiun.
+   Mengisi kolom hasil fisik pada dokumen [UAT-RESULTS.md](../uat/UAT-RESULTS.md) bersama panitia PPDB MIN 1 Kota Madiun.
 4. **Persetujuan Go-Live aaPanel**:
    Setelah demonstrasi staging dan UAT ditandatangani, pemilik proyek memberikan persetujuan eksplisit untuk memulai provisioning server VPS produksi berbasis aaPanel.

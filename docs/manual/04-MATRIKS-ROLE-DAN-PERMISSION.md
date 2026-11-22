@@ -4,6 +4,8 @@
 
 Dokumen ini memuat pemetaan komprehensif seluruh hak akses pengguna terhadap setiap modul dan fitur aplikasi berdasarkan kode sumber backend, controller, middleware, policy, serta tabel izin Spatie Laravel Permission aktual.
 
+> **Catatan rekonsiliasi 20 November 2026:** Matriks historis di bawah dipertahankan sebagai snapshot. Untuk status terkini yang membedakan endpoint nyata dari permission yang baru didefinisikan, gunakan [`docs/blueprints/ADMIN-SUPERADMIN-MODULE-MATRIX.md`](../blueprints/ADMIN-SUPERADMIN-MODULE-MATRIX.md).
+
 ---
 
 ## 1. PENGERTIAN PRINSIP HAK AKSES

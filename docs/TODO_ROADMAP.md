@@ -1,6 +1,10 @@
 # TODO ROADMAP â€” PPDB MINSATAMA
 ## Peta Jalan Pengembangan dan Rencana Tugas Berkelanjutan
 
+## Rekonsiliasi Admin/Superadmin (20 November 2026)
+
+Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md`](blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md). Gap prioritas: verifikasi dokumen, master data, ekspor redacted, lifecycle akun admin, dan audit viewer. Jangan menandai permission seeder sebagai fitur selesai.
+
 **Status Notasi**:
 - `[x]` Selesai (*Completed*)
 - `[-]` Sedang Berjalan (*In Progress*)
@@ -114,13 +118,13 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P0 - Kritis] Proteksi Direktori & Konfigurasi Root .htaccess**:
   - *Deskripsi*: Penerapan aturan rewrite anti-loop `RewriteCond %{REQUEST_URI} !^/public/` dan pemblokiran akses langsung ke berkas sensitif (`.env`, `storage/`, `vendor/`, `artisan`). Commit: `e42e7d0`.
 - [x] **[P1 - Tinggi] Panduan Operasional Staging Hostinger**:
-  - *Deskripsi*: Penyusunan dokumen [docs/deployment/HOSTINGER-STAGING-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/HOSTINGER-STAGING-GUIDE.md) mencakup metode ekstraksi ZIP, pembuatan database MySQL, seeding referensi, pengujian alur 1–7, dan pemecahan masalah.
+  - *Deskripsi*: Penyusunan dokumen [docs/deployment/HOSTINGER-STAGING-GUIDE.md](deployment/HOSTINGER-STAGING-GUIDE.md) mencakup metode ekstraksi ZIP, pembuatan database MySQL, seeding referensi, pengujian alur 1–7, dan pemecahan masalah.
 - [x] **[P1 - Tinggi] Cetak Biru Produksi Mandiri aaPanel VPS**:
-  - *Deskripsi*: Penyusunan panduan operasional produksi resmi [docs/deployment/AAPANEL-PRODUCTION-GUIDE.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/deployment/AAPANEL-PRODUCTION-GUIDE.md) meliputi Nginx FastCGI, PHP 8.3 FPM, MariaDB 10.11/MySQL 8, Redis, Supervisor, Let's Encrypt SSL, zero-downtime deployment script, cron backup, dan rollback darurat.
+  - *Deskripsi*: Penyusunan panduan operasional produksi resmi [docs/deployment/AAPANEL-PRODUCTION-GUIDE.md](deployment/AAPANEL-PRODUCTION-GUIDE.md) meliputi Nginx FastCGI, PHP 8.3 FPM, MariaDB 10.11/MySQL 8, Redis, Supervisor, Let's Encrypt SSL, zero-downtime deployment script, cron backup, dan rollback darurat.
 - [x] **[P1 - Tinggi] Pelaporan Hasil Uji Penerimaan Pengguna (UAT Results)**:
-  - *Deskripsi*: Pencatatan hasil evaluasi 21 skenario UAT pada [docs/uat/UAT-RESULTS.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/uat/UAT-RESULTS.md) (21 skenario lulus verifikasi teknis otomatis; lembar pengesahan menunggu pelaksanaan fisik panitia madrasah).
+  - *Deskripsi*: Pencatatan hasil evaluasi 21 skenario UAT pada [docs/uat/UAT-RESULTS.md](uat/UAT-RESULTS.md) (21 skenario lulus verifikasi teknis otomatis; lembar pengesahan menunggu pelaksanaan fisik panitia madrasah).
 - [x] **[P0 - Kritis] Laporan Komprehensif Fase 9 (18 Seksi)**:
-  - *Deskripsi*: Penyusunan dokumen master [docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md).
+  - *Deskripsi*: Penyusunan dokumen master [docs/phases/PHASE-9-IMPLEMENTATION-REPORT.md](phases/PHASE-9-IMPLEMENTATION-REPORT.md).
 
 **Status Fase 9: SELESAI SECARA TEKNIS (SIAP UAT FISIK SEKOLAH & MENUNGGU ARSITEKTUR AAPANEL PRODUKSI).** Paket rilis staging siap diuji di server Hostinger, dokumentasi produksi aaPanel lengkap. Dilarang melakukan deployment produksi ke aaPanel sebelum persetujuan resmi.
 
@@ -128,27 +132,27 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [x] **[P0 - Kritis] Audit Repositori & Hak Akses Aktual**:
   - *Deskripsi*: Verifikasi peran Spatie (`superadmin`, `admin_ppdb`) dan akun siswa (`applicant`), pemetaan rute, middleware, dan controller aktual tanpa asumsi peran fiktif.
 - [x] **[P1 - Tinggi] User Manual Orang Tua / Wali**:
-  - *Deskripsi*: Buku panduan lengkap 14 bab [docs/manual/01-PANDUAN-ORANG-TUA-WALI.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/01-PANDUAN-ORANG-TUA-WALI.md) dan [docs/manual/QUICK-GUIDE-ORANG-TUA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/QUICK-GUIDE-ORANG-TUA.md) (infografis teks 3 menit).
+  - *Deskripsi*: Buku panduan lengkap 14 bab [docs/manual/01-PANDUAN-ORANG-TUA-WALI.md](manual/01-PANDUAN-ORANG-TUA-WALI.md) dan [docs/manual/QUICK-GUIDE-ORANG-TUA.md](manual/QUICK-GUIDE-ORANG-TUA.md) (infografis teks 3 menit).
 - [x] **[P1 - Tinggi] Panduan Operasional Admin PPDB**:
-  - *Deskripsi*: Buku panduan operasional panitia [docs/manual/02-PANDUAN-ADMIN-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/02-PANDUAN-ADMIN-PPDB.md) berbasis fitur nyata (login, dasbor, reopen registration, penutupan dini, dan penegakan kedaluwarsa).
+  - *Deskripsi*: Buku panduan operasional panitia [docs/manual/02-PANDUAN-ADMIN-PPDB.md](manual/02-PANDUAN-ADMIN-PPDB.md) berbasis fitur nyata (login, dasbor, reopen registration, penutupan dini, dan penegakan kedaluwarsa).
 - [x] **[P1 - Tinggi] Panduan Pengelola Superadmin**:
-  - *Deskripsi*: Buku panduan teknis [docs/manual/03-PANDUAN-SUPERADMIN.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/03-PANDUAN-SUPERADMIN.md) untuk isolasi kunci kriptografi, manajemen database, dan prosedur pembuatan akun via CLI/Tinker.
+  - *Deskripsi*: Buku panduan teknis [docs/manual/03-PANDUAN-SUPERADMIN.md](manual/03-PANDUAN-SUPERADMIN.md) untuk isolasi kunci kriptografi, manajemen database, dan prosedur pembuatan akun via CLI/Tinker.
 - [x] **[P1 - Tinggi] Matriks Hak Akses Role & Permission**:
-  - *Deskripsi*: Matriks lengkap modul vs peran aktual [docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md).
+  - *Deskripsi*: Matriks lengkap modul vs peran aktual [docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md](manual/04-MATRIKS-ROLE-DAN-PERMISSION.md).
 - [x] **[P1 - Tinggi] Standar Operasional Prosedur (SOP) Panitia**:
-  - *Deskripsi*: SOP kepanitiaan 3 fase (Sebelum Dibuka, Saat Pelaksanaan, dan Pasca-Penutupan) [docs/manual/05-SOP-OPERASIONAL-PANITIA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/05-SOP-OPERASIONAL-PANITIA.md) serta [docs/manual/BRIEFING-PANITIA-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/BRIEFING-PANITIA-PPDB.md).
+  - *Deskripsi*: SOP kepanitiaan 3 fase (Sebelum Dibuka, Saat Pelaksanaan, dan Pasca-Penutupan) [docs/manual/05-SOP-OPERASIONAL-PANITIA.md](manual/05-SOP-OPERASIONAL-PANITIA.md) serta [docs/manual/BRIEFING-PANITIA-PPDB.md](manual/BRIEFING-PANITIA-PPDB.md).
 - [x] **[P1 - Tinggi] FAQ & Troubleshooting Terpisah**:
-  - *Deskripsi*: Tanya jawab penanganan kendala orang tua dan admin [docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md).
+  - *Deskripsi*: Tanya jawab penanganan kendala orang tua dan admin [docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md](manual/06-FAQ-DAN-TROUBLESHOOTING.md).
 - [x] **[P1 - Tinggi] Pedoman Privasi & Keamanan Data (UU PDP)**:
-  - *Deskripsi*: Pedoman kepatuhan perlindungan data pribadi anak [docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md).
+  - *Deskripsi*: Pedoman kepatuhan perlindungan data pribadi anak [docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md](manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md).
 - [x] **[P1 - Tinggi] Diagram Alur Kerja Sistem (Mermaid)**:
-  - *Deskripsi*: Visualisasi alur end-to-end, OTP sequence, dan reopen workflow [docs/manual/08-ALUR-KERJA-SISTEM.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/08-ALUR-KERJA-SISTEM.md).
+  - *Deskripsi*: Visualisasi alur end-to-end, OTP sequence, dan reopen workflow [docs/manual/08-ALUR-KERJA-SISTEM.md](manual/08-ALUR-KERJA-SISTEM.md).
 - [x] **[P1 - Tinggi] Glosarium Istilah Sistem**:
-  - *Deskripsi*: Kamus istilah teknis dan madrasah [docs/manual/09-GLOSARIUM.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/09-GLOSARIUM.md).
+  - *Deskripsi*: Kamus istilah teknis dan madrasah [docs/manual/09-GLOSARIUM.md](manual/09-GLOSARIUM.md).
 - [x] **[P0 - Kritis] Analisis Celah Fitur (Feature Gap Analysis)**:
-  - *Deskripsi*: Evaluasi jujur fitur tersedia vs fitur gap [docs/manual/10-DAFTAR-FITUR-DAN-GAP.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/10-DAFTAR-FITUR-DAN-GAP.md).
+  - *Deskripsi*: Evaluasi jujur fitur tersedia vs fitur gap [docs/manual/10-DAFTAR-FITUR-DAN-GAP.md](manual/10-DAFTAR-FITUR-DAN-GAP.md).
 - [x] **[P0 - Kritis] Laporan Komprehensif Fase 10 (16 Seksi)**:
-  - *Deskripsi*: Laporan master [docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md).
+  - *Deskripsi*: Laporan master [docs/phases/PHASE-10-IMPLEMENTATION-REPORT.md](phases/PHASE-10-IMPLEMENTATION-REPORT.md).
 
 **Status Fase 10: SELESAI (100% ARTEFAK DOKUMENTASI TERSEDIA & TERVALIDASI).** Nol modifikasi pada kode sumber aplikasi. Dokumen operasional siap dipakai untuk pelatihan panitia dan sosialisasi orang tua.
 

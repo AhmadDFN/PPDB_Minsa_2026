@@ -41,7 +41,7 @@ Dokumen ini adalah pedoman operasional baku bagi seluruh panitia pelaksana PPDB 
    - Tim IT melakukan 1 kali simulasi pendaftaran uji coba: membuat akun dummy, aktivasi OTP, pengisian modul 1–4, unggah berkas, submit, cetak PDF bukti pendaftaran, dan pemindaian kode QR via kamera ponsel.
    - Memastikan QR mengarah ke halaman verifikasi publik yang sah tanpa membocorkan data pribadi.
 6. **Sosialisasi Brosur & Panduan Orang Tua**:
-   - Membagikan dokumen [QUICK-GUIDE-ORANG-TUA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/QUICK-GUIDE-ORANG-TUA.md) kepada masyarakat luas melalui kanal resmi madrasah.
+   - Membagikan dokumen [QUICK-GUIDE-ORANG-TUA.md](QUICK-GUIDE-ORANG-TUA.md) kepada masyarakat luas melalui kanal resmi madrasah.
 
 ---
 

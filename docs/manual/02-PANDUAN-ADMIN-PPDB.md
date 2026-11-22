@@ -4,6 +4,8 @@
 
 Buku panduan ini disusun khusus untuk staf dan panitia madrasah yang memiliki peran **Admin PPDB** (`admin_ppdb`) dalam sistem PPDB Minsatama. Seluruh isi panduan ini merujuk secara ketat pada fitur yang **benar-benar terpasang dan tersedia pada sistem saat ini**.
 
+> **Status 20 November 2026:** Verifikasi dokumen, ekspor, dan master data masih gap; jangan menjanjikan menu tersebut sebelum roadmap blueprint selesai dan UAT disetujui.
+
 ---
 
 ## 1. PENGENALAN PERAN & PRINSIP ADMINISTRATOR
@@ -53,7 +55,7 @@ Peran `admin_ppdb` adalah peran operasional kepanitiaan madrasah yang terdaftar 
 Fitur utama yang saat ini telah aktif secara penuh pada antarmuka administrator adalah **Pengelolaan Akses Edit Ulang Pendaftaran (Reopen Registration)**.
 
 ```
-[Admin Buka /admin/registrations] ──> [Pilih Siswa Tertentu] ──> [Isi Alasan & Waktu Expired] 
+[Admin Buka /admin/registrations] ──> [Pilih Siswa Tertentu] ──> [Isi Alasan & Waktu Expired]
                                                                            │
                                                                            v
 [Siswa Mengedit di Dasbornya]    <── [Jendela Akses Terbuka] <── [Klik Buka Akses]
@@ -121,7 +123,7 @@ Demi kejujuran operasional, seluruh panitia wajib mengetahui bahwa modul-modul b
 5. **Ekspor Data ke Excel**:
    - Belum tersedia tombol *Export to Excel/CSV* pada halaman admin.
 
-*Rekomendasi penambahan antarmuka ini telah dicatat secara resmi pada dokumen [10-DAFTAR-FITUR-DAN-GAP.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/10-DAFTAR-FITUR-DAN-GAP.md).*
+*Rekomendasi penambahan antarmuka ini telah dicatat secara resmi pada dokumen [10-DAFTAR-FITUR-DAN-GAP.md](10-DAFTAR-FITUR-DAN-GAP.md).*
 
 ---
 

@@ -1,10 +1,15 @@
 # KNOWN ISSUES & LIMITATIONS — PPDB MINSATAMA
 ## Catatan Kendala, Batasan Lingkungan, dan Rencana Mitigasi
-### Terakhir Ditinjau: 19 November 2026 (Fase 9)
+### Terakhir Ditinjau: 20 November 2026 (Rekonsiliasi Admin/Superadmin)
 
 ---
 
 ## 1. DAFTAR ISU & BATASAN SAAT INI
+
+### 1.0 Gap Platform Admin/Superadmin
+- **Status**: GAP TERKONFIRMASI DARI AUDIT KODE
+- **Deskripsi**: Permission `verify_documents`, `export_reports`, `manage_admission_periods`, `manage_programs`, `manage_document_requirements`, `manage_admin_users`, dan `view_activity_logs` tersedia di seeder, tetapi controller/view/rute operasional belum lengkap. Rincian dan roadmap ada di `docs/blueprints/`.
+- **Dampak**: UAT Admin/Superadmin belum dapat dinyatakan selesai dan Go-Live belum disetujui.
 
 ### 1.1 Status Dependensi NPM (picomatch advisory)
 - **Status**: TERSELESAIKAN (RESOLVED)

@@ -2,10 +2,10 @@
 ## Operational Documentation, User Manual & Admin SOP
 ### Sistem Informasi PPDB Online MIN 1 Kota Madiun (PPDB Minsatama)
 
-**Tanggal Penyusunan**: 19 November 2026  
-**Versi Dokumen**: 1.0.0  
-**Status Fase**: **SELESAI (100% ARTEFAK DOKUMENTASI TERVERIFIKASI & TERPENUHI)**  
-**Tim Penyusun**: Senior Business Analyst, System Analyst, Technical Writer, UI/UX Documentation Specialist, QA Engineer, IT Operations Consultant  
+**Tanggal Penyusunan**: 19 November 2026
+**Versi Dokumen**: 1.0.0
+**Status Fase**: **SELESAI (100% ARTEFAK DOKUMENTASI TERVERIFIKASI & TERPENUHI)**
+**Tim Penyusun**: Senior Business Analyst, System Analyst, Technical Writer, UI/UX Documentation Specialist, QA Engineer, IT Operations Consultant
 **Komitmen Perubahan**: **NOL PERUBAHAN PADA KODE SUMBER APLIKASI** (Pure Documentation & Analysis Phase)
 
 ---
@@ -62,7 +62,7 @@ Berdasarkan pemeriksaan pada `database/seeders/RoleAndPermissionSeeder.php` dan 
 
 ## 4. APPLICANT WORKFLOW
 
-Alur kerja calon peserta didik terdokumentasi lengkap pada dokumen [01-PANDUAN-ORANG-TUA-WALI.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/01-PANDUAN-ORANG-TUA-WALI.md):
+Alur kerja calon peserta didik terdokumentasi lengkap pada dokumen [01-PANDUAN-ORANG-TUA-WALI.md](../manual/01-PANDUAN-ORANG-TUA-WALI.md):
 - Pendaftaran NIK & nomor WhatsApp orang tua (mendukung *sibling support*).
 - Aktivasi akun melalui verifikasi 6 digit kode OTP (berlaku 5 menit).
 - Pembuatan kata sandi mandiri (min 8 karakter, bukan NIK).
@@ -80,7 +80,7 @@ Alur kerja calon peserta didik terdokumentasi lengkap pada dokumen [01-PANDUAN-O
 
 ## 5. ADMIN WORKFLOW
 
-Alur kerja panitia madrasah terdokumentasi lengkap pada [02-PANDUAN-ADMIN-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/02-PANDUAN-ADMIN-PPDB.md):
+Alur kerja panitia madrasah terdokumentasi lengkap pada [02-PANDUAN-ADMIN-PPDB.md](../manual/02-PANDUAN-ADMIN-PPDB.md):
 - Masuk melalui `/admin/login` menggunakan Email dan Kata Sandi.
 - Membuka menu *Akses Edit Ulang Pendaftaran* (`/admin/registrations`).
 - Meninjau pendaftaran siswa yang membutuhkan perbaikan data.
@@ -92,7 +92,7 @@ Alur kerja panitia madrasah terdokumentasi lengkap pada [02-PANDUAN-ADMIN-PPDB.m
 
 ## 6. SUPERADMIN WORKFLOW
 
-Terdokumentasi pada [03-PANDUAN-SUPERADMIN.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/03-PANDUAN-SUPERADMIN.md):
+Terdokumentasi pada [03-PANDUAN-SUPERADMIN.md](../manual/03-PANDUAN-SUPERADMIN.md):
 - Tanggung jawab isolasi kunci rahasia `.env` (`APP_KEY`, `NIK_HMAC_KEY`, `OTP_HMAC_KEY`).
 - Prosedur pembuatan akun Admin PPDB baru via `php artisan tinker`.
 - Prosedur inisialisasi periode tahun ajaran baru dan tanggal acuan umur via database.
@@ -102,7 +102,7 @@ Terdokumentasi pada [03-PANDUAN-SUPERADMIN.md](file:///D:/Dany/PPDB/PPDB_Minsa_2
 
 ## 7. SOP OPERASIONAL KEPANITIAAN
 
-Terdokumentasi pada [05-SOP-OPERASIONAL-PANITIA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/05-SOP-OPERASIONAL-PANITIA.md):
+Terdokumentasi pada [05-SOP-OPERASIONAL-PANITIA.md](../manual/05-SOP-OPERASIONAL-PANITIA.md):
 - Siklus 3 Fase Operasional:
   1. *Fase Pra-Pendaftaran*: Verifikasi periode aktif, pengujian akun admin, uji alur pendaftaran dummy, uji scan QR, dan sosialisasi brosur.
   2. *Fase Pelaksanaan*: Layanan helpdesk, penanganan pembukaan akses edit (*reopen*), penerimaan berkas fisik di loket PTSP, pemindaian QR keaslian cetakan, pencocokan berkas asli, dan penerbitan tanda terima fisik.
@@ -113,15 +113,15 @@ Terdokumentasi pada [05-SOP-OPERASIONAL-PANITIA.md](file:///D:/Dany/PPDB/PPDB_Mi
 
 ## 8. USER MANUAL, QUICK GUIDE & BRIEFING PACK
 
-1. **User Manual Lengkap**: [01-PANDUAN-ORANG-TUA-WALI.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/01-PANDUAN-ORANG-TUA-WALI.md) (14 Bab ramah pemula tanpa jargon rumit).
-2. **Quick Guide Orang Tua**: [QUICK-GUIDE-ORANG-TUA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/QUICK-GUIDE-ORANG-TUA.md) (Infografis teks 5 langkah cepat dalam 3 menit).
-3. **Briefing Panitia**: [BRIEFING-PANITIA-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/BRIEFING-PANITIA-PPDB.md) (Ringkasan eksekutif 2 lembar untuk rapat koordinasi madrasah).
+1. **User Manual Lengkap**: [01-PANDUAN-ORANG-TUA-WALI.md](../manual/01-PANDUAN-ORANG-TUA-WALI.md) (14 Bab ramah pemula tanpa jargon rumit).
+2. **Quick Guide Orang Tua**: [QUICK-GUIDE-ORANG-TUA.md](../manual/QUICK-GUIDE-ORANG-TUA.md) (Infografis teks 5 langkah cepat dalam 3 menit).
+3. **Briefing Panitia**: [BRIEFING-PANITIA-PPDB.md](../manual/BRIEFING-PANITIA-PPDB.md) (Ringkasan eksekutif 2 lembar untuk rapat koordinasi madrasah).
 
 ---
 
 ## 9. FAQ & TROUBLESHOOTING
 
-Terdokumentasi pada [06-FAQ-DAN-TROUBLESHOOTING.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md):
+Terdokumentasi pada [06-FAQ-DAN-TROUBLESHOOTING.md](../manual/06-FAQ-DAN-TROUBLESHOOTING.md):
 - 11 Kasus Pendaftar: NIK duplikat, OTP tidak masuk/kedaluwarsa, NIK terkunci di form, leading zero RT/RW, toggle wali, ukuran berkas > 5 MB, berkas rusak, tombol submit abu-abu, watermark draf, dan arti status PDF outdated.
 - 4 Kasus Admin: Error 403 Forbidden, validasi waktu kedaluwarsa reopen, kegagalan render pas foto PNG (prasyarat PHP GD), dan penelusuran riwayat reopen.
 
@@ -129,7 +129,7 @@ Terdokumentasi pada [06-FAQ-DAN-TROUBLESHOOTING.md](file:///D:/Dany/PPDB/PPDB_Mi
 
 ## 10. SECURITY & PRIVACY GUIDELINES
 
-Terdokumentasi pada [07-PEDOMAN-KEAMANAN-PENGGUNA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md):
+Terdokumentasi pada [07-PEDOMAN-KEAMANAN-PENGGUNA.md](../manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md):
 - Landasan UU Perlindungan Data Pribadi (UU PDP No. 27 Tahun 2022) atas perlindungan data spesifik anak di bawah umur.
 - Panduan keamanan bagi orang tua (larangan sebar OTP/NIK di media sosial, disiplin logout).
 - Kode etik keamanan panitia (larangan *account sharing*, larangan sebar NIK/telepon ke grup WhatsApp non-kedinasan, penguncian berkas fisik di loket).
@@ -139,7 +139,7 @@ Terdokumentasi pada [07-PEDOMAN-KEAMANAN-PENGGUNA.md](file:///D:/Dany/PPDB/PPDB_
 
 ## 11. FEATURE GAP ANALYSIS
 
-Terdokumentasi secara rinci pada [10-DAFTAR-FITUR-DAN-GAP.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/10-DAFTAR-FITUR-DAN-GAP.md):
+Terdokumentasi secara rinci pada [10-DAFTAR-FITUR-DAN-GAP.md](../manual/10-DAFTAR-FITUR-DAN-GAP.md):
 - **Fitur Tersedia & Teruji Penuh**: Seluruh alur pendaftar 1–7, enkripsi NIK, OTP binding, submit final, nomor registrasi berurutan, cetak PDF Draft & Final, verifikasi publik QR, dan admin reopen registration.
 - **Keterbatasan Layanan Pihak Ketiga**:
   - Driver pengiriman OTP WhatsApp saat ini berstatus driver `log` (mencatat ke log lokal). Integrasi gateway komersial live (Fonnte/Twilio) berstatus **PENDING OWNER ACTION**.
@@ -156,19 +156,19 @@ Terdokumentasi secara rinci pada [10-DAFTAR-FITUR-DAN-GAP.md](file:///D:/Dany/PP
 
 Seluruh artefak dokumentasi telah diproduksi dan tersimpan rapi pada direktori `docs/manual/`:
 
-1. [docs/manual/README.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/README.md)
-2. [docs/manual/01-PANDUAN-ORANG-TUA-WALI.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/01-PANDUAN-ORANG-TUA-WALI.md)
-3. [docs/manual/02-PANDUAN-ADMIN-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/02-PANDUAN-ADMIN-PPDB.md)
-4. [docs/manual/03-PANDUAN-SUPERADMIN.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/03-PANDUAN-SUPERADMIN.md)
-5. [docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md)
-6. [docs/manual/05-SOP-OPERASIONAL-PANITIA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/05-SOP-OPERASIONAL-PANITIA.md)
-7. [docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md)
-8. [docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md)
-9. [docs/manual/08-ALUR-KERJA-SISTEM.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/08-ALUR-KERJA-SISTEM.md)
-10. [docs/manual/09-GLOSARIUM.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/09-GLOSARIUM.md)
-11. [docs/manual/10-DAFTAR-FITUR-DAN-GAP.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/10-DAFTAR-FITUR-DAN-GAP.md)
-12. [docs/manual/BRIEFING-PANITIA-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/BRIEFING-PANITIA-PPDB.md)
-13. [docs/manual/QUICK-GUIDE-ORANG-TUA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/QUICK-GUIDE-ORANG-TUA.md)
+1. [docs/manual/README.md](../manual/README.md)
+2. [docs/manual/01-PANDUAN-ORANG-TUA-WALI.md](../manual/01-PANDUAN-ORANG-TUA-WALI.md)
+3. [docs/manual/02-PANDUAN-ADMIN-PPDB.md](../manual/02-PANDUAN-ADMIN-PPDB.md)
+4. [docs/manual/03-PANDUAN-SUPERADMIN.md](../manual/03-PANDUAN-SUPERADMIN.md)
+5. [docs/manual/04-MATRIKS-ROLE-DAN-PERMISSION.md](../manual/04-MATRIKS-ROLE-DAN-PERMISSION.md)
+6. [docs/manual/05-SOP-OPERASIONAL-PANITIA.md](../manual/05-SOP-OPERASIONAL-PANITIA.md)
+7. [docs/manual/06-FAQ-DAN-TROUBLESHOOTING.md](../manual/06-FAQ-DAN-TROUBLESHOOTING.md)
+8. [docs/manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md](../manual/07-PEDOMAN-KEAMANAN-PENGGUNA.md)
+9. [docs/manual/08-ALUR-KERJA-SISTEM.md](../manual/08-ALUR-KERJA-SISTEM.md)
+10. [docs/manual/09-GLOSARIUM.md](../manual/09-GLOSARIUM.md)
+11. [docs/manual/10-DAFTAR-FITUR-DAN-GAP.md](../manual/10-DAFTAR-FITUR-DAN-GAP.md)
+12. [docs/manual/BRIEFING-PANITIA-PPDB.md](../manual/BRIEFING-PANITIA-PPDB.md)
+13. [docs/manual/QUICK-GUIDE-ORANG-TUA.md](../manual/QUICK-GUIDE-ORANG-TUA.md)
 
 ---
 
@@ -209,5 +209,5 @@ Sesuai instruksi baku, **TIDAK ADA PUSH KE REMOTE GIT REPOSITORY** yang dilakuka
 ## 16. FINAL RECOMMENDATION
 
 1. **Pengesahan Dokumen**: Pemilik Proyek disarankan meninjau dan menyetujui paket dokumentasi operasional pada direktori `docs/manual/`.
-2. **Penyebaran Brosur & Briefing**: Berkas [BRIEFING-PANITIA-PPDB.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/BRIEFING-PANITIA-PPDB.md) dan [QUICK-GUIDE-ORANG-TUA.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/manual/QUICK-GUIDE-ORANG-TUA.md) dapat langsung dicetak atau disebarluaskan untuk persiapan internal panitia madrasah.
+2. **Penyebaran Brosur & Briefing**: Berkas [BRIEFING-PANITIA-PPDB.md](../manual/BRIEFING-PANITIA-PPDB.md) dan [QUICK-GUIDE-ORANG-TUA.md](../manual/QUICK-GUIDE-ORANG-TUA.md) dapat langsung dicetak atau disebarluaskan untuk persiapan internal panitia madrasah.
 3. **Kondisi Berhenti (*Stop Condition*)**: Tim pengembang **BERHENTI (STOP)** pada tahapan ini dan menunggu arahan lebih lanjut dari Pemilik Proyek.

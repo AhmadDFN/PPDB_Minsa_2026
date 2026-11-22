@@ -1,5 +1,9 @@
 # PROJECT STATUS RECONCILIATION — 20 NOVEMBER 2026
 
+## Rekonsiliasi blueprint Admin/Superadmin
+
+Audit lanjutan memisahkan permission yang didefinisikan seeder dari kemampuan yang benar-benar tersedia melalui route/controller/view. Blueprint, matriks, workflow, dan roadmap target berada di `docs/blueprints/`. Dashboard, applicant management, reopen, dan branding tersedia; verifikasi dokumen, ekspor, master data, akun admin, dan audit viewer masih gap. Fase ini dokumentasi-only; tidak ada perubahan runtime atau deployment.
+
 ## Ringkasan
 
 Hostinger online/testing telah dikonfirmasi pada `https://ahmaddanyfn.biz.id`, dengan GitHub Auto Deploy, database aktif, dan manual applicant test. Status tersebut tidak sama dengan persetujuan Go-Live produksi.

@@ -2,10 +2,10 @@
 ## Sistem Informasi PPDB Online MIN 1 Kota Madiun (PPDB Minsatama)
 ### Tahun Ajaran 2026/2027
 
-**Versi Dokumen**: 1.0.0  
-**Tanggal Evaluasi**: 19 November 2026  
-**Target Pengujian**: Lingkungan Integrasi Lokal & Staging Hostinger (`sleek-forestgreen-mink-13.hostingersite.com`)  
-**Referensi**: Berakar dari skenario resmi pada [docs/uat/UAT-TEST-PLAN.md](file:///D:/Dany/PPDB/PPDB_Minsa_2026/docs/uat/UAT-TEST-PLAN.md)  
+**Versi Dokumen**: 1.0.0
+**Tanggal Evaluasi**: 19 November 2026
+**Target Pengujian**: Lingkungan Integrasi Lokal & Staging Hostinger (`sleek-forestgreen-mink-13.hostingersite.com`)
+**Referensi**: Berakar dari skenario resmi pada [docs/uat/UAT-TEST-PLAN.md](UAT-TEST-PLAN.md)
 **Status Evaluasi**:
 - **Otomasi & E2E Integration Suite**: **203/203 PASSED (100%)**
 - **Verifikasi Sintetis Staging**: **VERIFIED / READY**
