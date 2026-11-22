@@ -364,6 +364,11 @@ class RegistrationWorkflowTest extends TestCase
     {
         Storage::fake('ppdb_private');
         $first = $this->createRegistration();
+        $this->actingAs($first['user'])->post(route('applicant.registration.submit'), [
+            'consent' => '1',
+            'consent_name' => 'Orang Tua Siswa',
+        ])->assertRedirect(route('applicant.registration.review'));
+        $first['period']->update(['status' => AdmissionPeriodStatus::CLOSED, 'is_active' => false]);
         $secondPeriod = AdmissionPeriod::factory()->create([
             'name' => 'PPDB MIN 1 Kota Madiun 2026/2027 - Periode Kedua',
             'academic_year' => '2026/2027',
@@ -388,12 +393,10 @@ class RegistrationWorkflowTest extends TestCase
             requirement: $secondRequirement,
         );
 
-        foreach ([$first, $second] as $data) {
-            $this->actingAs($data['user'])->post(route('applicant.registration.submit'), [
-                'consent' => '1',
-                'consent_name' => 'Orang Tua Siswa',
-            ])->assertRedirect(route('applicant.registration.review'));
-        }
+        $this->actingAs($second['user'])->post(route('applicant.registration.submit'), [
+            'consent' => '1',
+            'consent_name' => 'Orang Tua Siswa',
+        ])->assertRedirect(route('applicant.registration.review'));
 
         $this->assertSame('27001', $first['registration']->fresh()->registration_number);
         $this->assertSame('27002', $second['registration']->fresh()->registration_number);
@@ -408,8 +411,8 @@ class RegistrationWorkflowTest extends TestCase
             'academic_year' => str_replace('/', '-', $first['period']->academic_year),
             'start_date' => now()->subDay(),
             'end_date' => now()->addDay(),
-            'status' => AdmissionPeriodStatus::ACTIVE,
-            'is_active' => true,
+            'status' => AdmissionPeriodStatus::DRAFT,
+            'is_active' => false,
         ]);
         $secondPeriodProgram = AdmissionPeriodProgram::factory()->create([
             'admission_period_id' => $secondPeriod->id,

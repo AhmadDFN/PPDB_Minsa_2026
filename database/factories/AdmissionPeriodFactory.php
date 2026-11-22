@@ -23,8 +23,8 @@ class AdmissionPeriodFactory extends Factory
             'start_date' => now()->subDays(5),
             'end_date' => now()->addDays(25),
             'age_reference_date' => '2026-07-01',
-            'status' => AdmissionPeriodStatus::ACTIVE,
-            'is_active' => true,
+            'status' => AdmissionPeriodStatus::DRAFT,
+            'is_active' => false,
             'description' => 'Penerimaan Peserta Didik Baru Tahun Ajaran 2026/2027.',
         ];
     }

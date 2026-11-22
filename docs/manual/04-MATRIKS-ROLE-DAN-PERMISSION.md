@@ -64,7 +64,8 @@ Keterangan Status:
 | **Pencarian & Filter Pendaftar** | `DENIED` | `DENIED` | `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Belum ada controller/view pencarian di admin |
 | **Verifikasi Berkas Digital** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `verify_documents` ada di seeder, UI belum ada |
 | **Ekspor Laporan (Excel/PDF)** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `export_reports` ada di seeder, UI belum ada |
-| **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `NOT IMPLEMENTED` | Permission `manage_admission_periods` ada, UI belum ada |
+| **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_admission_periods` dan `manage_programs` |
+| **Kelola Persyaratan Dokumen** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_document_requirements` |
 | **Kelola Akun Admin Lain** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `NOT IMPLEMENTED` | Permission `manage_admin_users` ada, UI belum ada |
 | **Lihat Log Audit Sistem** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `view_activity_logs` ada, UI belum ada |
 

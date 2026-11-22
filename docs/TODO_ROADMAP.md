@@ -294,3 +294,13 @@ Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
 - [x] Hapus route, view, dan workspace switcher Superadmin terpisah.
 - [x] Pertahankan full access Superadmin melalui permission server-side tanpa akun atau role tambahan.
 - [ ] Implementasikan modul roadmap berikutnya hanya setelah backend nyata tersedia: Communication Center, CRUD konfigurasi PPDB, user/permission management, reports, audit center, dan system health.
+
+### Phase 4A — PPDB Configuration Management
+
+- [x] Phase 4A.2 integrity hardening: atomic configuration/audit transactions, generated-marker uniqueness for one active period, normalized historical date checks, and program-period scope validation.
+- [ ] Run disposable MySQL/MariaDB runtime concurrency validation for the active-period invariant before production deployment.
+
+- [x] Admission Period Management dengan validasi rentang tanggal, singleton active period, dan audit.
+- [x] Program Management dengan relasi periode dan perlindungan historical registration.
+- [x] Document Requirements Management dengan scope periode/program, status wajib, urutan, dan batas 5120 KB.
+- [ ] Live acceptance, production migration, dan deployment.

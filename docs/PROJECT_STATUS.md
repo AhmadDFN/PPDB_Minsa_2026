@@ -146,3 +146,14 @@ Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (
 - Superadmin mempertahankan full access melalui role yang sudah ada tanpa akun kedua, impersonation, atau role tambahan.
 - Dashboard menampilkan metrik periode aktif, tren submission tujuh hari, pendaftar terbaru, aktivitas pendaftaran, dan quick actions yang benar-benar tersedia.
 - Route/view/workspace Superadmin terpisah dihapus. Fitur verifikasi dokumen, CRUD periode/program, ekspor, manajemen pengguna, audit viewer, Communication Center, dan infrastructure monitoring tetap GAP sesuai roadmap.
+
+## PHASE 4A — PPDB CONFIGURATION MANAGEMENT
+
+- Phase 4A.2 hardening adds transactional audit consistency, a database-enforced single-active-period marker, normalized historical-date protection, and validation of program/period scope for document requirements. SQLite tests cover the invariant; MySQL/MariaDB runtime concurrency validation remains pending.
+
+**Status:** IMPLEMENTED LOCALLY — PENDING OWNER REVIEW
+
+- Admission Period, Program, dan Document Requirements management tersedia dalam satu Admin Workspace.
+- Perubahan master data dilindungi permission server-side dan dicatat pada audit konfigurasi.
+- Tidak ada physical delete route untuk menjaga historical registration dan dokumen existing.
+- Verifikasi live, deployment, dan migration production masih pending.

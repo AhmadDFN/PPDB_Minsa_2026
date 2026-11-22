@@ -20,7 +20,9 @@ class RegistrationFactory extends Factory
 
     public function definition(): array
     {
-        $period = AdmissionPeriod::factory()->create();
+        // Keep the default fixture inactive so the database-level single-active
+        // invariant remains valid when a test creates multiple registrations.
+        $period = AdmissionPeriod::factory()->create(['status' => 'draft', 'is_active' => false]);
         $periodProgram = AdmissionPeriodProgram::factory()->create([
             'admission_period_id' => $period->id,
         ]);

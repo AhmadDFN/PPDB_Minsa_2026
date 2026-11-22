@@ -31,7 +31,9 @@ class ApplicantBiodataTest extends TestCase
             'nik_encrypted' => NikManager::encrypt($nik),
         ], $userAttributes));
 
-        AdmissionPeriod::factory()->create();
+        if (! AdmissionPeriod::query()->where('is_active', true)->exists()) {
+            AdmissionPeriod::factory()->active()->create();
+        }
 
         $applicant = Applicant::factory()->create(array_merge([
             'user_id' => $user->id,

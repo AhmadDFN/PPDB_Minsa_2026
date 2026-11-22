@@ -86,6 +86,7 @@
             </a>
         @endcan
 
+        @cannot('manage_document_requirements')
         {{-- Dokumen Persyaratan (Upcoming) --}}
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
@@ -99,12 +100,35 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
 
         <div class="pt-5 px-3 pb-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
             Konfigurasi PPDB
         </div>
 
-        {{-- Periode Penerimaan (Upcoming) --}}
+        @can('manage_admission_periods')
+        <a href="{{ route('admin.admission-periods.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.admission-periods.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">◷</span><span>Periode Pendaftaran</span>
+        </a>
+        @endcan
+
+        @can('manage_programs')
+        <a href="{{ route('admin.programs.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.programs.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">▦</span><span>Program Pendaftaran</span>
+        </a>
+        @endcan
+
+        @can('manage_document_requirements')
+        <a href="{{ route('admin.document-requirements.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.document-requirements.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">▤</span><span>Persyaratan Dokumen</span>
+        </a>
+        @endcan
+
+        {{-- Legacy placeholders retained only when permission is absent --}}
+        @cannot('manage_admission_periods')
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
             title="Modul Konfigurasi Periode Pendaftaran dijadwalkan pada fase berikutnya"
@@ -117,7 +141,9 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
 
+        @cannot('manage_programs')
         {{-- Program Pendidikan (Upcoming) --}}
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
@@ -131,6 +157,7 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
 
         <div class="pt-5 px-3 pb-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
             Laporan & Sistem

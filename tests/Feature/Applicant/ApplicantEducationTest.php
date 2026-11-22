@@ -29,7 +29,7 @@ class ApplicantEducationTest extends TestCase
             'nik_encrypted' => NikManager::encrypt($nik),
         ], $userAttributes));
 
-        AdmissionPeriod::factory()->create();
+        AdmissionPeriod::factory()->active()->create();
 
         $applicant = Applicant::factory()->create(array_merge([
             'user_id' => $user->id,

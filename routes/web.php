@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdmissionPeriodController;
 use App\Http\Controllers\Admin\ApplicantManagementController;
+use App\Http\Controllers\Admin\DocumentRequirementController;
+use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
@@ -135,6 +138,33 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'create'])->name('registrations.reopen.create');
         Route::post('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'store'])->name('registrations.reopen.store');
         Route::post('/registration-reopen-windows/{reopenWindow}/close', [RegistrationReopenController::class, 'close'])->name('registrations.reopen.close');
+    });
+
+    Route::middleware('can:manage_admission_periods')->prefix('admission-periods')->name('admission-periods.')->group(function () {
+        Route::get('/', [AdmissionPeriodController::class, 'index'])->name('index');
+        Route::get('/create', [AdmissionPeriodController::class, 'create'])->name('create');
+        Route::post('/', [AdmissionPeriodController::class, 'store'])->name('store');
+        Route::get('/{admissionPeriod}/edit', [AdmissionPeriodController::class, 'edit'])->name('edit');
+        Route::put('/{admissionPeriod}', [AdmissionPeriodController::class, 'update'])->name('update');
+        Route::post('/{admissionPeriod}/toggle', [AdmissionPeriodController::class, 'toggle'])->name('toggle');
+    });
+
+    Route::middleware('can:manage_programs')->prefix('programs')->name('programs.')->group(function () {
+        Route::get('/', [ProgramController::class, 'index'])->name('index');
+        Route::get('/create', [ProgramController::class, 'create'])->name('create');
+        Route::post('/', [ProgramController::class, 'store'])->name('store');
+        Route::get('/{program}/edit', [ProgramController::class, 'edit'])->name('edit');
+        Route::put('/{program}', [ProgramController::class, 'update'])->name('update');
+        Route::post('/{program}/toggle', [ProgramController::class, 'toggle'])->name('toggle');
+    });
+
+    Route::middleware('can:manage_document_requirements')->prefix('document-requirements')->name('document-requirements.')->group(function () {
+        Route::get('/', [DocumentRequirementController::class, 'index'])->name('index');
+        Route::get('/create', [DocumentRequirementController::class, 'create'])->name('create');
+        Route::post('/', [DocumentRequirementController::class, 'store'])->name('store');
+        Route::get('/{documentRequirement}/edit', [DocumentRequirementController::class, 'edit'])->name('edit');
+        Route::put('/{documentRequirement}', [DocumentRequirementController::class, 'update'])->name('update');
+        Route::post('/{documentRequirement}/toggle', [DocumentRequirementController::class, 'toggle'])->name('toggle');
     });
 
     // Fallback handler for upcoming modules to prevent 404 during navigation testing
