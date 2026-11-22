@@ -136,3 +136,13 @@ Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (
 - Automated test checkout saat ini: 289 tests, 278 passed, 11 skipped, 1.273 assertions. Skipped berasal dari integrasi MySQL/pdo_mysql dan satu skenario GD/PNG sesuai kondisi test.
 - Laporan live applicant: `docs/uat/LIVE-APPLICANT-E2E-REPORT-2026-11-20.md`.
 - Catatan environment Hostinger: `docs/deployment/CURRENT-HOSTINGER-ENVIRONMENT.md`.
+
+## 8. FASE 10.6 — SINGLE ADMIN WORKSPACE
+
+**Status:** IMPLEMENTED LOCALLY — PENDING OWNER REVIEW / COMMIT
+
+- `/admin/dashboard` menjadi satu-satunya dashboard administrasi untuk `admin_ppdb` dan `superadmin`.
+- Kedua role menggunakan layout, header, sidebar, dan dashboard operasional yang sama; perbedaan akses ditentukan oleh Spatie Permission/Gate di server.
+- Superadmin mempertahankan full access melalui role yang sudah ada tanpa akun kedua, impersonation, atau role tambahan.
+- Dashboard menampilkan metrik periode aktif, tren submission tujuh hari, pendaftar terbaru, aktivitas pendaftaran, dan quick actions yang benar-benar tersedia.
+- Route/view/workspace Superadmin terpisah dihapus. Fitur verifikasi dokumen, CRUD periode/program, ekspor, manajemen pengguna, audit viewer, Communication Center, dan infrastructure monitoring tetap GAP sesuai roadmap.

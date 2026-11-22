@@ -13,8 +13,8 @@
                 <span>M1</span>
             </div>
             <div class="flex flex-col">
-                <span class="text-xs font-bold tracking-tight text-gray-900 uppercase">Panel Admin</span>
-                <span class="text-[11px] text-gray-500 font-medium">PPDB Minsatama</span>
+                <span class="text-xs font-bold tracking-tight text-gray-900 uppercase">Panel Admin PPDB</span>
+                <span class="text-[11px] text-gray-500 font-medium">Operasional Pendaftaran</span>
             </div>
         </div>
 
@@ -188,7 +188,7 @@
                 </div>
                 <div class="flex flex-col min-w-0">
                     <span class="text-xs font-semibold text-gray-900 truncate">{{ auth()->user()?->name ?? 'Administrator PPDB' }}</span>
-                    <span class="text-[11px] text-gray-500 truncate">{{ auth()->user()?->email ?? 'admin@minsatama.sch.id' }}</span>
+                    <span class="text-[11px] text-gray-500 truncate">{{ auth()->user()?->hasRole('superadmin') ? 'Superadmin' : 'Admin PPDB' }}</span>
                 </div>
             </div>
             <form method="POST" action="{{ route('admin.logout') }}" class="shrink-0">

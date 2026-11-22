@@ -23,6 +23,14 @@ class AdminDashboardController extends Controller
      */
     public function index(Request $request): View
     {
+        return $this->adminDashboard();
+    }
+
+    /**
+     * Display the operational dashboard for PPDB committee administrators.
+     */
+    private function adminDashboard(): View
+    {
         /** @var AdmissionPeriod|null $activePeriod */
         $activePeriod = AdmissionPeriod::query()
             ->where('is_active', true)
@@ -161,6 +169,45 @@ class AdminDashboardController extends Controller
             'latestSubmissions' => $latestSubmissions,
             'recentActivities' => $recentActivities,
             'periodTimeInfo' => $periodTimeInfo,
+            'submissionTrend' => $this->submissionTrend($activePeriod),
         ]);
+    }
+
+    /**
+     * Return a seven-day submitted-registration trend for the active period.
+     * Dates without submissions are included to keep the chart honest and stable.
+     *
+     * @return array<int, array{date: string, label: string, count: int}>
+     */
+    private function submissionTrend(?AdmissionPeriod $activePeriod): array
+    {
+        $today = Carbon::now('Asia/Jakarta')->startOfDay();
+        $start = $today->copy()->subDays(6);
+
+        $query = Registration::query()
+            ->where('status', RegistrationStatus::SUBMITTED->value)
+            ->whereBetween('submitted_at', [$start, $today->copy()->endOfDay()]);
+
+        if ($activePeriod) {
+            $query->where('admission_period_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        $counts = $query
+            ->selectRaw('DATE(submitted_at) as submission_date, COUNT(*) as total')
+            ->groupByRaw('DATE(submitted_at)')
+            ->pluck('total', 'submission_date');
+
+        return collect(range(0, 6))->map(function (int $offset) use ($start, $counts): array {
+            $date = $start->copy()->addDays($offset);
+            $key = $date->toDateString();
+
+            return [
+                'date' => $key,
+                'label' => $date->translatedFormat('d M'),
+                'count' => (int) ($counts[$key] ?? 0),
+            ];
+        })->all();
     }
 }

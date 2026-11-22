@@ -18,6 +18,7 @@ use Carbon\CarbonInterface;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class AdminDashboardTest extends TestCase
@@ -39,23 +40,74 @@ class AdminDashboardTest extends TestCase
             ->get(route('admin.dashboard'));
 
         $response->assertOk();
-        $response->assertSee('Dashboard Administrator');
+        $response->assertSee('Dashboard Admin PPDB');
+        $response->assertSee('Ruang Kerja Operasional');
         $response->assertSee($period->name);
         $response->assertSee('TP '.$period->academic_year);
         $response->assertSee('Statistik Pendaftaran Periode Ini');
     }
 
-    public function test_superadmin_can_access_dashboard(): void
+    public function test_superadmin_uses_the_same_admin_dashboard(): void
     {
         $superadmin = $this->createAdminUser('superadmin');
         $this->createActivePeriod();
 
-        $response = $this->actingAs($superadmin)
-            ->get(route('admin.dashboard'));
+        $response = $this->actingAs($superadmin)->get(route('admin.dashboard'));
 
         $response->assertOk();
-        $response->assertSee('Dashboard Administrator');
-        $response->assertSee('Super Administrator');
+        $response->assertSee('Dashboard Admin PPDB');
+        $response->assertSee('Panel Admin PPDB');
+    }
+
+    public function test_single_workspace_has_no_superadmin_dashboard_route(): void
+    {
+        $this->assertFalse(Route::has('superadmin.dashboard'));
+        $this->get('/superadmin/dashboard')->assertNotFound();
+    }
+
+    public function test_superadmin_uses_operational_metrics_and_permissioned_settings(): void
+    {
+        $superadmin = $this->createAdminUser('superadmin');
+        $this->createAdminUser('admin_ppdb');
+        $period = $this->createActivePeriod();
+        $program = Program::factory()->create(['code' => 'REGULER', 'name' => 'Program Reguler']);
+        $periodProgram = AdmissionPeriodProgram::factory()->create([
+            'admission_period_id' => $period->id,
+            'program_id' => $program->id,
+            'is_active' => true,
+        ]);
+
+        $this->createRegistration($period, $periodProgram, RegistrationStatus::SUBMITTED, 'Global Submitted', now());
+        $this->createRegistration($period, $periodProgram, RegistrationStatus::DRAFT, 'Global Draft');
+
+        $response = $this->actingAs($superadmin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $stats = $response->viewData('stats');
+        $this->assertSame(2, $stats['total']);
+        $this->assertSame(1, $stats['submitted']);
+        $this->assertSame(1, $stats['draft']);
+        $response->assertSee(route('admin.settings.index'));
+    }
+
+    public function test_admin_dashboard_has_real_submission_trend(): void
+    {
+        $admin = $this->createAdminUser('admin_ppdb');
+        $period = $this->createActivePeriod();
+        $program = Program::factory()->create(['code' => 'REGULER', 'name' => 'Program Reguler']);
+        $periodProgram = AdmissionPeriodProgram::factory()->create([
+            'admission_period_id' => $period->id,
+            'program_id' => $program->id,
+            'is_active' => true,
+        ]);
+        $this->createRegistration($period, $periodProgram, RegistrationStatus::SUBMITTED, 'Trend Student', now());
+
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $trend = $response->viewData('submissionTrend');
+        $this->assertCount(7, $trend);
+        $this->assertSame(1, collect($trend)->sum('count'));
     }
 
     public function test_admin_without_view_dashboard_permission_is_forbidden(): void

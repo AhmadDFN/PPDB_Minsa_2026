@@ -1,10 +1,11 @@
-<x-layouts.admin title="Dashboard Administrator">
+<x-layouts.admin title="Dashboard Admin PPDB">
     <x-slot:header>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Administrator</h1>
+                <p class="text-xs font-bold uppercase tracking-wider text-primary-600">Ruang Kerja Operasional</p>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard Admin PPDB</h1>
                 <p class="text-sm text-gray-500 mt-1">
-                    {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y') }} &bull; Ringkasan dan metrik operasional pendaftaran peserta didik baru.
+                    {{ \Carbon\Carbon::now('Asia/Jakarta')->translatedFormat('l, d F Y') }} &bull; {{ auth()->user()?->name }} &bull; Admin PPDB
                 </p>
             </div>
             <div class="flex items-center gap-3">
@@ -184,6 +185,29 @@
             </div>
         </div>
 
+        {{-- Submission trend: last seven days, sourced from submitted registrations. --}}
+        <section class="bg-white rounded-xl border border-gray-200 shadow-xs p-5" aria-labelledby="submission-trend">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 id="submission-trend" class="text-base font-bold text-gray-900">Tren Pengiriman 7 Hari</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Jumlah pendaftaran SUBMITTED pada periode aktif.</p>
+                </div>
+                <span class="text-xs text-gray-400">Data aktual</span>
+            </div>
+            <div class="grid grid-cols-7 gap-2 items-end min-h-28" role="img" aria-label="Tren pengiriman pendaftaran tujuh hari terakhir">
+                @php
+                    $trendMax = max(1, max(array_column($submissionTrend, 'count')));
+                @endphp
+                @foreach ($submissionTrend as $point)
+                    <div class="flex flex-col items-center justify-end gap-2 h-28">
+                        <span class="text-[11px] font-bold text-gray-700">{{ $point['count'] }}</span>
+                        <div class="w-full max-w-8 rounded-t-md bg-primary-500/80" style="height: {{ max(8, (int) round(($point['count'] / $trendMax) * 72)) }}px" title="{{ $point['label'] }}: {{ $point['count'] }} submission"></div>
+                        <span class="text-[10px] text-gray-400">{{ $point['label'] }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
         {{-- Section 3: Dual Column Grid (Recent Submissions + Quick Actions/System Info) --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {{-- Left Column (2 Cols): Latest 5 Submitted Registrations --}}
@@ -350,7 +374,7 @@
                                         Kelola Data Pendaftar
                                     </span>
                                     <span class="text-[11px] text-primary-700/80 line-clamp-2 mt-0.5">
-                                        Pencarian pendaftar, penyaringan status, dan verifikasi berkas formulir.
+                                        Pencarian pendaftar, penyaringan status, dan akses dokumen privat.
                                     </span>
                                 </div>
                             </a>

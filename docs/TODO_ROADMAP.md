@@ -5,6 +5,13 @@
 
 Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md`](blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md). Gap prioritas: verifikasi dokumen, master data, ekspor redacted, lifecycle akun admin, dan audit viewer. Jangan menandai permission seeder sebagai fitur selesai.
 
+## Phase 10.6 — Role-Based Dashboard
+
+- [x] Dashboard Admin dan Superadmin dipisahkan berdasarkan role aktual dengan query data riil.
+- [x] Sidebar/layout menampilkan identitas role dan hanya mengaktifkan route yang tersedia.
+- [x] Tren submission tujuh hari dan metrik global Superadmin ditambahkan tanpa migration baru.
+- [ ] UAT live Admin/Superadmin dan review owner.
+
 **Status Notasi**:
 - `[x]` Selesai (*Completed*)
 - `[-]` Sedang Berjalan (*In Progress*)
@@ -280,3 +287,10 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 - [ ] **[P3] Reconcile dokumentasi lama** yang masih memuat angka test atau status fitur yang tidak sesuai checkout aktual.
 
 Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
+
+### Refactor arsitektur — Single Admin Workspace
+
+- [x] Konsolidasikan Superadmin dan Admin PPDB ke `/admin/dashboard` dengan satu layout, header, dan sidebar.
+- [x] Hapus route, view, dan workspace switcher Superadmin terpisah.
+- [x] Pertahankan full access Superadmin melalui permission server-side tanpa akun atau role tambahan.
+- [ ] Implementasikan modul roadmap berikutnya hanya setelah backend nyata tersedia: Communication Center, CRUD konfigurasi PPDB, user/permission management, reports, audit center, dan system health.

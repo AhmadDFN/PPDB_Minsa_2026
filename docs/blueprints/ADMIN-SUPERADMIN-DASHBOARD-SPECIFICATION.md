@@ -1,6 +1,10 @@
 # Spesifikasi Dashboard Admin & Superadmin
 
+> **Arsitektur final:** satu Admin Workspace pada `/admin/dashboard` digunakan oleh `admin_ppdb` dan `superadmin`. Tidak ada Control Center atau workspace switcher terpisah. Menu dan aksi dibatasi oleh permission server-side; Superadmin memperoleh full access melalui role `superadmin` yang sudah ada.
+
 ## Admin PPDB
+
+> **Phase 10.6 implementation note:** quick actions expose only working destinations (`Data Pendaftar`, `Buka Ulang Pendaftaran`, and portal publik). Verifikasi dokumen and export remain visibly unavailable until their routes/workflows exist.
 
 ### Struktur halaman
 
@@ -16,7 +20,7 @@
 
 ## Superadmin
 
-Dashboard menambahkan health database/cache/storage, status Fonnte tanpa token, pending migrations sebagai indikator operasional (bukan tombol HTTP), perubahan setting terakhir, serta shortcut master data dan akun internal.
+Superadmin menggunakan dashboard Admin yang sama dan dapat melihat atau menjalankan fitur yang dilindungi permission administratif. Health database/cache/storage, status Fonnte, pending migrations, master data, akun internal, Communication Center, dan audit center tetap menjadi roadmap terpisah sampai backend nyata tersedia.
 
 ## Data contract minimum
 
