@@ -4,7 +4,7 @@
 
 Dokumen panduan ini ditujukan bagi **Super Administrator** (`superadmin`), yaitu penanggung jawab teknis tertinggi, koordinator IT madrasah, atau kepala sistem informasi PPDB Minsatama.
 
-> **Status 20 November 2026:** Pengaturan branding tersedia. Manajemen periode/program/persyaratan, akun admin, audit viewer, dan health dashboard adalah target roadmap, bukan kemampuan produksi yang sudah tersedia.
+> **Status Phase 4B:** Manajemen akun admin dan permission role tersedia pada branch pengembangan; commit, push, deployment, dan live verification tetap mengikuti checkpoint fase.
 
 ---
 
@@ -19,10 +19,10 @@ Peran `superadmin` adalah peran tingkat tertinggi (*root/highest privilege*) pad
 | 3 | `reopen_registration` | Membuka & menutup akses edit ulang pendaftaran | **TERSEDIA** (`/admin/registrations/.../reopen`) |
 | 4 | `verify_documents` | Memvalidasi berkas dokumen pendaftar | *Belum ada UI (Manual Loket)* |
 | 5 | `export_reports` | Mengekspor rekapitulasi data pendaftar | *Belum ada UI* |
-| 6 | `manage_admission_periods` | Menambah/mengubah periode tahun ajaran PPDB | *Belum ada UI (Via DB/Seeder)* |
-| 7 | `manage_programs` | Menambah/mengubah jalur program (Reguler/Unggulan) | *Belum ada UI (Via DB/Seeder)* |
-| 8 | `manage_document_requirements` | Mengatur daftar berkas persyaratan wajib | *Belum ada UI (Via DB/Seeder)* |
-| 9 | `manage_admin_users` | Membuat dan mengelola akun Admin PPDB | *Belum ada UI (Via DB/Seeder)* |
+| 6 | `manage_admission_periods` | Menambah/mengubah periode tahun ajaran PPDB | **TERSEDIA** (`/admin/admission-periods`) |
+| 7 | `manage_programs` | Menambah/mengubah jalur program (Reguler/Unggulan) | **TERSEDIA** (`/admin/programs`) |
+| 8 | `manage_document_requirements` | Mengatur daftar berkas persyaratan wajib | **TERSEDIA** (`/admin/document-requirements`) |
+| 9 | `manage_admin_users` | Membuat dan mengelola akun Admin PPDB | **TERSEDIA** (`/admin/admin-users`) |
 | 10 | `view_activity_logs` | Memantau seluruh rekaman audit sistem | *Belum ada UI (Via DB Log)* |
 
 ---

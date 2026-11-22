@@ -157,3 +157,14 @@ Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (
 - Perubahan master data dilindungi permission server-side dan dicatat pada audit konfigurasi.
 - Tidak ada physical delete route untuk menjaga historical registration dan dokumen existing.
 - Verifikasi live, deployment, dan migration production masih pending.
+
+## PHASE 4B — ADMIN USER & ROLE/PERMISSION MANAGEMENT
+
+**Status:** IMPLEMENTED LOCALLY — AUTOMATED TESTED — COMMIT/PUSH/DEPLOY/LIVE VERIFIED PENDING
+
+- Admin account lifecycle tersedia untuk Superadmin melalui server-side permission `manage_admin_users`.
+- Applicant accounts tidak muncul pada listing administrator.
+- Role `superadmin` dilindungi; permission `admin_ppdb` dibatasi allowlist dan diaudit.
+- Password reset menggunakan password broker existing dan notification fake pada test.
+- Admin invitation/password setup menggunakan dedicated named routes, broker token expiry/throttle, one-time completion, dan transisi pending-to-active; delivery email production belum diverifikasi.
+- Password reset throttling menggunakan API `sendResetLink()` broker dan dispatch failure dicatat secara aman tanpa token atau URL.

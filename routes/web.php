@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdmissionPeriodController;
 use App\Http\Controllers\Admin\ApplicantManagementController;
 use App\Http\Controllers\Admin\DocumentRequirementController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
+use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
 use App\Http\Controllers\Applicant\DashboardController;
@@ -165,6 +167,23 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/{documentRequirement}/edit', [DocumentRequirementController::class, 'edit'])->name('edit');
         Route::put('/{documentRequirement}', [DocumentRequirementController::class, 'update'])->name('update');
         Route::post('/{documentRequirement}/toggle', [DocumentRequirementController::class, 'toggle'])->name('toggle');
+    });
+
+    Route::middleware('can:manage_admin_users')->prefix('admin-users')->name('admin-users.')->group(function () {
+        Route::get('/', [AdminUserController::class, 'index'])->name('index');
+        Route::get('/create', [AdminUserController::class, 'create'])->name('create');
+        Route::post('/', [AdminUserController::class, 'store'])->name('store');
+        Route::get('/{user}/edit', [AdminUserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [AdminUserController::class, 'update'])->name('update');
+        Route::post('/{user}/toggle', [AdminUserController::class, 'toggle'])->name('toggle');
+        Route::post('/{user}/password-reset', [AdminUserController::class, 'passwordReset'])->name('password-reset');
+        Route::post('/{user}/invitation-resend', [AdminUserController::class, 'resendInvitation'])->name('invitation-resend');
+    });
+
+    Route::middleware('can:manage_admin_users')->prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RolePermissionController::class, 'index'])->name('index');
+        Route::get('/{role}/permissions/edit', [RolePermissionController::class, 'edit'])->name('permissions.edit');
+        Route::put('/{role}/permissions', [RolePermissionController::class, 'update'])->name('permissions.update');
     });
 
     // Fallback handler for upcoming modules to prevent 404 during navigation testing

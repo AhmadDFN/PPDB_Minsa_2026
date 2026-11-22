@@ -163,6 +163,11 @@
             Laporan & Sistem
         </div>
 
+        @can('manage_admin_users')
+            <a href="{{ route('admin.admin-users.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.admin-users.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50' }}"><span class="w-5 text-center">♙</span><span>Akun Administrator</span></a>
+            <a href="{{ route('admin.roles.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.roles.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50' }}"><span class="w-5 text-center">⚿</span><span>Roles & Permissions</span></a>
+        @endcan
+
         @can('manage_system_settings')
             {{-- Pengaturan Sistem (Superadmin) --}}
             <a

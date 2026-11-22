@@ -66,7 +66,7 @@ Keterangan Status:
 | **Ekspor Laporan (Excel/PDF)** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `export_reports` ada di seeder, UI belum ada |
 | **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_admission_periods` dan `manage_programs` |
 | **Kelola Persyaratan Dokumen** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_document_requirements` |
-| **Kelola Akun Admin Lain** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `NOT IMPLEMENTED` | Permission `manage_admin_users` ada, UI belum ada |
+| **Kelola Akun Admin Lain** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `IMPLEMENTED` | Superadmin-only `/admin/admin-users`, lifecycle dan audit |
 | **Lihat Log Audit Sistem** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `view_activity_logs` ada, UI belum ada |
 
 ---

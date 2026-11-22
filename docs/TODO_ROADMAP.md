@@ -293,7 +293,7 @@ Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
 - [x] Konsolidasikan Superadmin dan Admin PPDB ke `/admin/dashboard` dengan satu layout, header, dan sidebar.
 - [x] Hapus route, view, dan workspace switcher Superadmin terpisah.
 - [x] Pertahankan full access Superadmin melalui permission server-side tanpa akun atau role tambahan.
-- [ ] Implementasikan modul roadmap berikutnya hanya setelah backend nyata tersedia: Communication Center, CRUD konfigurasi PPDB, user/permission management, reports, audit center, dan system health.
+- [ ] Implementasikan modul roadmap berikutnya hanya setelah backend nyata tersedia: Communication Center, reports, audit center, dan system health.
 
 ### Phase 4A — PPDB Configuration Management
 
@@ -304,3 +304,12 @@ Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
 - [x] Program Management dengan relasi periode dan perlindungan historical registration.
 - [x] Document Requirements Management dengan scope periode/program, status wajib, urutan, dan batas 5120 KB.
 - [ ] Live acceptance, production migration, dan deployment.
+
+### Phase 4B — Admin User & Role/Permission Management
+
+- [x] Admin account listing, create, edit, activate/deactivate, protected self/last-superadmin rules, and password reset request.
+- [x] Protected `superadmin` role view and allowlisted `admin_ppdb` permission management with cache refresh and audit.
+- [x] Server-side authorization and applicant exclusion.
+- [x] Dedicated invitation/password setup/reset flow with broker tokens, resend throttling, and serialized last-Superadmin protection.
+- [x] Password reset broker throttle enforcement and safe invitation/reset dispatch-failure audit events.
+- [ ] Commit, push, production deployment, and live acceptance.
