@@ -18,6 +18,15 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - `[ ]` Menunggu (*Pending*)
 - `[!]` Terhambat (*Blocked*)
 
+## Phase 5A — Verifikasi Dokumen & Review Pendaftar
+
+- [x] Queue admin hanya menampilkan pendaftaran `SUBMITTED` dengan filter pencarian/status.
+- [x] Preview berkas menggunakan private storage dan pemeriksaan ownership/IDOR di server.
+- [x] Status `PENDING`, `APPROVED`, `REJECTED`, dan `REVISION_REQUIRED` beserta alasan wajib untuk penolakan/revisi.
+- [x] Riwayat perubahan status, audit actor, transaksi dan row locking.
+- [x] Replacement dokumen mengembalikan status verifikasi ke `PENDING`.
+- [ ] Automated regression lengkap, commit/push, deployment Hostinger, dan live acceptance test.
+
 ---
 
 ## 1. TUGAS SELESAI (COMPLETED TASKS)

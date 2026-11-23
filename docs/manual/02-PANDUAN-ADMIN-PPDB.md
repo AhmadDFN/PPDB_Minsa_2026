@@ -4,7 +4,7 @@
 
 Buku panduan ini disusun khusus untuk staf dan panitia madrasah yang memiliki peran **Admin PPDB** (`admin_ppdb`) dalam sistem PPDB Minsatama. Seluruh isi panduan ini merujuk secara ketat pada fitur yang **benar-benar terpasang dan tersedia pada sistem saat ini**.
 
-> **Status 20 November 2026:** Verifikasi dokumen, ekspor, dan master data masih gap; jangan menjanjikan menu tersebut sebelum roadmap blueprint selesai dan UAT disetujui.
+> **Status 23 November 2026:** Verifikasi dokumen tersedia untuk akun yang memiliki `verify_documents`. Ekspor dan master data mengikuti status implementasi pada blueprint; deployment dan UAT live Phase 5A belum dilakukan.
 
 ---
 
@@ -15,7 +15,7 @@ Peran `admin_ppdb` adalah peran operasional kepanitiaan madrasah yang terdaftar 
 1. `view_dashboard` (Akses dasbor administrator)
 2. `view_applicants` (Melihat daftar pendaftaran terkirim)
 3. `reopen_registration` (Membuka dan menutup jendela izin edit ulang pendaftar)
-4. `verify_documents` (Izin verifikasi dokumen — *catatan: antarmuka web khusus verifikasi dokumen belum tersedia*)
+4. `verify_documents` (Izin membuka menu verifikasi dokumen)
 5. `export_reports` (Izin ekspor rekapitulasi — *catatan: antarmuka web ekspor laporan belum tersedia*)
 
 ### 1.2 Batasan Hak Akses & Integritas
@@ -47,6 +47,10 @@ Peran `admin_ppdb` adalah peran operasional kepanitiaan madrasah yang terdaftar 
   - **Dasbor**: Halaman ringkasan.
   - **Edit Ulang Pendaftaran**: Menu pengelolaan akses pembukaan formulir siswa.
   - **Keluar (Logout)**: Tombol untuk mengakhiri sesi kerja administrator.
+
+### 2.3 Verifikasi Berkas (`/admin/document-verification`)
+
+Menu ini hanya tersedia bagi akun dengan permission `verify_documents` dan hanya memuat pendaftaran berstatus `SUBMITTED`. Admin dapat membuka preview berkas privat, menyetujui, menolak, atau meminta perbaikan. Alasan wajib diisi untuk penolakan dan permintaan perbaikan. Setiap perubahan menyimpan actor, waktu, status sebelumnya, status baru, dan riwayat audit. Penggantian berkas oleh pendaftar mengembalikan status menjadi `PENDING`.
 
 ---
 

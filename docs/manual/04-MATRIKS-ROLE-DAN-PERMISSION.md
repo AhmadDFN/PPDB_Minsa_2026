@@ -51,7 +51,7 @@ Keterangan Status:
 | **Isi / Edit Riwayat TK/RA** | `DENIED` | `CONDITIONAL` | `DENIED` | `DENIED` | Route `/pendaftar/pendidikan` (Hanya data miliknya) |
 | **Pilih Jalur Program** | `DENIED` | `CONDITIONAL` | `DENIED` | `DENIED` | Route `/pendaftar/program` (Status `DRAFT`) |
 | **Unggah Berkas (KK/Foto)** | `DENIED` | `CONDITIONAL` | `DENIED` | `DENIED` | Route `/pendaftar/dokumen/*` (Maks 5MB, format PDF/JPG/PNG) |
-| **Pratinjau / Unduh Berkas Siswa**| `DENIED` | `CONDITIONAL` | `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | `DocumentController` (Pemilik berkas; admin belum ada UI) |
+| **Pratinjau / Unduh Berkas Siswa**| `DENIED` | `CONDITIONAL` | `ALLOWED` | `ALLOWED` | ApplicantManagementController dan preview verifikasi private |
 | **Tinjau Pendaftaran & Consent** | `DENIED` | `ALLOWED` | `DENIED` | `DENIED` | Route `/pendaftar/pendaftaran/tinjau` |
 | **Submit Pendaftaran Final** | `DENIED` | `CONDITIONAL` | `DENIED` | `DENIED` | Route `/pendaftar/pendaftaran/kirim` (Validasi kelengkapan) |
 | **Terbitkan PDF Draf** | `DENIED` | `CONDITIONAL` | `DENIED` | `DENIED` | Route `/pendaftar/pendaftaran/pdf/draft` (Status `DRAFT`) |
@@ -62,7 +62,7 @@ Keterangan Status:
 | **Buka Akses Edit Ulang (Reopen)**| `DENIED` | `DENIED` | `ALLOWED` | `ALLOWED` | Route `/admin/registrations/{id}/reopen` (POST) |
 | **Tutup Akses Reopen Lebih Awal** | `DENIED` | `DENIED` | `ALLOWED` | `ALLOWED` | Route `/admin/registration-reopen-windows/{id}/close` (POST) |
 | **Pencarian & Filter Pendaftar** | `DENIED` | `DENIED` | `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Belum ada controller/view pencarian di admin |
-| **Verifikasi Berkas Digital** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `verify_documents` ada di seeder, UI belum ada |
+| **Verifikasi Berkas Digital** | `DENIED` | `NOT APPLICABLE`| `ALLOWED` | `ALLOWED` | `/admin/document-verification`, middleware `can:verify_documents`, status/history/audit |
 | **Ekspor Laporan (Excel/PDF)** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `export_reports` ada di seeder, UI belum ada |
 | **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_admission_periods` dan `manage_programs` |
 | **Kelola Persyaratan Dokumen** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_document_requirements` |

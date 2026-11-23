@@ -8,7 +8,7 @@ Legenda: **AKTUAL** = endpoint/controller/view ada; **GAP** = permission/konsep 
 | Lihat/cari/detail pendaftar | `view_applicants` | AKTUAL | AKTUAL | `ApplicantManagementController` |
 | Preview/unduh dokumen privat | `view_applicants` | AKTUAL | AKTUAL | ownership registration check |
 | Reopen/close pendaftaran | `reopen_registration` | AKTUAL | AKTUAL | action + audit log |
-| Verifikasi dokumen | `verify_documents` | GAP | AKTUAL secara permission saja | controller/view belum ada |
+| Verifikasi dokumen | `verify_documents` | AKTUAL | AKTUAL | `/admin/document-verification`, private preview, status & history; migration Phase 5A |
 | Ekspor laporan | `export_reports` | GAP | AKTUAL secara permission saja | format/retention belum diputuskan |
 | Periode penerimaan | `manage_admission_periods` | GAP | AKTUAL | Phase 4A CRUD, activation, date protection, audit |
 | Program | `manage_programs` | GAP | AKTUAL | Phase 4A CRUD, period relation, activation, audit |
