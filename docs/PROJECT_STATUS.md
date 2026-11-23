@@ -14,6 +14,8 @@
 
 > **Phase 5C / 5C.1 — 23 November 2026:** Audit Viewer read-only `/admin/audit-logs` dan review fixes telah dipush pada stacked branch `feature/ppdb-audit-viewer`. Action filter lintas sumber telah diverifikasi; actor Applicant dianonimkan sebagai `Pendaftar`. Focused suite 5 passed/45 assertions dan full suite 317 passed/11 skipped/1.451 assertions. PR #2 masih OPEN; merge, deployment, dan live verification **PENDING**.
 
+> **Hotfix Superadmin Settings & Admin Provisioning — 23 November 2026:** Perbaikan lokal atomik untuk `system_settings` + `system_setting_logs`, cache clear setelah commit, logging diagnosis provisioning tanpa credential, dan regression coverage telah dibuat pada branch `fix/superadmin-settings-admin-provisioning`. Ketersediaan migration production dan live verification belum terbukti.
+
 ---
 
 ## 1. STATUS FASE SAAT INI

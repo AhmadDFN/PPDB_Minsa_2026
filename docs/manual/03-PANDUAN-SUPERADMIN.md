@@ -80,6 +80,10 @@ INSERT INTO `admission_periods` (
 
 ## 4. TANGGUNG JAWAB KEAMANAN & ISOLASI KUNCI RAHASIA
 
+### 4.1 Pengaturan Sistem dan Provisioning Admin
+
+Nama institusi dikelola melalui `/admin/pengaturan`. Penyimpanan setting dan riwayat `system_setting_logs` dilakukan dalam satu transaksi; cache nama institusi dibersihkan setelah commit. Pembuatan Admin PPDB melalui `/admin/admin-users/create` bersifat atomik, menghasilkan akun `ADMIN` berstatus `PENDING_ACTIVATION`, role `admin_ppdb`, password acak ter-hash, dan audit `created`. Kegagalan pengiriman undangan tidak menghapus akun yang sudah tersimpan.
+
 Superadmin adalah pemegang tanggung jawab mutlak atas keamanan infrastruktur:
 
 1. **Penggantian Kredensial Bawaan Seeder**:
