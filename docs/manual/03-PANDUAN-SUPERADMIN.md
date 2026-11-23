@@ -4,26 +4,27 @@
 
 Dokumen panduan ini ditujukan bagi **Super Administrator** (`superadmin`), yaitu penanggung jawab teknis tertinggi, koordinator IT madrasah, atau kepala sistem informasi PPDB Minsatama.
 
-> **Status Phase 4B:** Manajemen akun admin dan permission role tersedia pada branch pengembangan; commit, push, deployment, dan live verification tetap mengikuti checkpoint fase.
+> **Status Phase 4B:** Manajemen akun admin dan permission role sudah committed pada riwayat `main`. Deployment dan live verification tetap menunggu bukti operasional pemilik proyek.
 
 ---
 
 ## 1. DEFINISI & KEDUDUKAN PERAN SUPERADMIN
 
-Peran `superadmin` adalah peran tingkat tertinggi (*root/highest privilege*) pada tabel `roles` Spatie Laravel Permission yang memiliki **seluruh 10 izin (*permissions*) administratif**:
+Peran `superadmin` adalah peran tingkat tertinggi (*root/highest privilege*) pada tabel `roles` Spatie Laravel Permission yang memiliki **seluruh 11 izin (*permissions*) administratif**:
 
 | No | Nama Izin (*Permission Name*) | Lingkup Otoritas | Ketersediaan Antarmuka Web |
 |:---:|---|---|:---:|
 | 1 | `view_dashboard` | Mengakses dasbor administrator | **TERSEDIA** (`/admin/dashboard`) |
 | 2 | `view_applicants` | Melihat daftar pendaftaran terkirim | **TERSEDIA** (`/admin/registrations`) |
 | 3 | `reopen_registration` | Membuka & menutup akses edit ulang pendaftaran | **TERSEDIA** (`/admin/registrations/.../reopen`) |
-| 4 | `verify_documents` | Memvalidasi berkas dokumen pendaftar | *Belum ada UI (Manual Loket)* |
+| 4 | `verify_documents` | Memvalidasi berkas dokumen pendaftar | **TERSEDIA** (`/admin/document-verification`) |
 | 5 | `export_reports` | Mengekspor rekapitulasi redacted CSV dari pendaftaran `SUBMITTED` | `/admin/reports` dan `/admin/reports/export` |
 | 6 | `manage_admission_periods` | Menambah/mengubah periode tahun ajaran PPDB | **TERSEDIA** (`/admin/admission-periods`) |
 | 7 | `manage_programs` | Menambah/mengubah jalur program (Reguler/Unggulan) | **TERSEDIA** (`/admin/programs`) |
 | 8 | `manage_document_requirements` | Mengatur daftar berkas persyaratan wajib | **TERSEDIA** (`/admin/document-requirements`) |
 | 9 | `manage_admin_users` | Membuat dan mengelola akun Admin PPDB | **TERSEDIA** (`/admin/admin-users`) |
-| 10 | `view_activity_logs` | Memantau seluruh rekaman audit sistem | *Belum ada UI (Via DB Log)* |
+| 10 | `manage_system_settings` | Mengelola branding/nama institusi | **TERSEDIA** (`/admin/pengaturan`) |
+| 11 | `view_activity_logs` | Memantau seluruh rekaman audit sistem | *Belum ada UI (Via DB Log)* |
 
 ---
 

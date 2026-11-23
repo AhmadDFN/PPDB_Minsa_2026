@@ -64,7 +64,7 @@ Keterangan Status:
 | **Pencarian & Filter Pendaftar** | `DENIED` | `DENIED` | `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Belum ada controller/view pencarian di admin |
 | **Verifikasi Berkas Digital** | `DENIED` | `NOT APPLICABLE`| `ALLOWED` | `ALLOWED` | `/admin/document-verification`, middleware `can:verify_documents`, status/history/audit |
 | **Laporan & Redacted CSV** | `DENIED` | `NOT APPLICABLE`| `ALLOWED` | `ALLOWED` | `/admin/reports`, middleware `can:export_reports`, streaming CSV + audit |
-| **Ekspor Laporan (Excel/PDF)** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `export_reports` ada di seeder, UI belum ada |
+| **Ekspor Laporan XLSX/PDF** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Di luar Phase 5B; CSV redacted tersedia pada `/admin/reports` |
 | **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_admission_periods` dan `manage_programs` |
 | **Kelola Persyaratan Dokumen** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_document_requirements` |
 | **Kelola Akun Admin Lain** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `IMPLEMENTED` | Superadmin-only `/admin/admin-users`, lifecycle dan audit |

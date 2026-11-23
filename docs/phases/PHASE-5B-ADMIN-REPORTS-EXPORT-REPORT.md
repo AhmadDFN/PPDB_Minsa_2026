@@ -5,7 +5,7 @@
 | Gate | Status |
 |---|---|
 | IMPLEMENTED | Complete on `feature/ppdb-admin-reports-export` |
-| AUTOMATED TESTED | Phase 5B.1 focused suite: 7 passed, 29 assertions; full suite: 312 passed, 11 skipped, 1.405 assertions |
+| AUTOMATED TESTED | Phase 5B.1 focused suite: 7 passed, 30 assertions; full suite: 312 passed, 11 skipped, 1.406 assertions |
 | COMMITTED | `35f6813` implementation, `471bdf9` documentation, `1465c58` hardening, plus documentation synchronization commits |
 | PUSHED | `origin/feature/ppdb-admin-reports-export` verified after final documentation push |
 | DEPLOYED | Not performed by Codex |
@@ -21,7 +21,7 @@ The CSV contains only registration number, applicant name, academic year, admiss
 
 ## Authorization, rate limiting, and audit
 
-Both routes are protected by existing `auth`, `active`, `admin`, and `can:export_reports` middleware. The Form Request also authorizes the permission. Exports are limited to 10 requests per user per 10 minutes and return a safe 429 with `Retry-After`. Every accepted export request writes `admin_report_export_requested` to the existing configuration audit table with actor ID, format, normalized filter IDs/status/dates, and row count only. If audit recording fails, the stream is not sent. Rate limiting is evaluated before constructing or counting the report query; regression coverage verifies that limited requests do not query `registrations` and that streaming does not issue per-row relationship queries.
+Both routes are protected by existing `auth`, `active`, `admin`, and `can:export_reports` middleware. The Form Request also authorizes the permission. Exports are limited to 10 requests per user per 10 minutes and return a safe 429 with `Retry-After`. Every accepted export request writes `admin_report_export_requested` to the existing configuration audit table with actor ID, format, normalized filter IDs/status/dates, and row count only. If audit recording fails, the stream is not sent. Rate-limit quota is consumed immediately after the pre-check and before constructing/counting the report query or writing audit data; regression coverage verifies that limited requests do not query `registrations`, failed audit attempts consume quota, and streaming does not issue per-row relationship queries.
 
 Phase 5B.1 hardening is committed as `1465c58` and pushed; PR #1 contains the fixes and the final documentation state.
 
