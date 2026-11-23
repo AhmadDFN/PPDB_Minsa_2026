@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
+use App\Http\Controllers\Admin\AdminAuditLogController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminReportController;
 use App\Http\Controllers\Admin\AdminUserController;
@@ -136,6 +137,10 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/', [AdminReportController::class, 'index'])->name('index');
         Route::get('/export', [AdminReportController::class, 'export'])->name('export');
     });
+
+    Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])
+        ->middleware('can:view_activity_logs')
+        ->name('audit-logs.index');
 
     Route::middleware('can:verify_documents')->prefix('document-verification')->name('document-verification.')->group(function () {
         Route::get('/', [DocumentVerificationController::class, 'index'])->name('index');
