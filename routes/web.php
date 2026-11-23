@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdmissionPeriodController;
 use App\Http\Controllers\Admin\ApplicantManagementController;
 use App\Http\Controllers\Admin\DocumentRequirementController;
+use App\Http\Controllers\Admin\DocumentVerificationController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -128,6 +129,15 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/pendaftar/{registration}', [ApplicantManagementController::class, 'show'])->name('applicants.show');
         Route::get('/pendaftar/{registration}/dokumen/{document}/preview', [ApplicantManagementController::class, 'previewDocument'])->name('applicants.documents.preview');
         Route::get('/pendaftar/{registration}/dokumen/{document}/download', [ApplicantManagementController::class, 'downloadDocument'])->name('applicants.documents.download');
+    });
+
+    Route::middleware('can:verify_documents')->prefix('document-verification')->name('document-verification.')->group(function () {
+        Route::get('/', [DocumentVerificationController::class, 'index'])->name('index');
+        Route::get('/{registration}/documents/{document}/preview', [DocumentVerificationController::class, 'preview'])->name('preview');
+        Route::post('/{registration}/documents/{document}/approve', [DocumentVerificationController::class, 'approve'])->name('approve');
+        Route::post('/{registration}/documents/{document}/reject', [DocumentVerificationController::class, 'reject'])->name('reject');
+        Route::post('/{registration}/documents/{document}/revision', [DocumentVerificationController::class, 'revision'])->name('revision');
+        Route::get('/{registration}/documents/{document}/history', [DocumentVerificationController::class, 'history'])->name('history');
     });
 
     Route::middleware('can:manage_system_settings')->group(function () {

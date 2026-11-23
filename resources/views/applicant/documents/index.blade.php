@@ -86,7 +86,10 @@
                             </div>
 
                             @if ($document)
-                                <span class="inline-flex shrink-0 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">Sudah Diunggah</span>
+                                @php($verificationStatus = $document->verification_status)
+                                <span class="inline-flex shrink-0 px-2.5 py-1 rounded-full text-xs font-bold {{ $verificationStatus?->value === 'APPROVED' ? 'bg-green-100 text-green-800' : ($verificationStatus?->value === 'REVISION_REQUIRED' || $verificationStatus?->value === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800') }}">
+                                    {{ $verificationStatus?->label() ?? 'Menunggu Verifikasi' }}
+                                </span>
                             @else
                                 <span class="inline-flex shrink-0 px-2.5 py-1 rounded-full text-xs font-bold {{ $requirement->is_required ? 'bg-amber-100 text-amber-800' : 'bg-neutral-100 text-neutral-600' }}">
                                     {{ $requirement->is_required ? 'Belum Diunggah' : 'Belum Ada' }}
@@ -101,6 +104,11 @@
                                     {{ number_format($document->file_size_bytes / 1024, 1) }} KB
                                     &bull; Diunggah {{ $document->uploaded_at?->format('d-m-Y H:i') }}
                                 </p>
+                                @if ($document->verification_reason)
+                                    <p class="mt-2 text-xs text-red-700 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                                        Catatan verifikator: {{ $document->verification_reason }}
+                                    </p>
+                                @endif
                                 <div class="flex flex-wrap gap-3 mt-3">
                                     <a href="{{ route('applicant.documents.preview', $document->id) }}" target="_blank" rel="noopener" class="text-xs font-semibold text-primary-700 hover:underline">Pratinjau</a>
                                     <a href="{{ route('applicant.documents.download', $document->id) }}" class="text-xs font-semibold text-primary-700 hover:underline">Unduh</a>
