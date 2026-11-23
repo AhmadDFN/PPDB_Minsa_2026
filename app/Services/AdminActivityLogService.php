@@ -151,7 +151,10 @@ class AdminActivityLogService
                 ->join('registrations', 'registrations.id', '=', 'logs.registration_id')
                 ->leftJoin('users', 'users.id', '=', 'logs.user_id')
                 ->selectRaw("'registration' AS source, logs.id AS event_id, logs.created_at AS occurred_at, logs.user_id AS actor_id, CASE WHEN users.account_type = 'admin' THEN users.name WHEN users.account_type = 'applicant' THEN 'Pendaftar' ELSE NULL END AS actor_display, CASE WHEN users.account_type = 'admin' THEN 'administrator' WHEN users.account_type = 'applicant' THEN 'applicant' ELSE 'unknown' END AS actor_type, logs.action, 'registration' AS subject_type, logs.registration_id AS subject_id, registrations.registration_number AS registration_number, NULL AS from_status, NULL AS to_status");
-            $queries[] = $this->applyFilters($query, $filters, 'logs.created_at', 'logs.action', 'logs.user_id', ['registrations.registration_number', 'users.name']);
+            $queries[] = $this->applyFilters($query, $filters, 'logs.created_at', 'logs.action', 'logs.user_id', [
+                'registrations.registration_number',
+                DB::raw("CASE WHEN users.account_type = 'admin' THEN users.name ELSE NULL END"),
+            ]);
         }
 
         if ($queries === []) {
@@ -166,7 +169,7 @@ class AdminActivityLogService
         return $union;
     }
 
-    /** @param array<string, mixed> $filters @param array<int, string> $searchColumns */
+    /** @param array<string, mixed> $filters @param array<int, mixed> $searchColumns */
     private function applyFilters(Builder $query, array $filters, string $dateColumn, ?string $actionColumn, string $actorColumn, array $searchColumns): Builder
     {
         if (! empty($filters['date_from'])) {
