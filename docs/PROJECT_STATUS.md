@@ -12,6 +12,8 @@
 
 > **Phase 5B / 5B.1 — 23 November 2026:** Laporan admin dan redacted CSV export diimplementasikan pada branch `feature/ppdb-admin-reports-export`. Hardening commit `1465c58` menghapus risiko N+1 pada streaming dan memastikan rate limiter berjalan sebelum query berat. Branch final telah pushed dan diverifikasi; merge, deployment, dan live verification masih **PENDING**.
 
+> **Phase 5C — 23 November 2026:** Audit Viewer read-only `/admin/audit-logs` diimplementasikan pada stacked branch `feature/ppdb-audit-viewer` dari Phase 5B. Empat sumber audit dinormalisasi, event verifikasi dideduplikasi, dan metadata sensitif direduksi. Automated test, commit, push, merge, deployment, dan live verification berstatus **PENDING** sesuai gate rilis.
+
 ---
 
 ## 1. STATUS FASE SAAT INI

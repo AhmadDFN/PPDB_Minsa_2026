@@ -68,7 +68,7 @@ Keterangan Status:
 | **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_admission_periods` dan `manage_programs` |
 | **Kelola Persyaratan Dokumen** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_document_requirements` |
 | **Kelola Akun Admin Lain** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `IMPLEMENTED` | Superadmin-only `/admin/admin-users`, lifecycle dan audit |
-| **Lihat Log Audit Sistem** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `view_activity_logs` ada, UI belum ada |
+| **Lihat Log Audit Sistem** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Read-only `/admin/audit-logs`, `auth, active, admin, can:view_activity_logs`, source health dan redaction |
 
 ---
 

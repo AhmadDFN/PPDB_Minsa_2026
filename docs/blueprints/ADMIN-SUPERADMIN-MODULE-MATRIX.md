@@ -17,6 +17,6 @@ Legenda: **AKTUAL** = endpoint/controller/view ada; **GAP** = permission/konsep 
 Phase 4A.2 integrity controls apply to all three configuration modules: mutations and audit entries are atomic, admission-period activation is protected by a database-level single-active invariant, historical date edits are normalized, and program-specific requirements must reference an active period/program pivot.
 | Akun admin | `manage_admin_users` | DENIED | AKTUAL | Phase 4B controller/UI, lifecycle, reset, audit |
 | Pengaturan branding | `manage_system_settings` | DENIED | AKTUAL | `/admin/pengaturan` |
-| Audit activity | `view_activity_logs` | DENIED | GAP | viewer/filter belum ada |
+| Audit activity | `view_activity_logs` | DENIED | AKTUAL | read-only `/admin/audit-logs`, filter, pagination, source health, deduplication |
 
 Applicant tetap terisolasi dari seluruh modul admin. Permission yang ada di seeder bukan bukti endpoint sudah tersedia.

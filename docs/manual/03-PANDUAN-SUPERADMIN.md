@@ -24,7 +24,7 @@ Peran `superadmin` adalah peran tingkat tertinggi (*root/highest privilege*) pad
 | 8 | `manage_document_requirements` | Mengatur daftar berkas persyaratan wajib | **TERSEDIA** (`/admin/document-requirements`) |
 | 9 | `manage_admin_users` | Membuat dan mengelola akun Admin PPDB | **TERSEDIA** (`/admin/admin-users`) |
 | 10 | `manage_system_settings` | Mengelola branding/nama institusi | **TERSEDIA** (`/admin/pengaturan`) |
-| 11 | `view_activity_logs` | Memantau seluruh rekaman audit sistem | *Belum ada UI (Via DB Log)* |
+| 11 | `view_activity_logs` | Memantau rekaman audit sistem yang telah dinormalisasi | **TERSEDIA** (`/admin/audit-logs`) |
 
 ---
 

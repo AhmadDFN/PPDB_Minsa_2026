@@ -38,6 +38,15 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - [x] Push hardening ke `origin/feature/ppdb-admin-reports-export` dan verifikasi remote.
 - [ ] Merge PR #1, deployment, migration (tidak diperlukan), dan live acceptance test.
 
+## Phase 5C — Audit Viewer & Activity Monitoring
+
+- [x] Viewer read-only `/admin/audit-logs` dengan middleware `view_activity_logs`.
+- [x] Timeline lintas admin configuration, system settings, document verification, dan registration activity.
+- [x] Deduplikasi event verifikasi dokumen dan redaction metadata sensitif.
+- [x] Filter GET tervalidasi, pagination global 25 baris, source health, dan summary cards berbasis query aktual.
+- [x] Automated authorization, integration, privacy, source health, pagination, dan bounded-query tests.
+- [ ] Commit/push branch, PR review/merge, deployment, dan live verification.
+
 ---
 
 ## 1. TUGAS SELESAI (COMPLETED TASKS)
