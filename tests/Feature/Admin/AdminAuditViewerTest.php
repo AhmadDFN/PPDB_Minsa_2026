@@ -80,6 +80,33 @@ class AdminAuditViewerTest extends TestCase
         $response->assertOk()->assertSee('Sebagian sumber audit belum tersedia')->assertSee('2026_11_20_080004_create_system_settings_tables.php')->assertSee('PPDB-FILTER-001');
     }
 
+    public function test_normalized_action_filters_match_settings_and_document_history(): void
+    {
+        $admin = $this->admin('superadmin', 'Filter Admin');
+        $registration = $this->registration('PPDB-FILTER-ACTION');
+        $document = RegistrationDocument::factory()->create(['registration_id' => $registration->id]);
+        SystemSettingLog::create(['user_id' => $admin->id, 'setting_key' => 'institution_display_name', 'old_value' => 'old', 'new_value' => 'new']);
+        RegistrationDocumentVerification::create(['registration_document_id' => $document->id, 'actor_id' => $admin->id, 'from_status' => 'PENDING', 'to_status' => 'APPROVED', 'reason' => 'approved']);
+
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'system_settings', 'action' => 'setting_updated']))->assertOk()->assertSee('Pengaturan sistem diperbarui');
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'document_verification', 'action' => 'verification_APPROVED']))->assertOk()->assertSee('Dokumen disetujui')->assertDontSee('Status dokumen: PENDING → REJECTED');
+        $this->actingAs($admin)->get(route('admin.audit-logs.index'))->assertSeeHtml('value="setting_updated"')->assertSeeHtml('value="verification_APPROVED"');
+    }
+
+    public function test_registration_actor_identity_is_classified_and_anonymized(): void
+    {
+        $admin = $this->admin('superadmin', 'Named Administrator');
+        $registration = $this->registration('PPDB-ACTOR-001');
+        $applicant = $registration->applicant->user;
+        $applicant->update(['name' => 'APPLICANT_PRIVATE_NAME_MARKER']);
+        RegistrationLog::create(['registration_id' => $registration->id, 'user_id' => $applicant->id, 'action' => 'submitted', 'created_at' => now()->subMinute()]);
+        RegistrationLog::create(['registration_id' => $registration->id, 'user_id' => $admin->id, 'action' => 'reopen_window_opened', 'created_at' => now()]);
+        RegistrationLog::create(['registration_id' => $registration->id, 'user_id' => null, 'action' => 'pdf_generated', 'created_at' => now()->subMinutes(2)]);
+
+        $response = $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'registration']));
+        $response->assertOk()->assertSee('Pendaftar')->assertSee('Named Administrator')->assertSee('Akses edit ulang dibuka')->assertSee('Aktor tidak tersedia')->assertDontSee('APPLICANT_PRIVATE_NAME_MARKER');
+    }
+
     private function admin(string $role, string $name = 'Superadmin Audit'): User
     {
         $user = User::factory()->admin()->create(['name' => $name]);

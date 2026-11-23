@@ -123,7 +123,11 @@ class AdminActivityLogService
             $query = DB::table('system_setting_logs AS logs')
                 ->leftJoin('users', 'users.id', '=', 'logs.user_id')
                 ->selectRaw("'system_settings' AS source, logs.id AS event_id, logs.created_at AS occurred_at, logs.user_id AS actor_id, users.name AS actor_display, 'administrator' AS actor_type, 'setting_updated' AS action, 'system_setting' AS subject_type, logs.id AS subject_id, NULL AS registration_number, NULL AS from_status, NULL AS to_status");
-            $queries[] = $this->applyFilters($query, $filters, 'logs.created_at', 'logs.setting_key', 'logs.user_id', ['logs.setting_key', 'users.name']);
+            $systemFilters = $filters;
+            if (! empty($systemFilters['action']) && $systemFilters['action'] !== 'setting_updated') {
+                $query->whereRaw('1 = 0');
+            }
+            $queries[] = $this->applyFilters($query, $systemFilters, 'logs.created_at', null, 'logs.user_id', ['logs.setting_key', 'users.name']);
         }
 
         if ($health['document_verification']['available'] && (! isset($filters['source']) || $filters['source'] === null || $filters['source'] === 'document_verification')) {
@@ -132,14 +136,20 @@ class AdminActivityLogService
                 ->join('registrations', 'registrations.id', '=', 'documents.registration_id')
                 ->leftJoin('users', 'users.id', '=', 'logs.actor_id')
                 ->selectRaw("'document_verification' AS source, logs.id AS event_id, logs.created_at AS occurred_at, logs.actor_id AS actor_id, users.name AS actor_display, 'administrator' AS actor_type, CONCAT('verification_', logs.to_status) AS action, 'registration_document' AS subject_type, logs.registration_document_id AS subject_id, registrations.registration_number AS registration_number, logs.from_status AS from_status, logs.to_status AS to_status");
-            $queries[] = $this->applyFilters($query, $filters, 'logs.created_at', 'logs.to_status', 'logs.actor_id', ['registrations.registration_number', 'users.name']);
+            $documentFilters = $filters;
+            if (! empty($documentFilters['action'])) {
+                $documentFilters['action'] = str_starts_with($documentFilters['action'], 'verification_')
+                    ? substr($documentFilters['action'], strlen('verification_'))
+                    : '__no_matching_action__';
+            }
+            $queries[] = $this->applyFilters($query, $documentFilters, 'logs.created_at', 'logs.to_status', 'logs.actor_id', ['registrations.registration_number', 'users.name']);
         }
 
         if ($health['registration']['available'] && (! isset($filters['source']) || $filters['source'] === null || $filters['source'] === 'registration')) {
             $query = DB::table('registration_logs AS logs')
                 ->join('registrations', 'registrations.id', '=', 'logs.registration_id')
                 ->leftJoin('users', 'users.id', '=', 'logs.user_id')
-                ->selectRaw("'registration' AS source, logs.id AS event_id, logs.created_at AS occurred_at, logs.user_id AS actor_id, users.name AS actor_display, 'administrator' AS actor_type, logs.action, 'registration' AS subject_type, logs.registration_id AS subject_id, registrations.registration_number AS registration_number, NULL AS from_status, NULL AS to_status");
+                ->selectRaw("'registration' AS source, logs.id AS event_id, logs.created_at AS occurred_at, logs.user_id AS actor_id, CASE WHEN users.account_type = 'admin' THEN users.name WHEN users.account_type = 'applicant' THEN 'Pendaftar' ELSE NULL END AS actor_display, CASE WHEN users.account_type = 'admin' THEN 'administrator' WHEN users.account_type = 'applicant' THEN 'applicant' ELSE 'unknown' END AS actor_type, logs.action, 'registration' AS subject_type, logs.registration_id AS subject_id, registrations.registration_number AS registration_number, NULL AS from_status, NULL AS to_status");
             $queries[] = $this->applyFilters($query, $filters, 'logs.created_at', 'logs.action', 'logs.user_id', ['registrations.registration_number', 'users.name']);
         }
 
@@ -156,7 +166,7 @@ class AdminActivityLogService
     }
 
     /** @param array<string, mixed> $filters @param array<int, string> $searchColumns */
-    private function applyFilters(Builder $query, array $filters, string $dateColumn, string $actionColumn, string $actorColumn, array $searchColumns): Builder
+    private function applyFilters(Builder $query, array $filters, string $dateColumn, ?string $actionColumn, string $actorColumn, array $searchColumns): Builder
     {
         if (! empty($filters['date_from'])) {
             $query->where($dateColumn, '>=', $filters['date_from'].' 00:00:00');
@@ -164,7 +174,7 @@ class AdminActivityLogService
         if (! empty($filters['date_to'])) {
             $query->where($dateColumn, '<=', $filters['date_to'].' 23:59:59');
         }
-        if (! empty($filters['action'])) {
+        if ($actionColumn !== null && ! empty($filters['action'])) {
             $query->where($actionColumn, $filters['action']);
         }
         if (! empty($filters['actor_id'])) {
