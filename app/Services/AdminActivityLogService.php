@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\AccountType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
@@ -96,7 +97,7 @@ class AdminActivityLogService
     /** @return array<int, object> */
     public function actors(): array
     {
-        return DB::table('users')->where('account_type', 'ADMIN')->orderBy('name')->get(['id', 'name'])->all();
+        return DB::table('users')->where('account_type', AccountType::ADMIN->value)->orderBy('name')->get(['id', 'name'])->all();
     }
 
     /** @param array<string, mixed> $filters */

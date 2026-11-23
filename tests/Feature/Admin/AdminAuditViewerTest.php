@@ -87,10 +87,24 @@ class AdminAuditViewerTest extends TestCase
         $document = RegistrationDocument::factory()->create(['registration_id' => $registration->id]);
         SystemSettingLog::create(['user_id' => $admin->id, 'setting_key' => 'institution_display_name', 'old_value' => 'old', 'new_value' => 'new']);
         RegistrationDocumentVerification::create(['registration_document_id' => $document->id, 'actor_id' => $admin->id, 'from_status' => 'PENDING', 'to_status' => 'APPROVED', 'reason' => 'approved']);
+        RegistrationLog::create(['registration_id' => $registration->id, 'user_id' => $admin->id, 'action' => 'updated_after_submission']);
 
         $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'system_settings', 'action' => 'setting_updated']))->assertOk()->assertSee('Pengaturan sistem diperbarui');
         $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'document_verification', 'action' => 'verification_APPROVED']))->assertOk()->assertSee('Dokumen disetujui')->assertDontSee('Status dokumen: PENDING → REJECTED');
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'registration', 'action' => 'updated_after_submission']))->assertOk()->assertSee('Aktivitas pendaftaran');
         $this->actingAs($admin)->get(route('admin.audit-logs.index'))->assertSeeHtml('value="setting_updated"')->assertSeeHtml('value="verification_APPROVED"');
+        $this->actingAs($admin)->get(route('admin.audit-logs.index'))->assertSeeHtml('value="updated_after_submission"');
+    }
+
+    public function test_actor_dropdown_contains_administrators_only(): void
+    {
+        $admin = $this->admin('superadmin', 'Dropdown Administrator');
+        $applicant = User::factory()->applicant()->create(['name' => 'Dropdown Applicant Private Marker']);
+
+        $response = $this->actingAs($admin)->get(route('admin.audit-logs.index'));
+        $response->assertOk()->assertSee('Dropdown Administrator')->assertDontSee('Dropdown Applicant Private Marker');
+        $this->assertStringContainsString('name="actor_id"', $response->getContent());
+        $this->assertDatabaseHas('users', ['id' => $applicant->id, 'account_type' => 'applicant']);
     }
 
     public function test_registration_actor_identity_is_classified_and_anonymized(): void
