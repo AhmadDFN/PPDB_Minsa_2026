@@ -5,8 +5,8 @@
 | Status | Hasil |
 |---|---|
 | IMPLEMENTED | Viewer Superadmin read-only `/admin/audit-logs` dan service timeline terpusat selesai di branch `feature/ppdb-audit-viewer`. |
-| AUTOMATED TESTED | `AdminAuditViewerTest`: 6 passed, 56 assertions; full suite: 318 passed, 11 skipped, 1.462 assertions. Quality gates PASS. |
-| COMMITTED | Viewer `d51a6e6`, initial docs `5c6b311`, review fixes `f201ca1`, review docs `64a4139`, 5C.2 implementation `6305429`, and 5C.3 implementation `1aaf680`. |
+| AUTOMATED TESTED | `AdminAuditViewerTest`: 8 passed, 67 assertions; full suite: 320 passed, 11 skipped, 1.473 assertions. Quality gates PASS. |
+| COMMITTED | Viewer `d51a6e6`, initial docs `5c6b311`, review fixes `f201ca1`, review docs `64a4139`, 5C.2 implementation `6305429`, 5C.3 implementation `1aaf680`, and 5C.4 implementation `61e420d`. |
 | PUSHED | Verified on `origin/feature/ppdb-audit-viewer` with `git ls-remote` after the final 5C.3 push. |
 | DEPLOYED | Tidak dilakukan. |
 | LIVE VERIFIED | Tidak dilakukan. |
@@ -28,6 +28,8 @@ Filter GET tervalidasi mencakup tanggal, source allowlist, action allowlist, act
 Review fixes memverifikasi bahwa action filter memakai normalized action (`setting_updated` dan `verification_*`) pada semua sumber. Registration activity menggunakan `users.account_type`: administrator menampilkan nama admin, applicant ditampilkan sebagai `Pendaftar`, dan actor hilang sebagai `Aktor tidak tersedia`; nama applicant tidak pernah dikirim ke Blade.
 
 Phase 5C.2/5C.3 juga memverifikasi dropdown aktor hanya mengambil akun dengan nilai enum `admin`, Applicant tidak ditampilkan, dan action `updated_after_submission` serta `updated_draft` diterima Form Request serta dapat difilter.
+
+Phase 5C.4 membatasi pencarian registration activity ke nomor registrasi dan nama administrator saja. Validasi `actor_id` juga hanya menerima user dengan `account_type=admin`; Applicant ID ditolak melalui Form Request.
 
 Retention, penghapusan, arsip, scheduler, alert threshold, dan export audit belum diputuskan dan tidak diubah pada fase ini.
 
