@@ -376,9 +376,9 @@ class RegistrationSimplificationAndGeneratedPasswordTest extends TestCase
         $this->assertStringContainsString($nik, $message);
         $this->assertStringContainsString($password, $message);
         $this->assertStringContainsString($registrationNumber, $message);
-        $this->assertStringContainsString('NIK (Username)', $message);
-        $this->assertStringContainsString('Password', $message);
+        $this->assertStringContainsString('Username', $message);
+        $this->assertStringContainsString('Password sementara', $message);
         $this->assertStringContainsString('Nomor Pendaftaran', $message);
-        $this->assertStringContainsString('Ganti kata sandi bersifat pilihan (opsional)', $message);
+        $this->assertStringContainsString('Anda wajib mengganti password saat pertama kali berhasil login', $message);
     }
 }

@@ -9,6 +9,7 @@ use App\Models\CommunicationSetting;
 use App\Services\Communication\CommunicationAuditService;
 use App\Services\Communication\CommunicationConnectionService;
 use App\Services\Communication\CommunicationCredentialService;
+use App\Services\Communication\CommunicationMessageTemplateService;
 use App\Services\Communication\WhatsAppProviderRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class CommunicationChannelController
         private readonly CommunicationCredentialService $credentials,
         private readonly CommunicationConnectionService $connections,
         private readonly CommunicationAuditService $audit,
+        private readonly CommunicationMessageTemplateService $templates,
     ) {}
 
     public function index(): View
@@ -34,7 +36,45 @@ class CommunicationChannelController
             'providers' => $this->registry->all(),
             'databaseModeEnabled' => (bool) CommunicationSetting::query()->value('database_provider_mode_enabled'),
             'legacyConfigured' => is_string(config('services.fonnte.token')) && config('services.fonnte.token') !== '',
+            'messageTemplates' => $this->templates->all(),
         ]);
+    }
+
+    public function updateMessageTemplates(Request $request): RedirectResponse
+    {
+        $this->authorizeSuperadmin($request);
+
+        $keys = [
+            CommunicationMessageTemplateService::OTP_ACTIVATION,
+            CommunicationMessageTemplateService::OTP_PASSWORD_RESET,
+            CommunicationMessageTemplateService::TEMPORARY_PASSWORD,
+            CommunicationMessageTemplateService::TEMPORARY_PASSWORD_RESEND,
+        ];
+        $rules = [];
+        foreach ($keys as $key) {
+            $rules[$key] = ['required', 'string', 'max:5000'];
+        }
+        $data = $request->validate($rules);
+
+        foreach ($keys as $key) {
+            $allowed = CommunicationMessageTemplateService::allowedPlaceholders($key);
+            preg_match_all('/{{\s*([a-z_]+)\s*}}/', $data[$key], $matches);
+            $unknown = array_diff(array_unique($matches[1]), $allowed);
+            if ($unknown !== []) {
+                return back()->withInput()->with('error', 'Placeholder tidak dikenal pada template '.str_replace('_', ' ', $key).': '.implode(', ', $unknown));
+            }
+        }
+
+        $setting = CommunicationSetting::singleton();
+        $setting->forceFill([
+            'otp_activation_template' => $data[CommunicationMessageTemplateService::OTP_ACTIVATION],
+            'otp_password_reset_template' => $data[CommunicationMessageTemplateService::OTP_PASSWORD_RESET],
+            'temporary_password_template' => $data[CommunicationMessageTemplateService::TEMPORARY_PASSWORD],
+            'temporary_password_resend_template' => $data[CommunicationMessageTemplateService::TEMPORARY_PASSWORD_RESEND],
+        ])->save();
+        $this->audit->record('message_templates_updated', null, $request->user(), ['template_keys' => $keys]);
+
+        return back()->with('success', 'Template pesan WhatsApp berhasil diperbarui.');
     }
 
     public function store(Request $request): RedirectResponse

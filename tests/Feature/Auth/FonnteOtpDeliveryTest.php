@@ -7,6 +7,7 @@ namespace Tests\Feature\Auth;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\OtpPurpose;
+use App\Models\CommunicationSetting;
 use App\Models\User;
 use App\Services\Authentication\Delivery\ArrayOtpDelivery;
 use App\Services\Authentication\Delivery\FonnteOtpDelivery;
@@ -38,6 +39,10 @@ class FonnteOtpDeliveryTest extends TestCase
         Config::set('services.fonnte.country_code', '62');
         Config::set('services.fonnte.connect_timeout', 5);
         Config::set('services.fonnte.timeout', 10);
+        CommunicationSetting::query()->updateOrCreate(
+            ['id' => 1],
+            ['active_channel_id' => null, 'database_provider_mode_enabled' => false],
+        );
     }
 
     public function test_1_activation_otp_sent_successfully_via_fonnte(): void
@@ -69,7 +74,7 @@ class FonnteOtpDeliveryTest extends TestCase
                 && $request->hasHeader('Authorization', 'test-fonnte-secret-token-12345')
                 && $request['target'] === '6281234567890'
                 && str_contains($request['message'], $result['plain_otp'])
-                && str_contains($request['message'], 'aktivasi akun PPDB');
+                && str_contains($request['message'], 'aktivasi akun Anda');
         });
     }
 
@@ -98,7 +103,7 @@ class FonnteOtpDeliveryTest extends TestCase
         Http::assertSent(function (Request $request) use ($result) {
             return $request['target'] === '6281234567890'
                 && str_contains($request['message'], $result['plain_otp'])
-                && str_contains($request['message'], 'pemulihan kata sandi');
+                && str_contains($request['message'], 'pemulihan password akun PPDB');
         });
     }
 

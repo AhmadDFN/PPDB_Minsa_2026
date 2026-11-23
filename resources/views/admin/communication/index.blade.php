@@ -66,5 +66,29 @@
                 <div class="p-8 text-center text-sm text-gray-500">Belum ada channel database. Pengiriman legacy tetap berjalan sampai channel diaktifkan.</div>
             @endforelse
         </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 shadow-xs p-6">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-base font-bold text-gray-900">Template Isi Chat WhatsApp</h2>
+                    <p class="mt-1 text-xs text-gray-500">Hanya Superadmin yang dapat mengubah template. Placeholder harus menggunakan format <code>@{{ placeholder }}</code>.</p>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('admin.communication.message-templates.update') }}" class="mt-5 space-y-5">
+                @csrf @method('PUT')
+                @php($templateFields = [
+                    'otp_activation' => 'OTP Aktivasi Akun',
+                    'otp_password_reset' => 'OTP Pemulihan Password',
+                    'temporary_password' => 'Password Sementara Setelah Aktivasi',
+                    'temporary_password_resend' => 'Kirim Ulang Password Sementara',
+                ])
+                @foreach ($templateFields as $key => $label)
+                    <label class="block text-xs font-semibold text-gray-700">{{ $label }}
+                        <textarea name="{{ $key }}" rows="12" required class="mt-1 w-full rounded-lg border-gray-300 text-sm font-mono leading-relaxed">{{ old($key, $messageTemplates[$key] ?? '') }}</textarea>
+                    </label>
+                @endforeach
+                <div class="flex justify-end"><button class="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-700">Simpan Template Chat</button></div>
+            </form>
+        </div>
     </div>
 </x-layouts.admin>

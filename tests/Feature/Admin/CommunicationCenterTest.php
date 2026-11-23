@@ -10,6 +10,7 @@ use App\Models\CommunicationSetting;
 use App\Models\User;
 use App\Services\Communication\CommunicationChannelService;
 use App\Services\Communication\CommunicationCredentialService;
+use App\Services\Communication\CommunicationMessageTemplateService;
 use App\Services\Communication\Providers\FonnteProvider;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,6 +46,29 @@ class CommunicationCenterTest extends TestCase
         $this->actingAs($admin)->post(route('admin.communication.channels.store'), [
             'provider_code' => 'fonnte', 'channel_name' => 'Blocked', 'device_token' => 'not-allowed-token',
         ])->assertForbidden();
+    }
+
+    public function test_superadmin_can_update_message_templates_and_unknown_placeholders_are_rejected(): void
+    {
+        $admin = $this->admin('superadmin');
+        $templates = CommunicationMessageTemplateService::defaults();
+        $templates[CommunicationMessageTemplateService::OTP_ACTIVATION] = 'Halo {{applicant_name}}, kode {{otp}} dari {{institution_name}}.';
+
+        $this->actingAs($admin)->put(route('admin.communication.message-templates.update'), $templates)
+            ->assertRedirect()->assertSessionHas('success');
+
+        $this->assertSame($templates[CommunicationMessageTemplateService::OTP_ACTIVATION], CommunicationSetting::singleton()->otp_activation_template);
+
+        $templates[CommunicationMessageTemplateService::OTP_ACTIVATION] = 'Kode {{unknown_value}}';
+        $this->actingAs($admin)->put(route('admin.communication.message-templates.update'), $templates)
+            ->assertRedirect()->assertSessionHas('error');
+    }
+
+    public function test_admin_ppdb_cannot_update_message_templates(): void
+    {
+        $this->actingAs($this->admin('admin_ppdb'))
+            ->put(route('admin.communication.message-templates.update'), CommunicationMessageTemplateService::defaults())
+            ->assertForbidden();
     }
 
     public function test_store_validates_device_and_encrypts_credential(): void

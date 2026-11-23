@@ -9,6 +9,7 @@ use App\Enums\OtpPurpose;
 use App\Models\SystemSetting;
 use App\Models\User;
 use App\Services\Communication\CommunicationChannelService;
+use App\Services\Communication\CommunicationMessageTemplateService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -179,8 +180,7 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
             return false;
         }
 
-        $nik = $user->getDecryptedNik() ?? '—';
-        $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $nik, $isResend);
+        $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $user->getMaskedNik(), $isResend);
 
         $databaseChannel = app(CommunicationChannelService::class);
         if ($databaseChannel->databaseModeEnabled()) {
@@ -320,7 +320,11 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
         $brandName = SystemSetting::getInstitutionName();
 
         if ($purpose === OtpPurpose::PASSWORD_RESET->value || $purpose === 'password_reset') {
-            return "{$brandName}\n\nKode OTP untuk pemulihan kata sandi akun Anda:\n\n{$otp}\n\nKode berlaku selama 5 menit.\nJangan berikan kode ini kepada siapa pun.\n\nTerima kasih.";
+            return app(CommunicationMessageTemplateService::class)->render(CommunicationMessageTemplateService::OTP_PASSWORD_RESET, [
+                'institution_name' => $brandName,
+                'otp' => $otp,
+                'otp_validity_minutes' => (string) config('ppdb.otp.expiry_minutes', 5),
+            ]);
         }
 
         $regNumber = '—';
@@ -339,7 +343,14 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
             }
         }
 
-        return "{$brandName}\n\nKode OTP aktivasi akun PPDB Anda:\n\n{$otp}\n\nNomor Pendaftaran: {$regNumber}\nNIK: {$maskedNik}\nNama Lengkap: {$applicantName}\n\nKode berlaku selama 5 menit.\nJangan berikan kode ini kepada siapa pun.\n\nTerima kasih.";
+        return app(CommunicationMessageTemplateService::class)->render(CommunicationMessageTemplateService::OTP_ACTIVATION, [
+            'institution_name' => $brandName,
+            'applicant_name' => $applicantName,
+            'otp' => $otp,
+            'registration_number' => $regNumber,
+            'masked_nik' => $maskedNik,
+            'otp_validity_minutes' => (string) config('ppdb.otp.expiry_minutes', 5),
+        ]);
     }
 
     /**
@@ -351,13 +362,14 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
         ?string $nik = null,
         bool $isResend = false
     ): string {
-        $brandName = SystemSetting::getInstitutionName();
-        $nikDisplay = $nik ?: '—';
-
-        if ($isResend) {
-            return "{$brandName}\n\nBerikut data akun baru PPDB Anda:\n\n*NIK (Username)*: {$nikDisplay}\n*Password*: {$temporaryPassword}\n*Nomor Pendaftaran*: {$registrationNumber}\n\nPassword sebelumnya sudah tidak berlaku lagi.\nGunakan NIK sebagai username dan password di atas untuk masuk ke akun pendaftar.\n\nGanti kata sandi bersifat pilihan (opsional) melalui Dashboard.\nJangan berikan password kepada siapa pun.";
-        }
-
-        return "{$brandName}\n\nVerifikasi akun PPDB Anda berhasil.\n\nBerikut data akun untuk masuk ke aplikasi PPDB:\n\n*NIK (Username)*: {$nikDisplay}\n*Password*: {$temporaryPassword}\n*Nomor Pendaftaran*: {$registrationNumber}\n\nGunakan NIK sebagai username dan password di atas untuk masuk ke akun pendaftar.\n\nGanti kata sandi bersifat pilihan (opsional) melalui Dashboard.\nJangan berikan password kepada siapa pun.";
+        return app(CommunicationMessageTemplateService::class)->render(
+            $isResend ? CommunicationMessageTemplateService::TEMPORARY_PASSWORD_RESEND : CommunicationMessageTemplateService::TEMPORARY_PASSWORD,
+            [
+                'institution_name' => SystemSetting::getInstitutionName(),
+                'registration_number' => $registrationNumber,
+                'masked_nik' => $nik ?: '—',
+                'temporary_password' => $temporaryPassword,
+            ],
+        );
     }
 }

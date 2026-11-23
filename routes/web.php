@@ -159,6 +159,7 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
 
     Route::prefix('communication')->name('communication.')->group(function () {
         Route::get('/', [CommunicationChannelController::class, 'index'])->name('index');
+        Route::put('/message-templates', [CommunicationChannelController::class, 'updateMessageTemplates'])->name('message-templates.update');
         Route::post('/channels', [CommunicationChannelController::class, 'store'])->name('channels.store');
         Route::patch('/channels/{channel}', [CommunicationChannelController::class, 'update'])->name('channels.update');
         Route::post('/channels/{channel}/validate', [CommunicationChannelController::class, 'validateConnection'])->name('channels.validate');

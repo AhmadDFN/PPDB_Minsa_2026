@@ -25,7 +25,7 @@ OTP activation, OTP recovery, and temporary-password delivery retain the legacy 
 
 ## Validation
 
-- Focused Communication Center tests: **12 passed, 35 assertions**.
+- Focused Communication Center tests: **14 passed, 37 assertions**.
 - Existing Fonnte/authentication regression tests: **50 passed, 217 assertions**.
 - Full suite: **287 passed, 11 skipped, 1,307 assertions**.
 - Pint: passed.
@@ -42,4 +42,11 @@ OTP activation, OTP recovery, and temporary-password delivery retain the legacy 
 
 ## Out of scope
 
-Additional providers, templates, notification rules, message logs, retention policy, arbitrary test-send, broadcasts, Account API device management, and production migration/deployment remain pending roadmap work.
+Additional providers, notification rules, message logs, retention policy, arbitrary test-send, broadcasts, Account API device management, and production migration/deployment remain pending roadmap work.
+
+## Phase 3D — Editable WhatsApp message templates
+
+- Four Superadmin-editable templates are available for activation OTP, password-recovery OTP, initial temporary password, and resent temporary password.
+- Supported placeholders are validated server-side; unknown placeholders are rejected before saving.
+- Templates are stored in the additive `communication_settings` migration and fall back to the approved defaults when unset.
+- Temporary-password messages expose only the masked NIK; the password remains in a separate message as specified by the approved copy.

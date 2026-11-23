@@ -340,6 +340,7 @@ Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
 - [x] Device profile validation dan single active channel manual switching.
 - [x] Legacy `FONNTE_TOKEN` transition tanpa silent fallback setelah database mode diaktifkan.
 - [x] Superadmin-only Provider & Gateway UI dan safe communication audit events.
+- [x] Superadmin-editable OTP and temporary-password WhatsApp templates with placeholder validation.
 - [ ] Additional providers, template/versioning, notification rules, message logs, retention policy, dan controlled test recipients.
 ### Phase 4A — PPDB Configuration Management
 

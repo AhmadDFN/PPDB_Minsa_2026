@@ -14,6 +14,7 @@ Communication Center berada dalam satu Admin Workspace dan hanya dapat dikelola 
 - Jalur legacy `FONNTE_TOKEN` dipertahankan sampai channel database diaktifkan.
 - Setelah database mode aktif, kegagalan tidak fallback diam-diam ke `.env` dan tidak melakukan automatic failover.
 - UI Provider & Gateway, validasi koneksi, aktivasi, deaktivasi, dan pembaruan credential hanya untuk Superadmin.
+- Editor empat template chat WhatsApp (OTP aktivasi, OTP pemulihan, password sementara, dan kirim ulang password) tersedia untuk Superadmin dengan validasi placeholder.
 
 ## Hardening Phase 3B
 
@@ -27,7 +28,7 @@ Communication Center berada dalam satu Admin Workspace dan hanya dapat dikelola 
 ## Belum diimplementasikan
 
 - Provider adapter tambahan.
-- Template editor dan versioning.
+- Template versioning dan histori perubahan template.
 - Notification rules.
 - Message log viewer dan retention policy.
 - Arbitrary test-send, broadcast, atau manajemen perangkat Account API.
