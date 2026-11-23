@@ -63,6 +63,7 @@ Keterangan Status:
 | **Tutup Akses Reopen Lebih Awal** | `DENIED` | `DENIED` | `ALLOWED` | `ALLOWED` | Route `/admin/registration-reopen-windows/{id}/close` (POST) |
 | **Pencarian & Filter Pendaftar** | `DENIED` | `DENIED` | `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Belum ada controller/view pencarian di admin |
 | **Verifikasi Berkas Digital** | `DENIED` | `NOT APPLICABLE`| `ALLOWED` | `ALLOWED` | `/admin/document-verification`, middleware `can:verify_documents`, status/history/audit |
+| **Laporan & Redacted CSV** | `DENIED` | `NOT APPLICABLE`| `ALLOWED` | `ALLOWED` | `/admin/reports`, middleware `can:export_reports`, streaming CSV + audit |
 | **Ekspor Laporan (Excel/PDF)** | `DENIED` | `NOT APPLICABLE`| `NOT IMPLEMENTED` | `NOT IMPLEMENTED` | Permission `export_reports` ada di seeder, UI belum ada |
 | **Kelola Periode & Program Baru** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_admission_periods` dan `manage_programs` |
 | **Kelola Persyaratan Dokumen** | `DENIED` | `NOT APPLICABLE`| `DENIED` | `ALLOWED` | Phase 4A route/controller/UI dengan `manage_document_requirements` |

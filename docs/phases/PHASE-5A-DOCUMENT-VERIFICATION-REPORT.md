@@ -4,10 +4,10 @@
 
 | Gate | Status |
 |---|---|
-| IMPLEMENTED | Selesai lokal pada branch `feature/ppdb-document-verification` |
+| IMPLEMENTED | Complete |
 | AUTOMATED TESTED | Focused Phase 5A: 4 passed, 15 assertions; focused regression: 57 passed, 275 assertions; full suite: 305 passed, 11 skipped, 1,376 assertions |
-| COMMITTED | Pending owner approval |
-| PUSHED | Pending |
+| COMMITTED | `6e7f4d9`, `3b5731a` |
+| PUSHED | `origin/main`, remote SHA `3b5731a04cbae382e3d9af591ef158c24cabc9d5` |
 | DEPLOYED | Pending; tidak ada migration production yang dijalankan |
 | LIVE VERIFIED | Pending; tidak ada live testing oleh Codex |
 
@@ -26,4 +26,4 @@ Route menggunakan middleware `can:verify_documents`; admin tanpa permission mene
 
 ## Remaining gates
 
-Quality gates currently pass: Pint, Vite production build, Composer audit, npm production audit, Blade cache compilation, relative-link scan, and whitespace scan. The full suite requires explicit test-process `APP_NAME=PPDB Minsatama` (without it, the pre-existing FoundationTest falls back to Laravel). After owner approval, commit and push to `main`, apply the additive migration with backup/rollback procedure, then perform controlled live acceptance testing and update this report with commit SHA, deployment time, migration result, and live evidence.
+Quality gates pass: Pint, Vite production build, Composer audit, npm production audit, Blade cache compilation, relative-link scan, and whitespace scan. The full suite uses `APP_NAME=PPDB Minsatama` in `phpunit.xml`. Phase 5A migration remains pending for production and requires a database backup plus rollback plan before execution; live acceptance remains the owner's responsibility.

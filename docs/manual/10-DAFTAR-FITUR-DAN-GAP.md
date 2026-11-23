@@ -4,7 +4,7 @@
 
 Dokumen ini menyajikan analisis komparatif yang transparan antara kebutuhan bisnis ideal dengan implementasi aktual kode sumber pada aplikasi PPDB Minsatama saat ini. Analisis ini memisahkan secara tegas antara fitur yang telah siap pakai (*implemented*), fitur yang berfungsi dengan batasan (*partial/limited*), dan fitur yang belum memiliki antarmuka pengguna (*feature gaps*).
 
-> **Rekonsiliasi 20 November 2026:** gunakan matriks aktual di `docs/blueprints/ADMIN-SUPERADMIN-MODULE-MATRIX.md`; permission seeder tanpa route/controller/view dicatat sebagai GAP.
+> **Rekonsiliasi 23 November 2026:** gunakan matriks aktual di `docs/blueprints/ADMIN-SUPERADMIN-MODULE-MATRIX.md`; permission seeder tanpa route/controller/view dicatat sebagai GAP.
 
 ---
 
@@ -43,7 +43,7 @@ Dokumen ini menyajikan analisis komparatif yang transparan antara kebutuhan bisn
 | 11 | **Dasbor Statistik Admin Riil** | **IMPLEMENTED + AUTOMATED TESTED** | `/admin/dashboard` memakai `AdminDashboardController` dengan metrik periode aktif/global, status draft/submitted, breakdown program, lima submission terbaru, aktivitas, dan empty state. | Belum menjadi pusat analitik/supervisi lengkap; health monitoring dan tren historis masih roadmap. |
 | 12 | **Pencarian & Filter Pendaftar Admin**| **IMPLEMENTED + AUTOMATED TESTED** | `/admin/pendaftar` mendukung pencarian nama, nomor registrasi, NIK melalui HMAC, filter periode/program/status, pagination, dan query string. | Tambahkan verifikasi live dan UX lanjutan bila diperlukan. |
 | 13 | **Pratinjau Berkas Dokumen oleh Admin**| **IMPLEMENTED + AUTOMATED TESTED** | Detail pendaftar menyediakan preview/download privat; controller memeriksa kepemilikan dokumen terhadap registration dan memakai no-store/nosniff. | Verifikasi live lintas role/IDOR tetap pending. |
-| 14 | **Ekspor Rekapitulasi Data (Excel/CSV)**| **FEATURE GAP** | Izin `export_reports` sudah terdaftar di seeder Spatie, namun belum ada tombol atau generator ekspor di web. | Membangun export engine menggunakan Laravel Excel / Maatwebsite atau CSV streaming. |
+| 14 | **Ekspor Rekapitulasi Data (Redacted CSV)**| **IMPLEMENTED + AUTOMATED TESTED** | `/admin/reports` dan streaming `/admin/reports/export` memakai data `SUBMITTED`, filter tervalidasi, minimisasi data, rate limit, audit metadata, dan proteksi formula injection. | Deployment dan live verification masih pending. |
 | 15 | **Manajemen Periode & Program di Web** | **FEATURE GAP** | Izin `manage_admission_periods` ada di Spatie, namun pengaturan periode baru masih dilakukan lewat database/seeder. | Membangun antarmuka CRUD Periode Pendaftaran dan Program Pendidikan untuk Superadmin. |
 | 16 | **Manajemen Akun Admin di Web** | **FEATURE GAP** | Izin `manage_admin_users` ada di Spatie, namun penambahan staf admin baru masih dilakukan via database/Tinker. | Membangun antarmuka pengelolaan akun petugas loket bagi Superadmin. |
 | 17 | **Pengaturan Branding Superadmin** | **IMPLEMENTED + AUTOMATED TESTED** | `/admin/pengaturan` dibatasi `manage_system_settings`, menyimpan nama institusi dan mencatat `system_setting_logs`. | Uji live dan perluasan pengaturan branding masih pending keputusan owner. |

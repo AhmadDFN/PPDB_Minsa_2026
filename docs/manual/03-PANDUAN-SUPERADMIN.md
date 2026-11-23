@@ -18,7 +18,7 @@ Peran `superadmin` adalah peran tingkat tertinggi (*root/highest privilege*) pad
 | 2 | `view_applicants` | Melihat daftar pendaftaran terkirim | **TERSEDIA** (`/admin/registrations`) |
 | 3 | `reopen_registration` | Membuka & menutup akses edit ulang pendaftaran | **TERSEDIA** (`/admin/registrations/.../reopen`) |
 | 4 | `verify_documents` | Memvalidasi berkas dokumen pendaftar | *Belum ada UI (Manual Loket)* |
-| 5 | `export_reports` | Mengekspor rekapitulasi data pendaftar | *Belum ada UI* |
+| 5 | `export_reports` | Mengekspor rekapitulasi redacted CSV dari pendaftaran `SUBMITTED` | `/admin/reports` dan `/admin/reports/export` |
 | 6 | `manage_admission_periods` | Menambah/mengubah periode tahun ajaran PPDB | **TERSEDIA** (`/admin/admission-periods`) |
 | 7 | `manage_programs` | Menambah/mengubah jalur program (Reguler/Unggulan) | **TERSEDIA** (`/admin/programs`) |
 | 8 | `manage_document_requirements` | Mengatur daftar berkas persyaratan wajib | **TERSEDIA** (`/admin/document-requirements`) |

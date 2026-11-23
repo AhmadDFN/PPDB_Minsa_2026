@@ -25,7 +25,16 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - [x] Status `PENDING`, `APPROVED`, `REJECTED`, dan `REVISION_REQUIRED` beserta alasan wajib untuk penolakan/revisi.
 - [x] Riwayat perubahan status, audit actor, transaksi dan row locking.
 - [x] Replacement dokumen mengembalikan status verifikasi ke `PENDING`.
-- [ ] Automated regression lengkap, commit/push, deployment Hostinger, dan live acceptance test.
+- [x] Automated regression lengkap, commit/push ke `origin/main`.
+- [ ] Deployment Hostinger, migration additive, dan live acceptance test oleh pemilik proyek.
+
+## Phase 5B — Laporan Admin & Redacted CSV Export
+
+- [x] Reporting UI `/admin/reports` dengan ringkasan submitted, program, periode, dan status dokumen.
+- [x] Filter periode, program, rentang tanggal submit, dan status verifikasi dengan Form Request.
+- [x] CSV streaming UTF-8 BOM, kolom minimum, WIB, chunk/cursor, dan tanpa file permanen.
+- [x] Data minimization, CSV formula-injection protection, RBAC `export_reports`, rate limit per user, dan audit metadata.
+- [ ] Automated regression, commit, push feature branch, deployment, migration (tidak diperlukan), dan live acceptance test.
 
 ---
 

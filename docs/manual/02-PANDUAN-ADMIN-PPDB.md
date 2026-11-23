@@ -52,6 +52,10 @@ Peran `admin_ppdb` adalah peran operasional kepanitiaan madrasah yang terdaftar 
 
 Menu ini hanya tersedia bagi akun dengan permission `verify_documents` dan hanya memuat pendaftaran berstatus `SUBMITTED`. Admin dapat membuka preview berkas privat, menyetujui, menolak, atau meminta perbaikan. Alasan wajib diisi untuk penolakan dan permintaan perbaikan. Setiap perubahan menyimpan actor, waktu, status sebelumnya, status baru, dan riwayat audit. Penggantian berkas oleh pendaftar mengembalikan status menjadi `PENDING`.
 
+### 2.4 Laporan & Ekspor (`/admin/reports`)
+
+Menu ini hanya tersedia bagi akun dengan permission `export_reports`. Laporan memuat pendaftaran `SUBMITTED` dan menyediakan filter periode, program, tanggal submit, serta status dokumen. Tombol **Unduh CSV** menghasilkan rekap redacted berisi nomor registrasi, nama calon peserta didik, periode/program, waktu submit WIB, dan agregat dokumen. NIK, kontak, alamat, nama file, path privat, token, dan isi dokumen tidak pernah diekspor. Ekspor dibatasi per akun dan dicatat sebagai metadata audit.
+
 ---
 
 ## 3. TATA KELOLA PEMBUKAAN AKSES EDIT ULANG (*ADMIN REOPEN WORKFLOW*)

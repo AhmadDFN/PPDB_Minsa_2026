@@ -8,7 +8,9 @@
 
 > **Rekonsiliasi Admin/Superadmin — 20 November 2026:** Blueprint dan governance dokumentasi tersedia di `docs/blueprints/`. Audit kode aktual menemukan dashboard, applicant management, reopen, dan branding settings telah tersedia; verifikasi dokumen, ekspor, master periode/program/persyaratan, lifecycle akun admin, serta audit viewer belum memiliki UI/controller lengkap. Permission di seeder tidak dihitung sebagai implementasi. Fase blueprint ini tidak mengubah kode, database, `.env`, akun, deployment, commit, atau push.
 
-> **Phase 5A — 23 November 2026:** Fondasi verifikasi dokumen telah diimplementasikan lokal pada branch `feature/ppdb-document-verification`: queue hanya untuk pendaftaran `SUBMITTED`, preview private, status dokumen terpisah, alasan reject/revisi, riwayat dan audit transaksional, serta reset ke `PENDING` saat replacement. Status deployment dan live verification masih **PENDING**.
+> **Phase 5A — 23 November 2026:** Verifikasi dokumen telah committed dan pushed ke `origin/main` pada `6e7f4d9` dan `3b5731a` (305 passed, 11 skipped, 1.376 assertions). Deployment, migration production, dan live verification tetap **PENDING**.
+
+> **Phase 5B — 23 November 2026:** Laporan admin dan redacted CSV export diimplementasikan pada branch `feature/ppdb-admin-reports-export`. Status commit, push, deployment, migration, dan live verification masih **PENDING**.
 
 ---
 
@@ -147,7 +149,7 @@ Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (
 - Kedua role menggunakan layout, header, sidebar, dan dashboard operasional yang sama; perbedaan akses ditentukan oleh Spatie Permission/Gate di server.
 - Superadmin mempertahankan full access melalui role yang sudah ada tanpa akun kedua, impersonation, atau role tambahan.
 - Dashboard menampilkan metrik periode aktif, tren submission tujuh hari, pendaftar terbaru, aktivitas pendaftaran, dan quick actions yang benar-benar tersedia.
-- Route/view/workspace Superadmin terpisah dihapus. Fitur verifikasi dokumen, CRUD periode/program, ekspor, manajemen pengguna, audit viewer, Communication Center, dan infrastructure monitoring tetap GAP sesuai roadmap.
+- Route/view/workspace Superadmin terpisah dihapus. Verifikasi dokumen dan laporan/redacted CSV export telah memiliki endpoint aktual; CRUD periode/program, audit viewer, Communication Center, dan infrastructure monitoring tetap GAP sesuai roadmap.
 
 ## PHASE 4A — PPDB CONFIGURATION MANAGEMENT
 
