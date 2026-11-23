@@ -59,6 +59,15 @@ class AdminReportController
             return response('Batas ekspor tercapai. Silakan coba lagi dalam '.$retryAfter.' detik.', 429, ['Retry-After' => (string) $retryAfter]);
         }
 
+        // Consume the quota before constructing the report query or writing audit data.
+        // hit() is atomic in the configured cache store; a concurrent request that
+        // crosses the limit is rejected before starting expensive report work.
+        if (RateLimiter::hit($rateKey, self::EXPORT_DECAY_SECONDS) > self::EXPORT_MAX_ATTEMPTS) {
+            $retryAfter = RateLimiter::availableIn($rateKey);
+
+            return response('Batas ekspor tercapai. Silakan coba lagi dalam '.$retryAfter.' detik.', 429, ['Retry-After' => (string) $retryAfter]);
+        }
+
         $filters = $this->filtersFor($request);
         try {
             $query = $this->reports->registrations($filters);
@@ -81,7 +90,6 @@ class AdminReportController
             return response('Ekspor tidak dapat diproses karena pencatatan audit gagal.', 500);
         }
 
-        RateLimiter::hit($rateKey, self::EXPORT_DECAY_SECONDS);
         $filename = 'ppdb-laporan-'.CarbonImmutable::now('Asia/Jakarta')->format('Ymd-His').'.csv';
 
         return response()->streamDownload(function () use ($query): void {

@@ -96,6 +96,7 @@ class AdminReportsExportTest extends TestCase
         });
         $response = $this->actingAs($this->admin('admin_ppdb'))->get(route('admin.reports.export'));
         $response->assertStatus(500)->assertSee('pencatatan audit gagal');
+        $this->assertTrue(RateLimiter::tooManyAttempts('admin-report-export:user:'.auth()->id(), 1));
     }
 
     public function test_rate_limit_is_per_user(): void
