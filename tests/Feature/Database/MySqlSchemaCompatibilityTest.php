@@ -13,7 +13,7 @@ use Throwable;
 
 class MySqlSchemaCompatibilityTest extends TestCase
 {
-    private const TEST_DATABASE = 'ppdb_phase6_test';
+    private const TEST_DATABASE = 'ppdb_minsatama_cc_concurrency_test';
 
     protected static bool $mysqlAvailable = false;
 
@@ -27,7 +27,7 @@ class MySqlSchemaCompatibilityTest extends TestCase
         $applicationDatabase = (string) config('database.connections.mysql.database');
         $testUrl = (string) config('database.connections.mysql_test.url');
 
-        $this->assertSame(self::TEST_DATABASE, $database, 'MySQL integration tests must use the dedicated ppdb_phase6_test database.');
+        $this->assertSame(self::TEST_DATABASE, $database, 'MySQL integration tests must use the dedicated ppdb_minsatama_cc_concurrency_test database.');
         $this->assertNotSame($applicationDatabase, $database, 'MySQL integration tests must not use the application database.');
         $this->assertSame('', $testUrl, 'MySQL integration tests must not use a URL that can override the isolated database.');
 

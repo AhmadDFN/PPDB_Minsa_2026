@@ -29,7 +29,7 @@ use Throwable;
 
 class MySqlRegistrationConcurrencyTest extends TestCase
 {
-    private const TEST_DATABASE = 'ppdb_phase6_test';
+    private const TEST_DATABASE = 'ppdb_minsatama_cc_concurrency_test';
 
     /**
      * @var list<int>
@@ -62,7 +62,7 @@ class MySqlRegistrationConcurrencyTest extends TestCase
         $this->assertSame(
             self::TEST_DATABASE,
             $database,
-            'Concurrency tests must use the dedicated ppdb_phase6_test database.',
+            'Concurrency tests must use the dedicated ppdb_minsatama_cc_concurrency_test database.',
         );
         $this->assertNotSame(
             $applicationDatabase,

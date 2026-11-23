@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ApplicantManagementController;
+use App\Http\Controllers\Admin\CommunicationChannelController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
@@ -128,6 +129,15 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
     Route::middleware('can:manage_system_settings')->group(function () {
         Route::get('/pengaturan', [SystemSettingController::class, 'index'])->name('settings.index');
         Route::post('/pengaturan', [SystemSettingController::class, 'update'])->name('settings.update');
+    });
+
+    Route::prefix('communication')->name('communication.')->group(function () {
+        Route::get('/', [CommunicationChannelController::class, 'index'])->name('index');
+        Route::post('/channels', [CommunicationChannelController::class, 'store'])->name('channels.store');
+        Route::patch('/channels/{channel}', [CommunicationChannelController::class, 'update'])->name('channels.update');
+        Route::post('/channels/{channel}/validate', [CommunicationChannelController::class, 'validateConnection'])->name('channels.validate');
+        Route::post('/channels/{channel}/activate', [CommunicationChannelController::class, 'activate'])->name('channels.activate');
+        Route::post('/channels/{channel}/deactivate', [CommunicationChannelController::class, 'deactivate'])->name('channels.deactivate');
     });
 
     Route::middleware('can:reopen_registration')->group(function () {

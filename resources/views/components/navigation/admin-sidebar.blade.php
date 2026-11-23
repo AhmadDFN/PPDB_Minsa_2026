@@ -149,6 +149,18 @@
             </a>
         @endcan
 
+        @can('manage_communication_settings')
+            <a
+                href="{{ route('admin.communication.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.communication.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
+            >
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.communication.*') ? 'text-primary-600' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6m-8 4h10a3 3 0 003-3V7a3 3 0 00-3-3H7a3 3 0 00-3 3v10a3 3 0 003 3z" />
+                </svg>
+                <span>Communication Center</span>
+            </a>
+        @endcan
+
         {{-- Laporan Rekapitulasi (Upcoming) --}}
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"

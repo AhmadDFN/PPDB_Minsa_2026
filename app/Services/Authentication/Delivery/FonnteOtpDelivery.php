@@ -8,6 +8,7 @@ use App\Contracts\OtpDeliveryInterface;
 use App\Enums\OtpPurpose;
 use App\Models\SystemSetting;
 use App\Models\User;
+use App\Services\Communication\CommunicationChannelService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +51,11 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
         }
 
         $message = self::buildMessage($otp, $purpose, $user);
+
+        $databaseChannel = app(CommunicationChannelService::class);
+        if ($databaseChannel->databaseModeEnabled()) {
+            return $databaseChannel->sendMessage($normalizedPhone, $message)->accepted;
+        }
 
         try {
             $client = Http::asForm()
@@ -175,6 +181,11 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
 
         $nik = $user->getDecryptedNik() ?? '—';
         $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $nik, $isResend);
+
+        $databaseChannel = app(CommunicationChannelService::class);
+        if ($databaseChannel->databaseModeEnabled()) {
+            return $databaseChannel->sendMessage($normalizedPhone, $message)->accepted;
+        }
 
         try {
             $client = Http::asForm()

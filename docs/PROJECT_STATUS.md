@@ -146,3 +146,16 @@ Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (
 - Superadmin mempertahankan full access melalui role yang sudah ada tanpa akun kedua, impersonation, atau role tambahan.
 - Dashboard menampilkan metrik periode aktif, tren submission tujuh hari, pendaftar terbaru, aktivitas pendaftaran, dan quick actions yang benar-benar tersedia.
 - Route/view/workspace Superadmin terpisah dihapus. Fitur verifikasi dokumen, CRUD periode/program, ekspor, manajemen pengguna, audit viewer, Communication Center, dan infrastructure monitoring tetap GAP sesuai roadmap.
+
+## 9. PHASE 3 — COMMUNICATION CENTER PROVIDER FOUNDATION
+
+**Status:** IMPLEMENTED LOCALLY — PENDING OWNER REVIEW / COMMIT
+
+- Provider abstraction dan registry provider-neutral tersedia; Fonnte menjadi adapter pertama.
+- Device Token Fonnte divalidasi melalui device profile, credential disimpan terenkripsi, dan metadata sender disimpan tanpa token.
+- Channel provider, credential, global active channel, dan audit log memiliki tabel terpisah melalui migration non-destructive.
+- Hanya satu channel aktif secara global dan pergantian provider dilakukan manual/atomic.
+- Alur OTP dan temporary password mempertahankan legacy `FONNTE_TOKEN` sampai database provider mode diaktifkan secara eksplisit.
+- Setelah database mode aktif, tidak ada silent fallback atau automatic failover.
+- Communication Center hanya tersedia untuk Superadmin melalui `manage_communication_settings`.
+- Template, notification rules, message logs, additional providers, arbitrary test-send, dan Account API device management belum diimplementasikan.

@@ -294,3 +294,12 @@ Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
 - [x] Hapus route, view, dan workspace switcher Superadmin terpisah.
 - [x] Pertahankan full access Superadmin melalui permission server-side tanpa akun atau role tambahan.
 - [ ] Implementasikan modul roadmap berikutnya hanya setelah backend nyata tersedia: Communication Center, CRUD konfigurasi PPDB, user/permission management, reports, audit center, dan system health.
+
+### Phase 3 — Communication Center Provider Foundation
+
+- [x] Provider-neutral contract, registry, resolver, Fonnte adapter, dan fixed endpoint safety.
+- [x] Encrypted Device Token storage terpisah dari metadata channel.
+- [x] Device profile validation dan single active channel manual switching.
+- [x] Legacy `FONNTE_TOKEN` transition tanpa silent fallback setelah database mode diaktifkan.
+- [x] Superadmin-only Provider & Gateway UI dan safe communication audit events.
+- [ ] Additional providers, template/versioning, notification rules, message logs, retention policy, dan controlled test recipients.

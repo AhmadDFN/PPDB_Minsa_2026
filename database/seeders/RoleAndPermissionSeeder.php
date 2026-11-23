@@ -32,6 +32,7 @@ class RoleAndPermissionSeeder extends Seeder
             'manage_document_requirements',
             'manage_admin_users',
             'manage_system_settings',
+            'manage_communication_settings',
             'view_activity_logs',
         ];
 

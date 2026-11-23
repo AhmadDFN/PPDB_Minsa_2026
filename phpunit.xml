@@ -29,7 +29,7 @@
         <env name="DB_TEST_URL" value="" force="true"/>
         <env name="DB_TEST_HOST" value="127.0.0.1" force="true"/>
         <env name="DB_TEST_PORT" value="3306" force="true"/>
-        <env name="DB_TEST_DATABASE" value="ppdb_phase6_test" force="true"/>
+        <env name="DB_TEST_DATABASE" value="ppdb_minsatama_cc_concurrency_test" force="true"/>
         <env name="DB_TEST_SOCKET" value="" force="true"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
