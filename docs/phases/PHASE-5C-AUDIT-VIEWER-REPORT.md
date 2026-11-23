@@ -5,9 +5,9 @@
 | Status | Hasil |
 |---|---|
 | IMPLEMENTED | Viewer Superadmin read-only `/admin/audit-logs` dan service timeline terpusat selesai di branch `feature/ppdb-audit-viewer`. |
-| AUTOMATED TESTED | `AdminAuditViewerTest`: 6 passed, 53 assertions; full suite: 318 passed, 11 skipped, 1.459 assertions. Quality gates PASS. |
-| COMMITTED | Viewer `d51a6e6`, initial docs `5c6b311`, review fixes `f201ca1`, review docs `64a4139`, and 5C.2 implementation `6305429`. |
-| PUSHED | Pending final 5C.2 push; previous remote SHA `64a4139fdfcb94225ec3e21caaca8f141927d16d`. |
+| AUTOMATED TESTED | `AdminAuditViewerTest`: 6 passed, 56 assertions; full suite: 318 passed, 11 skipped, 1.462 assertions. Quality gates PASS. |
+| COMMITTED | Viewer `d51a6e6`, initial docs `5c6b311`, review fixes `f201ca1`, review docs `64a4139`, 5C.2 implementation `6305429`, and 5C.3 implementation `1aaf680`. |
+| PUSHED | Pending final 5C.3 documentation push; previous remote SHA `a48f4e1c4f654bb99913c9c08210b77aafb99580`. |
 | DEPLOYED | Tidak dilakukan. |
 | LIVE VERIFIED | Tidak dilakukan. |
 
@@ -27,7 +27,7 @@ Filter GET tervalidasi mencakup tanggal, source allowlist, action allowlist, act
 
 Review fixes memverifikasi bahwa action filter memakai normalized action (`setting_updated` dan `verification_*`) pada semua sumber. Registration activity menggunakan `users.account_type`: administrator menampilkan nama admin, applicant ditampilkan sebagai `Pendaftar`, dan actor hilang sebagai `Aktor tidak tersedia`; nama applicant tidak pernah dikirim ke Blade.
 
-Phase 5C.2 juga memverifikasi dropdown aktor hanya mengambil akun dengan nilai enum `admin`, Applicant tidak ditampilkan, dan action `updated_after_submission` diterima oleh Form Request serta dapat difilter.
+Phase 5C.2/5C.3 juga memverifikasi dropdown aktor hanya mengambil akun dengan nilai enum `admin`, Applicant tidak ditampilkan, dan action `updated_after_submission` serta `updated_draft` diterima Form Request serta dapat difilter.
 
 Retention, penghapusan, arsip, scheduler, alert threshold, dan export audit belum diputuskan dan tidak diubah pada fase ini.
 
