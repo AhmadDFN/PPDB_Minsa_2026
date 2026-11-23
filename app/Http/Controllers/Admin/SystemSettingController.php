@@ -10,6 +10,7 @@ use App\Models\SystemSettingLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
 class SystemSettingController extends Controller
 {
@@ -46,12 +47,18 @@ class SystemSettingController extends Controller
 
         $sanitizedName = strip_tags(trim($validated['institution_display_name']));
 
-        SystemSetting::set(
-            key: 'institution_display_name',
-            value: $sanitizedName,
-            description: 'Nama institusi dan branding tampilan utama sistem PPDB.',
-            byUser: $request->user()
-        );
+        try {
+            SystemSetting::set(
+                key: 'institution_display_name',
+                value: $sanitizedName,
+                description: 'Nama institusi dan branding tampilan utama sistem PPDB.',
+                byUser: $request->user()
+            );
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return back()->withInput()->with('error', 'Pengaturan belum dapat disimpan. Tidak ada perubahan yang diterapkan.');
+        }
 
         return redirect()->route('admin.settings.index')
             ->with('success', 'Pengaturan nama institusi berhasil diperbarui.');

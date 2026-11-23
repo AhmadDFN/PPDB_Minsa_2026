@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class SystemSetting extends Model
 {
@@ -72,25 +73,29 @@ class SystemSetting extends Model
      */
     public static function set(string $key, ?string $value, ?string $description = null, ?User $byUser = null): static
     {
-        $setting = static::query()->firstOrNew(['key' => $key]);
-        $oldValue = $setting->exists ? $setting->value : null;
+        $setting = DB::transaction(function () use ($key, $value, $description, $byUser): static {
+            $setting = static::query()->lockForUpdate()->firstOrNew(['key' => $key]);
+            $oldValue = $setting->exists ? $setting->value : null;
 
-        $setting->value = $value;
-        if ($description !== null) {
-            $setting->description = $description;
-        }
-        $setting->save();
+            $setting->value = $value;
+            if ($description !== null) {
+                $setting->description = $description;
+            }
+            $setting->save();
 
+            SystemSettingLog::query()->create([
+                'user_id' => $byUser?->id,
+                'setting_key' => $key,
+                'old_value' => $oldValue,
+                'new_value' => $value,
+                'created_at' => now(),
+            ]);
+
+            return $setting;
+        });
+
+        // Clear only after the setting and its audit row have committed.
         Cache::forget(self::CACHE_PREFIX.$key);
-
-        // Record audit log
-        SystemSettingLog::query()->create([
-            'user_id' => $byUser?->id,
-            'setting_key' => $key,
-            'old_value' => $oldValue,
-            'new_value' => $value,
-            'created_at' => now(),
-        ]);
 
         return $setting;
     }
