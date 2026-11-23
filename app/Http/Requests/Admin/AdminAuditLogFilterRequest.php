@@ -36,7 +36,7 @@ class AdminAuditLogFilterRequest extends FormRequest
             'action' => ['nullable', 'string', 'max:50', Rule::in([
                 'created', 'updated', 'status_changed', 'required_status_changed', 'permissions_updated',
                 'admin_report_export_requested', 'verification_PENDING', 'verification_APPROVED', 'verification_REJECTED', 'verification_REVISION_REQUIRED',
-                'submitted', 'updated_after_submission', 'reopen_window_opened', 'reopen_window_closed', 'pdf_generated', 'pdf_generation_failed', 'setting_updated',
+                'submitted', 'updated_after_submission', 'updated_draft', 'reopen_window_opened', 'reopen_window_closed', 'pdf_generated', 'pdf_generation_failed', 'setting_updated',
                 'password_reset_requested', 'password_reset_completed', 'password_reset_notification_dispatch_failed', 'invitation_requested', 'invitation_notification_dispatch_failed',
             ])],
             'actor_id' => ['nullable', 'integer', 'exists:users,id'],
