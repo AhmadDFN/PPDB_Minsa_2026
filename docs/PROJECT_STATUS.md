@@ -2,11 +2,17 @@
 ## Sumber Kebenaran Tunggal Progres Pengembangan Sistem
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
-**Terakhir Diperbarui**: 20 November 2026
+**Terakhir Diperbarui**: 23 November 2026
 **Dokumentasi Versi**: 1.6.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
 > **Rekonsiliasi Admin/Superadmin — 20 November 2026:** Blueprint dan governance dokumentasi tersedia di `docs/blueprints/`. Audit kode aktual menemukan dashboard, applicant management, reopen, dan branding settings telah tersedia; verifikasi dokumen, ekspor, master periode/program/persyaratan, lifecycle akun admin, serta audit viewer belum memiliki UI/controller lengkap. Permission di seeder tidak dihitung sebagai implementasi. Fase blueprint ini tidak mengubah kode, database, `.env`, akun, deployment, commit, atau push.
+
+> **Phase 5A — 23 November 2026:** Verifikasi dokumen telah committed dan pushed ke `origin/main` pada `6e7f4d9` dan `3b5731a` (305 passed, 11 skipped, 1.376 assertions). Deployment, migration production, dan live verification tetap **PENDING**.
+
+> **Phase 5B / 5B.1 — 23 November 2026:** Laporan admin dan redacted CSV export diimplementasikan pada branch `feature/ppdb-admin-reports-export`. Hardening commit `1465c58` menghapus risiko N+1 pada streaming dan memastikan rate limiter berjalan sebelum query berat. Branch final telah pushed dan diverifikasi; merge, deployment, dan live verification masih **PENDING**.
+
+> **Phase 5C / 5C.1 — 23 November 2026:** Audit Viewer read-only `/admin/audit-logs` dan review fixes telah dipush pada stacked branch `feature/ppdb-audit-viewer`. Action filter lintas sumber telah diverifikasi; actor Applicant dianonimkan sebagai `Pendaftar`. Focused suite 5 passed/45 assertions dan full suite 317 passed/11 skipped/1.451 assertions. PR #2 masih OPEN; merge, deployment, dan live verification **PENDING**.
 
 ---
 
@@ -159,3 +165,24 @@ Hotfix 10.5.1 selesai secara penuh. Akar penyebab HTTP 500 berhasil dibuktikan (
 - Setelah database mode aktif, tidak ada silent fallback atau automatic failover.
 - Communication Center hanya tersedia untuk Superadmin melalui `manage_communication_settings`.
 - Template, notification rules, message logs, additional providers, arbitrary test-send, dan Account API device management belum diimplementasikan.
+## PHASE 4A — PPDB CONFIGURATION MANAGEMENT
+
+- Phase 4A.2 hardening adds transactional audit consistency, a database-enforced single-active-period marker, normalized historical-date protection, and validation of program/period scope for document requirements. SQLite tests cover the invariant; MySQL/MariaDB runtime concurrency validation remains pending.
+
+**Status:** IMPLEMENTED LOCALLY — PENDING OWNER REVIEW
+
+- Admission Period, Program, dan Document Requirements management tersedia dalam satu Admin Workspace.
+- Perubahan master data dilindungi permission server-side dan dicatat pada audit konfigurasi.
+- Tidak ada physical delete route untuk menjaga historical registration dan dokumen existing.
+- Verifikasi live, deployment, dan migration production masih pending.
+
+## PHASE 4B — ADMIN USER & ROLE/PERMISSION MANAGEMENT
+
+**Status:** IMPLEMENTED LOCALLY — AUTOMATED TESTED — COMMIT/PUSH/DEPLOY/LIVE VERIFIED PENDING
+
+- Admin account lifecycle tersedia untuk Superadmin melalui server-side permission `manage_admin_users`.
+- Applicant accounts tidak muncul pada listing administrator.
+- Role `superadmin` dilindungi; permission `admin_ppdb` dibatasi allowlist dan diaudit.
+- Password reset menggunakan password broker existing dan notification fake pada test.
+- Admin invitation/password setup menggunakan dedicated named routes, broker token expiry/throttle, one-time completion, dan transisi pending-to-active; delivery email production belum diverifikasi.
+- Password reset throttling menggunakan API `sendResetLink()` broker dan dispatch failure dicatat secara aman tanpa token atau URL.

@@ -65,7 +65,7 @@
                 <div class="flex items-center gap-3">
                     <div class="hidden sm:flex flex-col text-right">
                         <span class="text-xs font-semibold text-gray-800">{{ auth()->user()?->name ?? 'Administrator' }}</span>
-                        <span class="text-[11px] text-gray-500">{{ auth()->user()?->hasRole('superadmin') ? 'Superadmin' : 'Admin PPDB' }} &bull; {{ auth()->user()?->email ?? 'admin@minsatama.sch.id' }}</span>
+                        <span class="text-[11px] text-gray-500">{{ auth()->user()?->hasRole('superadmin') ? 'Superadmin' : 'Admin PPDB' }}</span>
                     </div>
                     <div class="w-8 h-8 rounded-full bg-primary-100 text-primary-800 flex items-center justify-center font-semibold text-xs border border-primary-200">
                         {{ substr(auth()->user()?->name ?? 'A', 0, 1) }}

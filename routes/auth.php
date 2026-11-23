@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\AdminPasswordController;
 use App\Http\Controllers\Auth\ApplicantActivationController;
 use App\Http\Controllers\Auth\ApplicantLoginController;
 use App\Http\Controllers\Auth\ApplicantPasswordResetController;
@@ -40,6 +41,8 @@ Route::middleware('guest')->group(function () {
     // Masuk / Login Administrator PPDB (Email + Password)
     Route::get('/admin/login', [AdminLoginController::class, 'create'])->name('admin.login');
     Route::post('/admin/login', [AdminLoginController::class, 'store'])->name('admin.login.store');
+    Route::get('/admin/password/reset/{token}', [AdminPasswordController::class, 'show'])->name('admin.password.reset');
+    Route::post('/admin/password/reset', [AdminPasswordController::class, 'reset'])->name('admin.password.reset.store');
 });
 
 // === Authenticated Logout Routes ===

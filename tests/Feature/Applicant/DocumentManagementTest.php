@@ -42,10 +42,11 @@ class DocumentManagementTest extends TestCase
             'nik_encrypted' => NikManager::encrypt($nik),
         ]);
         $applicant = Applicant::factory()->create(['user_id' => $user->id]);
-        $period = AdmissionPeriod::factory()->create([
-            'status' => AdmissionPeriodStatus::ACTIVE,
-            'is_active' => true,
-        ]);
+        $period = AdmissionPeriod::factory()->create(
+            AdmissionPeriod::query()->where('is_active', true)->exists()
+                ? ['status' => AdmissionPeriodStatus::CLOSED, 'is_active' => false]
+                : ['status' => AdmissionPeriodStatus::ACTIVE, 'is_active' => true],
+        );
         $program = Program::factory()->create();
         $periodProgram = AdmissionPeriodProgram::factory()->create([
             'admission_period_id' => $period->id,

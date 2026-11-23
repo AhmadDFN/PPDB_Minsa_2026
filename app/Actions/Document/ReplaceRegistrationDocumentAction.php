@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Document;
 
+use App\Enums\DocumentVerificationStatus;
 use App\Models\DocumentRequirement;
 use App\Models\Registration;
 use App\Models\RegistrationDocument;
@@ -60,6 +61,10 @@ class ReplaceRegistrationDocumentAction
                 $current->update([
                     ...$stored,
                     'uploaded_at' => now(),
+                    'verification_status' => DocumentVerificationStatus::PENDING,
+                    'verification_reason' => null,
+                    'verified_by' => null,
+                    'verified_at' => null,
                 ]);
 
                 return $current->fresh();

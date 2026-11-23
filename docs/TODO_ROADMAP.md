@@ -18,6 +18,37 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - `[ ]` Menunggu (*Pending*)
 - `[!]` Terhambat (*Blocked*)
 
+## Phase 5A — Verifikasi Dokumen & Review Pendaftar
+
+- [x] Queue admin hanya menampilkan pendaftaran `SUBMITTED` dengan filter pencarian/status.
+- [x] Preview berkas menggunakan private storage dan pemeriksaan ownership/IDOR di server.
+- [x] Status `PENDING`, `APPROVED`, `REJECTED`, dan `REVISION_REQUIRED` beserta alasan wajib untuk penolakan/revisi.
+- [x] Riwayat perubahan status, audit actor, transaksi dan row locking.
+- [x] Replacement dokumen mengembalikan status verifikasi ke `PENDING`.
+- [x] Automated regression lengkap, commit/push ke `origin/main`.
+- [ ] Deployment Hostinger, migration additive, dan live acceptance test oleh pemilik proyek.
+
+## Phase 5B — Laporan Admin & Redacted CSV Export
+
+- [x] Reporting UI `/admin/reports` dengan ringkasan submitted, program, periode, dan status dokumen.
+- [x] Filter periode, program, rentang tanggal submit, dan status verifikasi dengan Form Request.
+- [x] CSV streaming UTF-8 BOM, kolom minimum, WIB, chunk/cursor, join-based export tanpa N+1, dan tanpa file permanen.
+- [x] Data minimization, CSV formula-injection protection, RBAC `export_reports`, rate limit per user, dan audit metadata.
+- [x] Automated regression final dan commit hardening `1465c58`.
+- [x] Push hardening ke `origin/feature/ppdb-admin-reports-export` dan verifikasi remote.
+- [ ] Merge PR #1, deployment, migration (tidak diperlukan), dan live acceptance test.
+
+## Phase 5C — Audit Viewer & Activity Monitoring
+
+- [x] Viewer read-only `/admin/audit-logs` dengan middleware `view_activity_logs`.
+- [x] Timeline lintas admin configuration, system settings, document verification, dan registration activity.
+- [x] Deduplikasi event verifikasi dokumen dan redaction metadata sensitif.
+- [x] Filter GET tervalidasi, pagination global 25 baris, source health, dan summary cards berbasis query aktual.
+- [x] Automated authorization, integration, privacy, source health, pagination, dan bounded-query tests.
+- [x] Review fixes: normalized action filter dan anonimisasi actor Applicant diverifikasi dengan regression tests.
+- [x] Commit dan push branch `feature/ppdb-audit-viewer`; PR #2 tetap stacked terhadap Phase 5B.
+- [ ] PR review/merge, deployment, dan live verification.
+
 ---
 
 ## 1. TUGAS SELESAI (COMPLETED TASKS)
@@ -303,3 +334,20 @@ Go-Live produksi tetap menunggu persetujuan eksplisit pemilik proyek.
 - [x] Legacy `FONNTE_TOKEN` transition tanpa silent fallback setelah database mode diaktifkan.
 - [x] Superadmin-only Provider & Gateway UI dan safe communication audit events.
 - [ ] Additional providers, template/versioning, notification rules, message logs, retention policy, dan controlled test recipients.
+### Phase 4A — PPDB Configuration Management
+
+- [x] Phase 4A.2 integrity hardening: atomic configuration/audit transactions, generated-marker uniqueness for one active period, normalized historical date checks, and program-period scope validation.
+- [ ] Run disposable MySQL/MariaDB runtime concurrency validation for the active-period invariant before production deployment.
+- [x] Admission Period Management dengan validasi rentang tanggal, singleton active period, dan audit.
+- [x] Program Management dengan relasi periode dan perlindungan historical registration.
+- [x] Document Requirements Management dengan scope periode/program, status wajib, urutan, dan batas 5120 KB.
+- [ ] Live acceptance, production migration, dan deployment.
+
+### Phase 4B — Admin User & Role/Permission Management
+
+- [x] Admin account listing, create, edit, activate/deactivate, protected self/last-superadmin rules, and password reset request.
+- [x] Protected `superadmin` role view and allowlisted `admin_ppdb` permission management with cache refresh and audit.
+- [x] Server-side authorization and applicant exclusion.
+- [x] Dedicated invitation/password setup/reset flow with broker tokens, resend throttling, and serialized last-Superadmin protection.
+- [x] Password reset broker throttle enforcement and safe invitation/reset dispatch-failure audit events.
+- [ ] Commit, push, production deployment, and live acceptance.

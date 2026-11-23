@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DocumentVerificationStatus;
 use Database\Factories\RegistrationDocumentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,7 @@ class RegistrationDocument extends Model
         'file_size_bytes',
         'file_hash',
         'uploaded_at',
+        'verification_status', 'verification_reason', 'verified_by', 'verified_at',
     ];
 
     protected function casts(): array
@@ -31,6 +33,8 @@ class RegistrationDocument extends Model
         return [
             'file_size_bytes' => 'integer',
             'uploaded_at' => 'datetime',
+            'verification_status' => DocumentVerificationStatus::class,
+            'verified_at' => 'datetime',
         ];
     }
 
@@ -47,5 +51,10 @@ class RegistrationDocument extends Model
     public function revisions(): HasMany
     {
         return $this->hasMany(RegistrationDocumentRevision::class)->orderBy('revision_number', 'desc');
+    }
+
+    public function verificationHistory(): HasMany
+    {
+        return $this->hasMany(RegistrationDocumentVerification::class)->latest('created_at');
     }
 }

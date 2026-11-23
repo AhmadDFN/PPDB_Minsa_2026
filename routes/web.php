@@ -3,10 +3,18 @@
 declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
+use App\Http\Controllers\Admin\AdminAuditLogController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminReportController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdmissionPeriodController;
 use App\Http\Controllers\Admin\ApplicantManagementController;
 use App\Http\Controllers\Admin\CommunicationChannelController;
+use App\Http\Controllers\Admin\DocumentRequirementController;
+use App\Http\Controllers\Admin\DocumentVerificationController;
+use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
+use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
 use App\Http\Controllers\Applicant\DashboardController;
@@ -126,6 +134,24 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/pendaftar/{registration}/dokumen/{document}/download', [ApplicantManagementController::class, 'downloadDocument'])->name('applicants.documents.download');
     });
 
+    Route::middleware('can:export_reports')->prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [AdminReportController::class, 'index'])->name('index');
+        Route::get('/export', [AdminReportController::class, 'export'])->name('export');
+    });
+
+    Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])
+        ->middleware('can:view_activity_logs')
+        ->name('audit-logs.index');
+
+    Route::middleware('can:verify_documents')->prefix('document-verification')->name('document-verification.')->group(function () {
+        Route::get('/', [DocumentVerificationController::class, 'index'])->name('index');
+        Route::get('/{registration}/documents/{document}/preview', [DocumentVerificationController::class, 'preview'])->name('preview');
+        Route::post('/{registration}/documents/{document}/approve', [DocumentVerificationController::class, 'approve'])->name('approve');
+        Route::post('/{registration}/documents/{document}/reject', [DocumentVerificationController::class, 'reject'])->name('reject');
+        Route::post('/{registration}/documents/{document}/revision', [DocumentVerificationController::class, 'revision'])->name('revision');
+        Route::get('/{registration}/documents/{document}/history', [DocumentVerificationController::class, 'history'])->name('history');
+    });
+
     Route::middleware('can:manage_system_settings')->group(function () {
         Route::get('/pengaturan', [SystemSettingController::class, 'index'])->name('settings.index');
         Route::post('/pengaturan', [SystemSettingController::class, 'update'])->name('settings.update');
@@ -145,6 +171,50 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'create'])->name('registrations.reopen.create');
         Route::post('/registrations/{registration}/reopen', [RegistrationReopenController::class, 'store'])->name('registrations.reopen.store');
         Route::post('/registration-reopen-windows/{reopenWindow}/close', [RegistrationReopenController::class, 'close'])->name('registrations.reopen.close');
+    });
+
+    Route::middleware('can:manage_admission_periods')->prefix('admission-periods')->name('admission-periods.')->group(function () {
+        Route::get('/', [AdmissionPeriodController::class, 'index'])->name('index');
+        Route::get('/create', [AdmissionPeriodController::class, 'create'])->name('create');
+        Route::post('/', [AdmissionPeriodController::class, 'store'])->name('store');
+        Route::get('/{admissionPeriod}/edit', [AdmissionPeriodController::class, 'edit'])->name('edit');
+        Route::put('/{admissionPeriod}', [AdmissionPeriodController::class, 'update'])->name('update');
+        Route::post('/{admissionPeriod}/toggle', [AdmissionPeriodController::class, 'toggle'])->name('toggle');
+    });
+
+    Route::middleware('can:manage_programs')->prefix('programs')->name('programs.')->group(function () {
+        Route::get('/', [ProgramController::class, 'index'])->name('index');
+        Route::get('/create', [ProgramController::class, 'create'])->name('create');
+        Route::post('/', [ProgramController::class, 'store'])->name('store');
+        Route::get('/{program}/edit', [ProgramController::class, 'edit'])->name('edit');
+        Route::put('/{program}', [ProgramController::class, 'update'])->name('update');
+        Route::post('/{program}/toggle', [ProgramController::class, 'toggle'])->name('toggle');
+    });
+
+    Route::middleware('can:manage_document_requirements')->prefix('document-requirements')->name('document-requirements.')->group(function () {
+        Route::get('/', [DocumentRequirementController::class, 'index'])->name('index');
+        Route::get('/create', [DocumentRequirementController::class, 'create'])->name('create');
+        Route::post('/', [DocumentRequirementController::class, 'store'])->name('store');
+        Route::get('/{documentRequirement}/edit', [DocumentRequirementController::class, 'edit'])->name('edit');
+        Route::put('/{documentRequirement}', [DocumentRequirementController::class, 'update'])->name('update');
+        Route::post('/{documentRequirement}/toggle', [DocumentRequirementController::class, 'toggle'])->name('toggle');
+    });
+
+    Route::middleware('can:manage_admin_users')->prefix('admin-users')->name('admin-users.')->group(function () {
+        Route::get('/', [AdminUserController::class, 'index'])->name('index');
+        Route::get('/create', [AdminUserController::class, 'create'])->name('create');
+        Route::post('/', [AdminUserController::class, 'store'])->name('store');
+        Route::get('/{user}/edit', [AdminUserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [AdminUserController::class, 'update'])->name('update');
+        Route::post('/{user}/toggle', [AdminUserController::class, 'toggle'])->name('toggle');
+        Route::post('/{user}/password-reset', [AdminUserController::class, 'passwordReset'])->name('password-reset');
+        Route::post('/{user}/invitation-resend', [AdminUserController::class, 'resendInvitation'])->name('invitation-resend');
+    });
+
+    Route::middleware('can:manage_admin_users')->prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RolePermissionController::class, 'index'])->name('index');
+        Route::get('/{role}/permissions/edit', [RolePermissionController::class, 'edit'])->name('permissions.edit');
+        Route::put('/{role}/permissions', [RolePermissionController::class, 'update'])->name('permissions.update');
     });
 
     // Fallback handler for upcoming modules to prevent 404 during navigation testing

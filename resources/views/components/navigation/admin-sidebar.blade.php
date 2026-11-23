@@ -74,6 +74,13 @@
             </div>
         @endcan
 
+        @can('export_reports')
+            <a href="{{ route('admin.reports.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.reports.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+                <span class="w-5 text-center">▤</span><span>Laporan & Ekspor</span>
+            </a>
+        @endcan
+
         @can('reopen_registration')
             <a
                 href="{{ route('admin.registrations.index') }}"
@@ -86,7 +93,12 @@
             </a>
         @endcan
 
-        {{-- Dokumen Persyaratan (Upcoming) --}}
+        @can('verify_documents')
+        <a href="{{ route('admin.document-verification.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.document-verification.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">✓</span><span>Verifikasi Berkas</span>
+        </a>
+        @else
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
             title="Modul Verifikasi Berkas dijadwalkan pada fase berikutnya"
@@ -99,12 +111,35 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcan
 
         <div class="pt-5 px-3 pb-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
             Konfigurasi PPDB
         </div>
 
-        {{-- Periode Penerimaan (Upcoming) --}}
+        @can('manage_admission_periods')
+        <a href="{{ route('admin.admission-periods.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.admission-periods.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">◷</span><span>Periode Pendaftaran</span>
+        </a>
+        @endcan
+
+        @can('manage_programs')
+        <a href="{{ route('admin.programs.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.programs.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">▦</span><span>Program Pendaftaran</span>
+        </a>
+        @endcan
+
+        @can('manage_document_requirements')
+        <a href="{{ route('admin.document-requirements.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.document-requirements.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <span class="w-5 text-center">▤</span><span>Persyaratan Dokumen</span>
+        </a>
+        @endcan
+
+        {{-- Legacy placeholders retained only when permission is absent --}}
+        @cannot('manage_admission_periods')
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
             title="Modul Konfigurasi Periode Pendaftaran dijadwalkan pada fase berikutnya"
@@ -117,7 +152,9 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
 
+        @cannot('manage_programs')
         {{-- Program Pendidikan (Upcoming) --}}
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
@@ -131,10 +168,16 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
 
         <div class="pt-5 px-3 pb-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
             Laporan & Sistem
         </div>
+
+        @can('manage_admin_users')
+            <a href="{{ route('admin.admin-users.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.admin-users.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50' }}"><span class="w-5 text-center">♙</span><span>Akun Administrator</span></a>
+            <a href="{{ route('admin.roles.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.roles.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50' }}"><span class="w-5 text-center">⚿</span><span>Roles & Permissions</span></a>
+        @endcan
 
         @can('manage_system_settings')
             {{-- Pengaturan Sistem (Superadmin) --}}
@@ -158,6 +201,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6m-8 4h10a3 3 0 003-3V7a3 3 0 00-3-3H7a3 3 0 00-3 3v10a3 3 0 003 3z" />
                 </svg>
                 <span>Communication Center</span>
+            </a>
+        @endcan
+
+        @can('view_activity_logs')
+            <a href="{{ route('admin.audit-logs.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.audit-logs.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+                <span class="w-5 text-center">◌</span><span>Audit Aktivitas</span>
             </a>
         @endcan
 

@@ -8,13 +8,15 @@ Legenda: **AKTUAL** = endpoint/controller/view ada; **GAP** = permission/konsep 
 | Lihat/cari/detail pendaftar | `view_applicants` | AKTUAL | AKTUAL | `ApplicantManagementController` |
 | Preview/unduh dokumen privat | `view_applicants` | AKTUAL | AKTUAL | ownership registration check |
 | Reopen/close pendaftaran | `reopen_registration` | AKTUAL | AKTUAL | action + audit log |
-| Verifikasi dokumen | `verify_documents` | GAP | AKTUAL secara permission saja | controller/view belum ada |
-| Ekspor laporan | `export_reports` | GAP | AKTUAL secara permission saja | format/retention belum diputuskan |
-| Periode penerimaan | `manage_admission_periods` | GAP | GAP | master-data UI belum ada |
-| Program | `manage_programs` | GAP | GAP | master-data UI belum ada |
-| Persyaratan dokumen | `manage_document_requirements` | GAP | GAP | master-data UI belum ada |
-| Akun admin | `manage_admin_users` | DENIED | GAP | belum ada controller/UI |
+| Verifikasi dokumen | `verify_documents` | AKTUAL | AKTUAL | `/admin/document-verification`, private preview, status & history; migration Phase 5A |
+| Ekspor laporan | `export_reports` | AKTUAL | AKTUAL | `/admin/reports`, streaming redacted CSV, rate limit, audit metadata |
+| Periode penerimaan | `manage_admission_periods` | GAP | AKTUAL | Phase 4A CRUD, activation, date protection, audit |
+| Program | `manage_programs` | GAP | AKTUAL | Phase 4A CRUD, period relation, activation, audit |
+| Persyaratan dokumen | `manage_document_requirements` | GAP | AKTUAL | Phase 4A CRUD, required toggle, scope, audit |
+
+Phase 4A.2 integrity controls apply to all three configuration modules: mutations and audit entries are atomic, admission-period activation is protected by a database-level single-active invariant, historical date edits are normalized, and program-specific requirements must reference an active period/program pivot.
+| Akun admin | `manage_admin_users` | DENIED | AKTUAL | Phase 4B controller/UI, lifecycle, reset, audit |
 | Pengaturan branding | `manage_system_settings` | DENIED | AKTUAL | `/admin/pengaturan` |
-| Audit activity | `view_activity_logs` | DENIED | GAP | viewer/filter belum ada |
+| Audit activity | `view_activity_logs` | DENIED | AKTUAL | read-only `/admin/audit-logs`, filter, pagination, source health, deduplication |
 
 Applicant tetap terisolasi dari seluruh modul admin. Permission yang ada di seeder bukan bukti endpoint sudah tersedia.

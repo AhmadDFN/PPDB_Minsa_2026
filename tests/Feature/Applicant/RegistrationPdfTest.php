@@ -422,12 +422,11 @@ class RegistrationPdfTest extends TestCase
             'child_order' => $complete ? 1 : null,
             'siblings_count' => $complete ? 0 : null,
         ]);
-        $period = AdmissionPeriod::factory()->create([
-            'start_date' => now()->subDay(),
-            'end_date' => now()->addDay(),
-            'status' => AdmissionPeriodStatus::ACTIVE,
-            'is_active' => true,
-        ]);
+        $period = AdmissionPeriod::factory()->create(
+            AdmissionPeriod::query()->where('is_active', true)->exists()
+                ? ['status' => AdmissionPeriodStatus::CLOSED, 'is_active' => false]
+                : ['start_date' => now()->subDay(), 'end_date' => now()->addDay(), 'status' => AdmissionPeriodStatus::ACTIVE, 'is_active' => true],
+        );
         $program = Program::query()->first() ?? Program::factory()->reguler()->create();
         $periodProgram = AdmissionPeriodProgram::factory()->create([
             'admission_period_id' => $period->id,
