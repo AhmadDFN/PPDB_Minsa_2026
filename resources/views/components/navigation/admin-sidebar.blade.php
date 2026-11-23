@@ -74,6 +74,13 @@
             </div>
         @endcan
 
+        @can('export_reports')
+            <a href="{{ route('admin.reports.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.reports.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+                <span class="w-5 text-center">▤</span><span>Laporan & Ekspor</span>
+            </a>
+        @endcan
+
         @can('reopen_registration')
             <a
                 href="{{ route('admin.registrations.index') }}"

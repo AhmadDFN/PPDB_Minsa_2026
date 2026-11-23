@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\AdmissionPeriodStatus;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminReportController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdmissionPeriodController;
 use App\Http\Controllers\Admin\ApplicantManagementController;
@@ -129,6 +130,11 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/pendaftar/{registration}', [ApplicantManagementController::class, 'show'])->name('applicants.show');
         Route::get('/pendaftar/{registration}/dokumen/{document}/preview', [ApplicantManagementController::class, 'previewDocument'])->name('applicants.documents.preview');
         Route::get('/pendaftar/{registration}/dokumen/{document}/download', [ApplicantManagementController::class, 'downloadDocument'])->name('applicants.documents.download');
+    });
+
+    Route::middleware('can:export_reports')->prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [AdminReportController::class, 'index'])->name('index');
+        Route::get('/export', [AdminReportController::class, 'export'])->name('export');
     });
 
     Route::middleware('can:verify_documents')->prefix('document-verification')->name('document-verification.')->group(function () {

@@ -29,6 +29,11 @@
                         <span>Data Pendaftar</span>
                     </a>
                 @endcan
+                @can('export_reports')
+                    <a href="{{ route('admin.reports.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-primary-200 text-primary-700 hover:bg-primary-50 shadow-xs transition-colors">
+                        <span>Laporan</span>
+                    </a>
+                @endcan
             </div>
         </div>
     </x-slot:header>
