@@ -35,7 +35,8 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - [x] CSV streaming UTF-8 BOM, kolom minimum, WIB, chunk/cursor, join-based export tanpa N+1, dan tanpa file permanen.
 - [x] Data minimization, CSV formula-injection protection, RBAC `export_reports`, rate limit per user, dan audit metadata.
 - [x] Automated regression final dan commit hardening `1465c58`.
-- [ ] Push hardening ke feature branch, deployment, migration (tidak diperlukan), dan live acceptance test.
+- [x] Push hardening ke `origin/feature/ppdb-admin-reports-export` (`d95a91f`).
+- [ ] Merge PR #1, deployment, migration (tidak diperlukan), dan live acceptance test.
 
 ---
 
