@@ -12,6 +12,7 @@ use App\Services\AdminConfigurationAuditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -51,7 +52,10 @@ class AdminUserController
                 $this->audit->record('admin_user', $user->id, 'created', $request->user(), null, $this->snapshot($user));
             });
         } catch (Throwable $e) {
-            report($e);
+            Log::error('Admin account provisioning transaction failed.', [
+                'exception_class' => $e::class,
+                'exception_code' => (string) $e->getCode(),
+            ]);
 
             return back()->withInput()->with('error', 'Akun admin gagal dibuat.');
         }
