@@ -93,10 +93,10 @@ class AdminReportController
                 $submittedAt = $registration->submitted_at?->copy()->setTimezone('Asia/Jakarta')->format('d-m-Y H:i:s').' WIB';
                 fputcsv($output, [
                     $this->csvText($registration->registration_number),
-                    $this->csvText($registration->applicant?->full_name),
-                    $this->csvText($registration->admissionPeriod?->academic_year),
-                    $this->csvText($registration->admissionPeriod?->name),
-                    $this->csvText($registration->admissionPeriodProgram?->program?->name),
+                    $this->csvText($registration->applicant_name),
+                    $this->csvText($registration->academic_year),
+                    $this->csvText($registration->period_name),
+                    $this->csvText($registration->program_name),
                     $this->csvText($submittedAt),
                     $registration->documents_count,
                     $registration->pending_documents_count,

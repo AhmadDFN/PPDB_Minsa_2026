@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Services\AdminConfigurationAuditService;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
@@ -103,7 +104,28 @@ class AdminReportsExportTest extends TestCase
         for ($i = 0; $i < 10; $i++) {
             RateLimiter::hit('admin-report-export:user:'.$admin->id, 600);
         }
-        $this->actingAs($admin)->get(route('admin.reports.export'))->assertStatus(429)->assertHeader('Retry-After');
+        DB::enableQueryLog();
+        $this->actingAs($admin);
+        DB::flushQueryLog();
+        $this->get(route('admin.reports.export'))->assertStatus(429)->assertHeader('Retry-After');
+        $this->assertCount(0, collect(DB::getQueryLog())->filter(fn (array $query): bool => str_contains(strtolower($query['query']), 'registrations')));
+        DB::disableQueryLog();
+    }
+
+    public function test_stream_export_does_not_issue_relationship_query_per_row(): void
+    {
+        $period = AdmissionPeriod::factory()->create();
+        $program = Program::factory()->create();
+        $pivot = AdmissionPeriodProgram::factory()->create(['admission_period_id' => $period->id, 'program_id' => $program->id]);
+        for ($i = 0; $i < 4; $i++) {
+            $registration = $this->registration($period, $pivot, RegistrationStatus::SUBMITTED, 'Applicant '.$i);
+            $this->document($registration, DocumentVerificationStatus::APPROVED);
+        }
+        DB::enableQueryLog();
+        $this->actingAs($this->admin('admin_ppdb'))->get(route('admin.reports.export', ['period_id' => $period->id]))->streamedContent();
+        $relationshipQueries = collect(DB::getQueryLog())->filter(fn (array $query): bool => preg_match('/from\s+["`]?((applicants)|(admission_periods)|(programs))["`]?/i', $query['query']) === 1);
+        $this->assertLessThanOrEqual(1, $relationshipQueries->count());
+        DB::disableQueryLog();
     }
 
     private function admin(string $role): User

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\DocumentVerificationStatus;
+use App\Enums\RegistrationStatus;
 use App\Models\Registration;
 use App\Models\RegistrationDocument;
 use Carbon\CarbonImmutable;
@@ -18,20 +19,20 @@ class AdminReportService
     {
         return $this->applyFilters(
             Registration::query()
-                ->submitted()
+                ->where('registrations.status', RegistrationStatus::SUBMITTED->value)
                 ->select([
                     'registrations.id',
                     'registrations.registration_number',
-                    'registrations.applicant_id',
-                    'registrations.admission_period_id',
-                    'registrations.admission_period_program_id',
                     'registrations.submitted_at',
+                    'applicants.full_name as applicant_name',
+                    'admission_periods.academic_year',
+                    'admission_periods.name as period_name',
+                    'programs.name as program_name',
                 ])
-                ->with([
-                    'applicant:id,full_name',
-                    'admissionPeriod:id,academic_year,name',
-                    'admissionPeriodProgram.program:id,name',
-                ])
+                ->leftJoin('applicants', 'registrations.applicant_id', '=', 'applicants.id')
+                ->leftJoin('admission_periods', 'registrations.admission_period_id', '=', 'admission_periods.id')
+                ->leftJoin('admission_period_programs', 'registrations.admission_period_program_id', '=', 'admission_period_programs.id')
+                ->leftJoin('programs', 'admission_period_programs.program_id', '=', 'programs.id')
                 ->withCount([
                     'documents',
                     'documents as pending_documents_count' => fn (Builder $query) => $query->where('verification_status', DocumentVerificationStatus::PENDING->value),
