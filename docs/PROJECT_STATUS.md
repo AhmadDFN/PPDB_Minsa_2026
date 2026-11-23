@@ -10,7 +10,7 @@
 
 > **Phase 5A — 23 November 2026:** Verifikasi dokumen telah committed dan pushed ke `origin/main` pada `6e7f4d9` dan `3b5731a` (305 passed, 11 skipped, 1.376 assertions). Deployment, migration production, dan live verification tetap **PENDING**.
 
-> **Phase 5B — 23 November 2026:** Laporan admin dan redacted CSV export diimplementasikan pada branch `feature/ppdb-admin-reports-export`. Status commit, push, deployment, migration, dan live verification masih **PENDING**.
+> **Phase 5B / 5B.1 — 23 November 2026:** Laporan admin dan redacted CSV export diimplementasikan pada branch `feature/ppdb-admin-reports-export`. Hardening commit `1465c58` menghapus risiko N+1 pada streaming dan memastikan rate limiter berjalan sebelum query berat. Push, deployment, dan live verification masih **PENDING**.
 
 ---
 

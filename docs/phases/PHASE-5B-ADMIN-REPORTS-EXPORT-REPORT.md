@@ -5,15 +5,15 @@
 | Gate | Status |
 |---|---|
 | IMPLEMENTED | Complete on `feature/ppdb-admin-reports-export` |
-| AUTOMATED TESTED | Focused suite: 6 passed, 26 assertions; full suite pending final release gate |
-| COMMITTED | Pending |
-| PUSHED | Pending; target `origin/feature/ppdb-admin-reports-export` |
+| AUTOMATED TESTED | Phase 5B.1 focused suite: 7 passed, 29 assertions; full suite: 312 passed, 11 skipped, 1.405 assertions |
+| COMMITTED | `35f6813` implementation, `471bdf9` documentation, `1465c58` hardening |
+| PUSHED | Pending Phase 5B.1 hardening push; target `origin/feature/ppdb-admin-reports-export` |
 | DEPLOYED | Not performed by Codex |
 | LIVE VERIFIED | Not performed |
 
 ## Architecture
 
-`AdminReportService` owns one validated registration query used by both the report summary and CSV export. The query is restricted to `SUBMITTED` registrations and supports period, program, submit-date, and document-verification filters. CSV output uses an HTTP streaming response with an Eloquent cursor, UTF-8 BOM, fixed headers, WIB timestamps, and no temporary or permanent export file.
+`AdminReportService` owns one validated registration query used by both the report summary and CSV export. The query is restricted to `SUBMITTED` registrations and supports period, program, submit-date, and document-verification filters. CSV output uses an HTTP streaming response with an Eloquent cursor, UTF-8 BOM, fixed headers, WIB timestamps, and no temporary or permanent export file. Phase 5B.1 removed the cursor/eager-loading N+1 risk by selecting applicant, period, and program labels through joins; document status counts remain SQL aggregates.
 
 ## Data contract and privacy
 
@@ -21,7 +21,9 @@ The CSV contains only registration number, applicant name, academic year, admiss
 
 ## Authorization, rate limiting, and audit
 
-Both routes are protected by existing `auth`, `active`, `admin`, and `can:export_reports` middleware. The Form Request also authorizes the permission. Exports are limited to 10 requests per user per 10 minutes and return a safe 429 with `Retry-After`. Every accepted export request writes `admin_report_export_requested` to the existing configuration audit table with actor ID, format, normalized filter IDs/status/dates, and row count only. If audit recording fails, the stream is not sent.
+Both routes are protected by existing `auth`, `active`, `admin`, and `can:export_reports` middleware. The Form Request also authorizes the permission. Exports are limited to 10 requests per user per 10 minutes and return a safe 429 with `Retry-After`. Every accepted export request writes `admin_report_export_requested` to the existing configuration audit table with actor ID, format, normalized filter IDs/status/dates, and row count only. If audit recording fails, the stream is not sent. Rate limiting is evaluated before constructing or counting the report query; regression coverage verifies that limited requests do not query `registrations` and that streaming does not issue per-row relationship queries.
+
+Phase 5B.1 hardening is committed as `1465c58` and is ready to update PR #1 after this documentation commit.
 
 ## Documentation and operations
 

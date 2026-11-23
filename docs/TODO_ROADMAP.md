@@ -32,9 +32,10 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 
 - [x] Reporting UI `/admin/reports` dengan ringkasan submitted, program, periode, dan status dokumen.
 - [x] Filter periode, program, rentang tanggal submit, dan status verifikasi dengan Form Request.
-- [x] CSV streaming UTF-8 BOM, kolom minimum, WIB, chunk/cursor, dan tanpa file permanen.
+- [x] CSV streaming UTF-8 BOM, kolom minimum, WIB, chunk/cursor, join-based export tanpa N+1, dan tanpa file permanen.
 - [x] Data minimization, CSV formula-injection protection, RBAC `export_reports`, rate limit per user, dan audit metadata.
-- [ ] Automated regression, commit, push feature branch, deployment, migration (tidak diperlukan), dan live acceptance test.
+- [x] Automated regression final dan commit hardening `1465c58`.
+- [ ] Push hardening ke feature branch, deployment, migration (tidak diperlukan), dan live acceptance test.
 
 ---
 
