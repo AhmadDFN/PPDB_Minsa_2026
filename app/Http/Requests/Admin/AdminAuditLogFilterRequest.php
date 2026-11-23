@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\AccountType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -39,7 +40,7 @@ class AdminAuditLogFilterRequest extends FormRequest
                 'submitted', 'updated_after_submission', 'updated_draft', 'reopen_window_opened', 'reopen_window_closed', 'pdf_generated', 'pdf_generation_failed', 'setting_updated',
                 'password_reset_requested', 'password_reset_completed', 'password_reset_notification_dispatch_failed', 'invitation_requested', 'invitation_notification_dispatch_failed',
             ])],
-            'actor_id' => ['nullable', 'integer', 'exists:users,id'],
+            'actor_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where('account_type', AccountType::ADMIN->value)],
             'search' => ['nullable', 'string', 'max:80'],
         ];
     }

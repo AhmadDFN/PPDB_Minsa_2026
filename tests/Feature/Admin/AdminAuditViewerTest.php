@@ -110,6 +110,34 @@ class AdminAuditViewerTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $applicant->id, 'account_type' => 'applicant']);
     }
 
+    public function test_registration_search_excludes_applicant_name_but_keeps_safe_identifiers(): void
+    {
+        $admin = $this->admin('superadmin', 'Searchable Administrator');
+        $registration = $this->registration('PPDB-SEARCH-001');
+        $applicant = $registration->applicant->user;
+        $applicant->update(['name' => 'PRIVATE_APPLICANT_SEARCH_MARKER']);
+        RegistrationLog::create(['registration_id' => $registration->id, 'user_id' => $applicant->id, 'action' => 'submitted']);
+        RegistrationLog::create(['registration_id' => $registration->id, 'user_id' => $admin->id, 'action' => 'updated_draft']);
+
+        $applicantSearch = $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'registration', 'search' => 'PRIVATE_APPLICANT_SEARCH_MARKER']));
+        $applicantSearch->assertOk()->assertSee('Belum ada aktivitas yang cocok');
+        $this->assertSame(1, substr_count($applicantSearch->getContent(), 'PRIVATE_APPLICANT_SEARCH_MARKER'));
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'registration', 'search' => 'PPDB-SEARCH-001']))
+            ->assertOk()->assertSee('Pendaftar');
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['source' => 'registration', 'search' => 'Searchable Administrator']))
+            ->assertOk()->assertSee('Searchable Administrator');
+    }
+
+    public function test_actor_filter_accepts_admin_and_rejects_applicant(): void
+    {
+        $admin = $this->admin('superadmin', 'Actor Filter Administrator');
+        $applicant = User::factory()->applicant()->create();
+
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['actor_id' => $admin->id]))->assertOk();
+        $this->actingAs($admin)->get(route('admin.audit-logs.index', ['actor_id' => $applicant->id]))
+            ->assertRedirect()->assertSessionHasErrors('actor_id');
+    }
+
     public function test_registration_actor_identity_is_classified_and_anonymized(): void
     {
         $admin = $this->admin('superadmin', 'Named Administrator');
