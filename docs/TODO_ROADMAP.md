@@ -18,6 +18,13 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - `[ ]` Menunggu (*Pending*)
 - `[!]` Terhambat (*Blocked*)
 
+## Hotfix — Superadmin Settings & Admin Provisioning
+
+- [x] Update setting dan audit log dibuat atomik; cache dibersihkan setelah commit.
+- [x] Provisioning admin mempertahankan transaksi/role/audit dan menambahkan logging diagnosis tanpa credential.
+- [x] Regression test untuk rollback audit, cache, sanitasi HTML, identity, role, dan password hash.
+- [ ] Verifikasi schema production melalui `migrate:status`/phpMyAdmin, migration additive oleh pemilik, deployment, dan live acceptance.
+
 ## Phase 5A — Verifikasi Dokumen & Review Pendaftar
 
 - [x] Queue admin hanya menampilkan pendaftaran `SUBMITTED` dengan filter pencarian/status.

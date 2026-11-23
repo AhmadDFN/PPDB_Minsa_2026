@@ -10,6 +10,8 @@
 
 > **Phase 5A — 23 November 2026:** Fondasi verifikasi dokumen telah diimplementasikan lokal pada branch `feature/ppdb-document-verification`: queue hanya untuk pendaftaran `SUBMITTED`, preview private, status dokumen terpisah, alasan reject/revisi, riwayat dan audit transaksional, serta reset ke `PENDING` saat replacement. Status deployment dan live verification masih **PENDING**.
 
+> **Hotfix Superadmin Settings & Admin Provisioning — 23 November 2026:** Perbaikan lokal atomik untuk `system_settings` + `system_setting_logs`, cache clear setelah commit, logging diagnosis provisioning tanpa credential, dan regression coverage telah dibuat pada branch `fix/superadmin-settings-admin-provisioning`. Ketersediaan migration production dan live verification belum terbukti.
+
 ---
 
 ## 1. STATUS FASE SAAT INI
