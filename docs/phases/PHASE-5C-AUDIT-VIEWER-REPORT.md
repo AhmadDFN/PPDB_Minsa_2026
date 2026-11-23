@@ -5,8 +5,8 @@
 | Status | Hasil |
 |---|---|
 | IMPLEMENTED | Viewer Superadmin read-only `/admin/audit-logs` dan service timeline terpusat selesai di branch `feature/ppdb-audit-viewer`. |
-| AUTOMATED TESTED | `AdminAuditViewerTest`: 3 passed, 32 assertions; full suite: 315 passed, 11 skipped, 1.438 assertions. Quality gates PASS. |
-| COMMITTED | `d51a6e6` — `feat(admin): add superadmin audit activity viewer`. |
+| AUTOMATED TESTED | `AdminAuditViewerTest`: 5 passed, 45 assertions; full suite: 317 passed, 11 skipped, 1.451 assertions. Quality gates PASS. |
+| COMMITTED | `d51a6e6` viewer + `f201ca1` review fixes. |
 | PUSHED | Pending; target `origin/feature/ppdb-audit-viewer`. |
 | DEPLOYED | Tidak dilakukan. |
 | LIVE VERIFIED | Tidak dilakukan. |
@@ -25,8 +25,10 @@ Viewer hanya memakai `view_activity_logs`, sehingga Admin PPDB dan applicant dit
 
 Filter GET tervalidasi mencakup tanggal, source allowlist, action allowlist, actor ID, dan pencarian aman maksimal 80 karakter. Jika tabel sumber belum tersedia, halaman menampilkan partial-coverage warning beserta migration terkait tanpa menjalankan migration dari HTTP request. Kegagalan koneksi database tidak diperlakukan sebagai empty state.
 
+Review fixes memverifikasi bahwa action filter memakai normalized action (`setting_updated` dan `verification_*`) pada semua sumber. Registration activity menggunakan `users.account_type`: administrator menampilkan nama admin, applicant ditampilkan sebagai `Pendaftar`, dan actor hilang sebagai `Aktor tidak tersedia`; nama applicant tidak pernah dikirim ke Blade.
+
 Retention, penghapusan, arsip, scheduler, alert threshold, dan export audit belum diputuskan dan tidak diubah pada fase ini.
 
 ## Rilis
 
-Phase 5C menggunakan stacked branch terhadap `feature/ppdb-admin-reports-export` karena PR #1 masih OPEN. Tidak ada migration baru, perubahan audit writer, production migration, deployment, merge, atau live acceptance pada fase ini.
+Phase 5C menggunakan stacked branch terhadap `feature/ppdb-admin-reports-export` karena PR #1 masih OPEN. Review fixes dipush ke branch yang sama dan PR #2 tetap digunakan. Tidak ada migration baru, perubahan audit writer, production migration, deployment, merge, atau live acceptance pada fase ini.

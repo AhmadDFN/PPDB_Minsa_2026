@@ -45,7 +45,9 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - [x] Deduplikasi event verifikasi dokumen dan redaction metadata sensitif.
 - [x] Filter GET tervalidasi, pagination global 25 baris, source health, dan summary cards berbasis query aktual.
 - [x] Automated authorization, integration, privacy, source health, pagination, dan bounded-query tests.
-- [ ] Commit/push branch, PR review/merge, deployment, dan live verification.
+- [x] Review fixes: normalized action filter dan anonimisasi actor Applicant diverifikasi dengan regression tests.
+- [x] Commit dan push branch `feature/ppdb-audit-viewer`; PR #2 tetap stacked terhadap Phase 5B.
+- [ ] PR review/merge, deployment, dan live verification.
 
 ---
 
