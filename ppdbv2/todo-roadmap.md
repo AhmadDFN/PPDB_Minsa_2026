@@ -40,12 +40,12 @@ Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan sat
 ---
 
 ## Fase 3: Panel Master Pengaturan Wawancara (Superadmin)
-- [ ] **3.1** Buat CRUD **Master Jadwal / Batch Wawancara** (`/admin/interview-batches`): tambah/edit tanggal, jam mulai-selesai, kuota (default 70), dan rentang nomor urut otomatis.
-- [ ] **3.2** Buat CRUD **Master Tahap & Poin Penilaian** (`/admin/interview-stages`):
+- [x] **3.1** Buat CRUD **Master Jadwal / Batch Wawancara** (`/admin/interview-batches`): tambah/edit tanggal, jam mulai-selesai, kuota (default 70), dan rentang nomor urut otomatis.
+- [x] **3.2** Buat CRUD **Master Tahap & Poin Penilaian** (`/admin/interview-stages`):
   - Ubah judul & deskripsi masing-masing tahap.
   - Tambah, edit, urutkan, atau aktif/nonaktifkan poin penilaian (`interview_criteria`) pada tiap tahap.
-- [ ] **3.3** Tambahkan proteksi: poin penilaian yang sudah memiliki riwayat nilai (`interview_scores`) tidak boleh di-hard-delete (hanya boleh dinonaktifkan / *soft toggle*).
-- [ ] **3.4** Jalankan Feature Test otorisasi (hanya `superadmin` yang dapat mengakses pengaturan master).
+- [x] **3.3** Tambahkan proteksi: poin penilaian yang sudah memiliki riwayat nilai (`interview_scores`) tidak boleh di-hard-delete (hanya boleh dinonaktifkan / *soft toggle*).
+- [x] **3.4** Jalankan Feature Test otorisasi (hanya `superadmin` yang dapat mengakses pengaturan master).
 
 ---
 

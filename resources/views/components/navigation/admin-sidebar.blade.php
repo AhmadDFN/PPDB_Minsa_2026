@@ -138,6 +138,26 @@
         </a>
         @endcan
 
+        @can('interview.manage_master')
+        <div class="pt-5 px-3 pb-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+            Modul Wawancara
+        </div>
+        <a href="{{ route('admin.interview-batches.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.interview-batches.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-5 h-5 {{ request()->routeIs('admin.interview-batches.*') ? 'text-primary-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>Jadwal Wawancara</span>
+        </a>
+        <a href="{{ route('admin.interview-stages.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.interview-stages.*') ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-5 h-5 {{ request()->routeIs('admin.interview-stages.*') ? 'text-primary-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <span>Tahap & Poin Wawancara</span>
+        </a>
+        @endcan
+
         {{-- Legacy placeholders retained only when permission is absent --}}
         @cannot('manage_admission_periods')
         <div
@@ -211,6 +231,7 @@
             </a>
         @endcan
 
+        @cannot('export_reports')
         {{-- Laporan Rekapitulasi (Upcoming) --}}
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
@@ -224,7 +245,9 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
 
+        @cannot('manage_admin_users')
         {{-- Pengguna & Hak Akses (Upcoming) --}}
         <div
             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed select-none"
@@ -239,6 +262,7 @@
             </div>
             <span class="text-[10px] font-semibold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Segera</span>
         </div>
+        @endcannot
     </nav>
 
     {{-- Sidebar Footer: Admin User Info & Logout --}}

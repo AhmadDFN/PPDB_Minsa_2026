@@ -12,6 +12,9 @@ use App\Http\Controllers\Admin\ApplicantManagementController;
 use App\Http\Controllers\Admin\CommunicationChannelController;
 use App\Http\Controllers\Admin\DocumentRequirementController;
 use App\Http\Controllers\Admin\DocumentVerificationController;
+use App\Http\Controllers\Admin\InterviewBatchController;
+use App\Http\Controllers\Admin\InterviewCriterionController;
+use App\Http\Controllers\Admin\InterviewStageController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -217,6 +220,17 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/', [RolePermissionController::class, 'index'])->name('index');
         Route::get('/{role}/permissions/edit', [RolePermissionController::class, 'edit'])->name('permissions.edit');
         Route::put('/{role}/permissions', [RolePermissionController::class, 'update'])->name('permissions.update');
+    });
+
+    // Master Pengaturan Wawancara (Superadmin only)
+    Route::middleware('can:interview.manage_master')->group(function () {
+        Route::resource('interview-batches', InterviewBatchController::class)->except(['show', 'create', 'edit']);
+        Route::get('interview-stages', [InterviewStageController::class, 'index'])->name('interview-stages.index');
+        Route::put('interview-stages/{interviewStage}', [InterviewStageController::class, 'update'])->name('interview-stages.update');
+
+        Route::post('interview-stages/{interviewStage}/criteria', [InterviewCriterionController::class, 'store'])->name('interview-criteria.store');
+        Route::put('interview-criteria/{interviewCriterion}', [InterviewCriterionController::class, 'update'])->name('interview-criteria.update');
+        Route::delete('interview-criteria/{interviewCriterion}', [InterviewCriterionController::class, 'destroy'])->name('interview-criteria.destroy');
     });
 
     // Fallback handler for upcoming modules to prevent 404 during navigation testing

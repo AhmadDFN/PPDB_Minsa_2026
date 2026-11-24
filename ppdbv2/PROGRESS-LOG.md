@@ -12,13 +12,58 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 | Fase 0 | Pre-Flight & Kesehatan Fondasi | Selesai | 100% |
 | Fase 1 | Skema Database, Model & Seeder Role/Akun | Selesai | 100% |
 | Fase 2 | Rombak Penomoran Urut (Opsi B) & WA Fonnte | Selesai | 100% |
-| Fase 3 | Panel Master Pengaturan Wawancara (Superadmin) | Belum Dimulai | 0% |
+| Fase 3 | Panel Master Pengaturan Wawancara (Superadmin) | Selesai | 100% |
 | Fase 4 | Portal Pewawancara (Scan QR & Sequential Gate) | Belum Dimulai | 0% |
 | Fase 5 | Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV | Belum Dimulai | 0% |
 
 ---
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
+
+### [2026-11-24] Eksekusi Fase 3: Panel Master Pengaturan Wawancara (Superadmin) (Task 3.1 - 3.4)
+- **Commit / Branch:** `main`
+- **Ringkasan Perubahan:**
+  - **Task 3.1**: Membuat CRUD Master Jadwal / Batch Wawancara (`/admin/interview-batches`):
+    - Form tambah & edit batch dengan kalkulasi saran nomor urut otomatis dari batch terakhir (default 70 kuota/hari).
+    - Validasi rentang nomor urut dan proteksi anti-overlap antar batch pada periode yang sama.
+    - Proteksi hapus: batch yang sudah memiliki relasi `Registration` ditolak dihapus.
+    - Action `SaveInterviewBatchAction` dengan pencatatan audit log via `AdminConfigurationAuditService`.
+  - **Task 3.2**: Membuat CRUD Master Tahap Wawancara (`/admin/interview-stages`):
+    - Tampilan komprehensif 3 tahap wawancara (`STAGE_1`, `STAGE_2`, `STAGE_3`) pada periode aktif.
+    - Superadmin dapat mengubah judul, deskripsi panduan penguji, dan status aktif.
+    - Kode tahap, nomor urutan, cakupan program, dan role pewawancara dikunci sistem untuk menjaga integritas Sequential Gate.
+  - **Task 3.3**: Pengelolaan Poin Penilaian Wawancara (`interview_criteria`) & Proteksi Penghapusan:
+    - Tambah, edit, dan atur urutan poin penilaian per tahap.
+    - Proteksi Task 3.3: poin penilaian yang sudah memiliki riwayat penilaian (`InterviewScore`) DILARANG di-hard-delete (hanya bisa dinonaktifkan).
+    - Proteksi minimal 1 poin penilaian wajib aktif pada tahap yang berstatus aktif.
+  - **Task 3.4**: Otorisasi & Feature Test:
+    - Proteksi seluruh rute master wawancara menggunakan permission `interview.manage_master` dan `Gate::before` superadmin.
+    - Role lain (`admin_ppdb`, `interviewer_stage_1`, `applicant`, guest) mendapatkan `403 Forbidden` / redirect.
+    - Menambahkan menu navigasi sidebar admin "Jadwal Wawancara" dan "Tahap & Poin Wawancara" khusus superadmin.
+    - Feature test `tests/Feature/Interview/InterviewMasterManagementTest.php` lulus 100% (6 tests, 46 assertions).
+- **File Utama yang Ditambah/Diubah:**
+  - `app/Actions/Interview/SaveInterviewBatchAction.php` (baru)
+  - `app/Http/Controllers/Admin/InterviewBatchController.php` (baru)
+  - `app/Http/Controllers/Admin/InterviewStageController.php` (baru)
+  - `app/Http/Controllers/Admin/InterviewCriterionController.php` (baru)
+  - `app/Http/Requests/Admin/StoreInterviewBatchRequest.php` (baru)
+  - `app/Http/Requests/Admin/UpdateInterviewBatchRequest.php` (baru)
+  - `app/Http/Requests/Admin/UpdateInterviewStageRequest.php` (baru)
+  - `app/Http/Requests/Admin/StoreInterviewCriterionRequest.php` (baru)
+  - `app/Http/Requests/Admin/UpdateInterviewCriterionRequest.php` (baru)
+  - `resources/views/admin/interview-batches/index.blade.php` (baru)
+  - `resources/views/admin/interview-stages/index.blade.php` (baru)
+  - `resources/views/components/navigation/admin-sidebar.blade.php`
+  - `routes/web.php`
+  - `app/Providers/AppServiceProvider.php`
+  - `database/seeders/RoleAndPermissionSeeder.php`
+  - `tests/Feature/Interview/InterviewMasterManagementTest.php` (baru)
+- **Hasil Test Sederhana:**
+  - `php artisan test --filter=InterviewMasterManagementTest` → PASSED (6 tests, 46 assertions)
+  - `php artisan test` → PASSED (369 tests, 354 passed, 0 failed, 1657 assertions, 15 skipped)
+  - `vendor/bin/pint --test` → PASSED
+  - `npm run build` → PASSED
+- **Catatan Tambahan:** Fase 3 100% selesai dan siap dilanjutkan ke Fase 4 (Portal Pewawancara).
 
 ### [2026-11-24] Eksekusi Fase 2: Rombak Penomoran Urut (Opsi B) & Notifikasi WhatsApp (Task 2.1 - 2.6)
 - **Commit / Branch:** `main`

@@ -35,6 +35,7 @@ class RoleAndPermissionSeeder extends Seeder
             'manage_communication_settings',
             'view_activity_logs',
             // Interview module permissions
+            'interview.manage_master',
             'manage_interview_settings',
             'approve_registration_queue',
             'view_interview_recaps',
