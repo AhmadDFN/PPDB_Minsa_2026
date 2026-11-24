@@ -16,15 +16,22 @@ return new class extends Migration
             throw new RuntimeException("Cannot enforce single active admission period: {$activeCount} active records exist.");
         }
 
-        Schema::table('admission_periods', function (Blueprint $table): void {
-            $table->string('active_slot', 10)
-                ->nullable()
-                ->storedAs("CASE WHEN is_active = 1 THEN 'ACTIVE' ELSE NULL END");
-        });
+        if (DB::getDriverName() === 'sqlite') {
+            Schema::table('admission_periods', function (Blueprint $table): void {
+                $table->string('active_slot', 10)->nullable();
+            });
+            DB::statement('CREATE UNIQUE INDEX IF NOT EXISTS admission_periods_active_slot_unique ON admission_periods (is_active) WHERE is_active = 1');
+        } else {
+            Schema::table('admission_periods', function (Blueprint $table): void {
+                $table->string('active_slot', 10)
+                    ->nullable()
+                    ->storedAs("CASE WHEN is_active = 1 THEN 'ACTIVE' ELSE NULL END");
+            });
 
-        Schema::table('admission_periods', function (Blueprint $table): void {
-            $table->unique('active_slot', 'admission_periods_active_slot_unique');
-        });
+            Schema::table('admission_periods', function (Blueprint $table): void {
+                $table->unique('active_slot', 'admission_periods_active_slot_unique');
+            });
+        }
     }
 
     public function down(): void
