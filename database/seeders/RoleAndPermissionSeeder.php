@@ -34,6 +34,14 @@ class RoleAndPermissionSeeder extends Seeder
             'manage_system_settings',
             'manage_communication_settings',
             'view_activity_logs',
+            // Interview module permissions
+            'manage_interview_settings',
+            'approve_registration_queue',
+            'view_interview_recaps',
+            'override_interview_scores',
+            'conduct_interview_stage_1',
+            'conduct_interview_stage_2',
+            'conduct_interview_stage_3',
         ];
 
         foreach ($permissions as $permName) {
@@ -52,6 +60,21 @@ class RoleAndPermissionSeeder extends Seeder
             'export_reports',
             'verify_documents',
             'reopen_registration',
+            'approve_registration_queue',
+            'view_interview_recaps',
+            'override_interview_scores',
         ]);
+
+        // Role 3: interviewer_stage_1 (examiner for stage 1: BTQ/Iqro)
+        $interviewer1 = Role::firstOrCreate(['name' => 'interviewer_stage_1', 'guard_name' => 'web']);
+        $interviewer1->syncPermissions(['conduct_interview_stage_1']);
+
+        // Role 4: interviewer_stage_2 (examiner for stage 2: Calistung)
+        $interviewer2 = Role::firstOrCreate(['name' => 'interviewer_stage_2', 'guard_name' => 'web']);
+        $interviewer2->syncPermissions(['conduct_interview_stage_2']);
+
+        // Role 5: interviewer_stage_3 (examiner for stage 3: Khusus Unggulan)
+        $interviewer3 = Role::firstOrCreate(['name' => 'interviewer_stage_3', 'guard_name' => 'web']);
+        $interviewer3->syncPermissions(['conduct_interview_stage_3']);
     }
 }

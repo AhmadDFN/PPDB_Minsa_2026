@@ -10,7 +10,7 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 | Fase | Nama Fase | Status | Progres |
 |---|---|---|:-:|
 | Fase 0 | Pre-Flight & Kesehatan Fondasi | Selesai | 100% |
-| Fase 1 | Skema Database, Model & Seeder Role/Akun | Belum Dimulai | 0% |
+| Fase 1 | Skema Database, Model & Seeder Role/Akun | Selesai | 100% |
 | Fase 2 | Rombak Penomoran Urut (Opsi B) & WA Fonnte | Belum Dimulai | 0% |
 | Fase 3 | Panel Master Pengaturan Wawancara (Superadmin) | Belum Dimulai | 0% |
 | Fase 4 | Portal Pewawancara (Scan QR & Sequential Gate) | Belum Dimulai | 0% |
@@ -19,6 +19,36 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 ---
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
+
+### [2026-11-24] Eksekusi Fase 1: Skema Database, Model & Seeder Role/Akun (Task 1.1 - 1.6)
+- **Commit / Branch:** `main`
+- **Ringkasan Perubahan:**
+  - Membuat migrasi `2026_11_24_140000_create_interview_modules_tables.php` (tabel: `interview_batches`, `interview_stages`, `interview_criteria`, `interview_sessions`, `interview_scores`).
+  - Membuat migrasi `2026_11_24_140001_add_queue_and_interview_fields_to_registrations.php` (kolom: `queue_sequence`, `verified_at`, `verified_by`, `interview_batch_id`).
+  - Membuat Model Eloquent: `InterviewBatch`, `InterviewStage`, `InterviewCriterion`, `InterviewSession`, `InterviewScore` serta update relasi pada `Registration` dan `AdmissionPeriod`.
+  - Memperbarui `RoleAndPermissionSeeder` dengan permissions modul wawancara dan 3 role pewawancara (`interviewer_stage_1`, `interviewer_stage_2`, `interviewer_stage_3`).
+  - Membuat `InterviewAccountSeeder` (seed 3 admin_ppdb, 3 penguji tahap 1, 3 penguji tahap 2, 3 penguji tahap 3).
+  - Membuat `InterviewMasterSeeder` (seed 3 tahap wawancara dinamis, 9 kriteria nilai default, dan 5 batch kuota 70 anak/hari).
+  - Membuat `InterviewSchemaAndSeederTest` untuk memverifikasi integritas skema dan seeder.
+- **File Utama yang Ditambah/Diubah:**
+  - `database/migrations/2026_11_24_140000_create_interview_modules_tables.php`
+  - `database/migrations/2026_11_24_140001_add_queue_and_interview_fields_to_registrations.php`
+  - `app/Models/InterviewBatch.php`
+  - `app/Models/InterviewStage.php`
+  - `app/Models/InterviewCriterion.php`
+  - `app/Models/InterviewSession.php`
+  - `app/Models/InterviewScore.php`
+  - `app/Models/Registration.php`
+  - `app/Models/AdmissionPeriod.php`
+  - `database/seeders/RoleAndPermissionSeeder.php`
+  - `database/seeders/InterviewAccountSeeder.php`
+  - `database/seeders/InterviewMasterSeeder.php`
+  - `database/seeders/DatabaseSeeder.php`
+  - `tests/Feature/Interview/InterviewSchemaAndSeederTest.php`
+- **Hasil Test Sederhana:**
+  - `php artisan test --filter=InterviewSchemaAndSeederTest` → PASSED (3 tests, 27 assertions)
+  - `php artisan db:seed` → PASSED (seluruh seeder dieksekusi sukses)
+- **Catatan Tambahan:** Siap melangkah ke Fase 2 (Rombak Penomoran Urut Opsi B, Aksi Approve & WhatsApp Fonnte).
 
 ### [2026-11-24] Eksekusi Fase 0: Pre-Flight & Kesehatan Fondasi (Task 0.1, 0.2, 0.3)
 - **Commit / Branch:** `main`

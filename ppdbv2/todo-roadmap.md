@@ -12,16 +12,16 @@ Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan sat
 ---
 
 ## Fase 1: Skema Database, Model & Seeder Role/Akun
-- [ ] **1.1** Buat migration tabel `interview_batches`, `interview_stages`, `interview_criteria`, `interview_sessions`, `interview_scores` (driver-agnostic MySQL & SQLite).
-- [ ] **1.2** Buat migration penambahan kolom pada `registrations`: `queue_sequence`, `verified_at`, `verified_by`, `interview_batch_id` (serta pastikan `registration_number` nullable sebelum verifikasi).
-- [ ] **1.3** Buat Model Eloquent & relasinya: `InterviewBatch`, `InterviewStage`, `InterviewCriterion`, `InterviewSession`, `InterviewScore`, dan update Model `Registration`.
-- [ ] **1.4** Update `RoleAndPermissionSeeder`:
+- [x] **1.1** Buat migration tabel `interview_batches`, `interview_stages`, `interview_criteria`, `interview_sessions`, `interview_scores` (driver-agnostic MySQL & SQLite).
+- [x] **1.2** Buat migration penambahan kolom pada `registrations`: `queue_sequence`, `verified_at`, `verified_by`, `interview_batch_id` (serta pastikan `registration_number` nullable sebelum verifikasi).
+- [x] **1.3** Buat Model Eloquent & relasinya: `InterviewBatch`, `InterviewStage`, `InterviewCriterion`, `InterviewSession`, `InterviewScore`, dan update Model `Registration`.
+- [x] **1.4** Update `RoleAndPermissionSeeder`:
   - Tambahkan role `interviewer_stage_1`, `interviewer_stage_2`, `interviewer_stage_3` beserta permission granularnya.
   - Seed akun default: **1 `superadmin`**, **3 `admin_ppdb`**, **3 `interviewer_stage_1`**, **3 `interviewer_stage_2`**, **3 `interviewer_stage_3`**.
-- [ ] **1.5** Buat `InterviewMasterSeeder`:
+- [x] **1.5** Buat `InterviewMasterSeeder`:
   - Seed default 3 Tahap Wawancara (Tahap 1: BTQ/Iqro' 2 poin, Tahap 2: Calistung 4 poin, Tahap 3: Khusus Unggulan 3 poin).
   - Seed default Batch Jadwal Wawancara (70 nomor/hari).
-- [ ] **1.6** Jalankan test migrasi & seeder (`php artisan migrate:fresh --seed` di lokal + unit test dasar).
+- [x] **1.6** Jalankan test migrasi & seeder (`php artisan migrate:fresh --seed` di lokal + unit test dasar).
 
 ---
 

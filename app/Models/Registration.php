@@ -20,11 +20,15 @@ class Registration extends Model
 
     protected $fillable = [
         'registration_number',
+        'queue_sequence',
         'applicant_id',
         'admission_period_id',
         'admission_period_program_id',
+        'interview_batch_id',
         'status',
         'submitted_at',
+        'verified_at',
+        'verified_by',
         'data_revision',
         'notes',
     ];
@@ -33,7 +37,9 @@ class Registration extends Model
     {
         return [
             'status' => RegistrationStatus::class,
+            'queue_sequence' => 'integer',
             'submitted_at' => 'datetime',
+            'verified_at' => 'datetime',
             'data_revision' => 'integer',
         ];
     }
@@ -88,6 +94,26 @@ class Registration extends Model
     public function latestReopenWindow(): HasOne
     {
         return $this->hasOne(RegistrationReopenWindow::class)->latestOfMany();
+    }
+
+    public function interviewBatch(): BelongsTo
+    {
+        return $this->belongsTo(InterviewBatch::class, 'interview_batch_id');
+    }
+
+    public function verifiedByAdmin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function interviewSessions(): HasMany
+    {
+        return $this->hasMany(InterviewSession::class);
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->verified_at !== null;
     }
 
     public function isDraft(): bool

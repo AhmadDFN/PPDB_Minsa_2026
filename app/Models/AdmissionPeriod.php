@@ -62,6 +62,16 @@ class AdmissionPeriod extends Model
         return $this->hasMany(DocumentRequirement::class);
     }
 
+    public function interviewBatches(): HasMany
+    {
+        return $this->hasMany(InterviewBatch::class);
+    }
+
+    public function interviewStages(): HasMany
+    {
+        return $this->hasMany(InterviewStage::class)->orderBy('stage_order');
+    }
+
     /**
      * Scope for currently active admission period.
      */

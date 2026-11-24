@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             SuperAdminSeeder::class,
             AdmissionPeriodSeeder::class,
+            InterviewAccountSeeder::class,
+            InterviewMasterSeeder::class,
         ]);
     }
 }
