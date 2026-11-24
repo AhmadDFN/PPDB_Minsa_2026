@@ -13,12 +13,57 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 | Fase 1 | Skema Database, Model & Seeder Role/Akun | Selesai | 100% |
 | Fase 2 | Rombak Penomoran Urut (Opsi B) & WA Fonnte | Selesai | 100% |
 | Fase 3 | Panel Master Pengaturan Wawancara (Superadmin) | Selesai | 100% |
-| Fase 4 | Portal Pewawancara (Scan QR & Sequential Gate) | Belum Dimulai | 0% |
+| Fase 4 | Portal Pewawancara (Scan QR & Sequential Gate) | Selesai | 100% |
 | Fase 5 | Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV | Belum Dimulai | 0% |
 
 ---
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
+
+### [2026-11-24] Eksekusi Fase 4: Portal Pewawancara (Mobile-First, Scan QR & Sequential Gate) (Task 4.1 - 4.5)
+- **Commit / Branch:** `main`
+- **Ringkasan Perubahan:**
+  - **Task 4.1**: Rute & Middleware Khusus Portal Pewawancara:
+    - Rute `/wawancara/*` diproteksi middleware `auth`, `active`, dan role `interviewer_stage_1|interviewer_stage_2|interviewer_stage_3`.
+    - Redirect otomatis pada login staff (`AdminLoginController`) dan rute generic `/dashboard` ke `/wawancara`.
+    - Pewawancara diblokir mutlak dengan `403 Forbidden` dari seluruh rute `/admin/*` via `EnsureAdmin`.
+  - **Task 4.2**: Logika Bisnis & Sequential Gate (`LookupApplicantForInterviewAction` & `StartInterviewSessionAction`):
+    - Lookup cerdas dari QR URL (`route('public.registration-pdfs.verify')`), token verifikasi 64 hex, maupun nomor urut `270001`.
+    - Validasi berkas: wajib telah disahkan panitia verifikator (`verified_at !== null`).
+    - Validasi Sequential Gate: Tahap 2 wajib Tahap 1 COMPLETED; Tahap 3 wajib Program Unggulan dan Tahap 1 & 2 COMPLETED.
+    - Soft Lock Mechanism: mencegah penilaian ganda bersamaan (< 30 menit). Mengizinkan pengambilalihan (*takeover*) jika sesi ditinggalkan terlantar >= 30 menit.
+  - **Task 4.3**: UI Halaman Scan & Ergonomi Mobile (`/wawancara`):
+    - Layout mandiri tanpa sidebar `layouts.interviewer` khusus perangkat bergerak/tablet dengan tema warna MINSATAMA.
+    - Scanner QR kamera interaktif (`html5-qrcode`) dengan fallback mulus ke input angka manual berukuran besar (`min-h-12`).
+    - Counter siswa selesai hari ini (query dinamis berdasarkan tanggal hari ini dan pewawancara).
+    - Isolasi Mutlak Nilai: pewawancara tidak dapat melihat angka nilai siswa yang telah dinilai sebelumnya.
+    - Banner sesi aktif yang sedang berlangsung dengan aksi Lanjutkan atau Batalkan Sesi.
+  - **Task 4.4**: Form Penilaian, Score Locking & Stream Pas Foto (`/wawancara/sesi/{session}`):
+    - Menampilkan pas foto 3x4 (via route streaming privat `photo` dengan proteksi IDOR dan fallback avatar SVG), nama lengkap siswa, nomor urut, program, dan jadwal batch.
+    - Input skor 0-100 per kriteria aktif dengan tombol touch step (-5, -1, +1, +5).
+    - Modal konfirmasi tegas "Kunci & Simpan Nilai" sebelum submit permanen.
+    - `SubmitAndLockInterviewAction`: menghitung `total_score` dan `average_score` di server, mengunci status ke `COMPLETED`, mencatat riwayat ke `admin_configuration_audit_logs`.
+    - Setelah sesi dikunci, pewawancara dilarang mengakses form nilai kembali (isolasi mutlak nilai).
+  - **Task 4.5**: Pengujian Rangkaian Lengkap:
+    - Feature test `tests/Feature/Interview/InterviewerPortalTest.php` lulus 100% (7 tests, 52 assertions).
+    - Seluruh test suite sistem lulus 100% (361 passed, 15 skipped).
+    - Gaya kode Laravel Pint 100% bersih.
+- **File Utama yang Ditambah/Diubah:**
+  - `app/Actions/Interview/LookupApplicantForInterviewAction.php` (baru)
+  - `app/Actions/Interview/StartInterviewSessionAction.php` (baru)
+  - `app/Actions/Interview/SubmitAndLockInterviewAction.php` (baru)
+  - `app/Http/Requests/Interview/LookupApplicantRequest.php` (baru)
+  - `app/Http/Requests/Interview/SubmitInterviewScoreRequest.php` (baru)
+  - `app/Http/Controllers/Interview/InterviewerPortalController.php` (baru)
+  - `resources/views/layouts/interviewer.blade.php` (baru)
+  - `resources/views/interview/index.blade.php` (baru)
+  - `resources/views/interview/session.blade.php` (baru)
+  - `app/Services/Authentication/AdminAuthenticationService.php`
+  - `app/Http/Controllers/Auth/AdminLoginController.php`
+  - `routes/web.php`
+  - `tests/Feature/Interview/InterviewerPortalTest.php` (baru)
+  - `ppdbv2/todo-roadmap.md`
+  - `ppdbv2/PROGRESS-LOG.md`
 
 ### [2026-11-24] Eksekusi Fase 3: Panel Master Pengaturan Wawancara (Superadmin) (Task 3.1 - 3.4)
 - **Commit / Branch:** `main`

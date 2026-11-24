@@ -50,20 +50,20 @@ Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan sat
 ---
 
 ## Fase 4: Portal Pewawancara (Mobile-First, Scan QR & Sequential Gate)
-- [ ] **4.1** Buat rute & middleware khusus `/wawancara/*` yang hanya mengizinkan `interviewer_stage_1`, `interviewer_stage_2`, dan `interviewer_stage_3` (redirect otomatis sesuai role setelah login).
-- [ ] **4.2** Buat `LookupApplicantForInterviewAction` & `StartInterviewSessionAction`:
+- [x] **4.1** Buat rute & middleware khusus `/wawancara/*` yang hanya mengizinkan `interviewer_stage_1`, `interviewer_stage_2`, dan `interviewer_stage_3` (redirect otomatis sesuai role setelah login).
+- [x] **4.2** Buat `LookupApplicantForInterviewAction` & `StartInterviewSessionAction`:
   - Validasi status pendaftaran `VERIFIED`.
   - Validasi **Sequential Gate** (Tahap 2 wajib Tahap 1 selesai; Tahap 3 wajib Program Unggulan + Tahap 1 & 2 selesai).
   - Validasi **Soft Lock** agar tidak terjadi penilaian ganda secara bersamaan.
-- [ ] **4.3** Buat UI Halaman Scan & Pencarian Cepat (`/wawancara`):
+- [x] **4.3** Buat UI Halaman Scan & Pencarian Cepat (`/wawancara`):
   - Scanner kamera QR Code (`html5-qrcode`) + input manual nomor `270001`.
   - Statistik ringkas hari ini (*jumlah siswa selesai saja, tanpa menampilkan nilai*).
-- [ ] **4.4** Buat `SubmitAndLockInterviewAction` & UI Form Penilaian (`/wawancara/sesi/{session}`):
+- [x] **4.4** Buat `SubmitAndLockInterviewAction` & UI Form Penilaian (`/wawancara/sesi/{session}`):
   - Tampilkan Pas Foto 3x4, Nama Lengkap, Nomor Urut, Program.
   - Input skor `0–100` untuk setiap poin aktif pada tahap pewawancara tersebut.
   - Modal konfirmasi sebelum **"Simpan & Kunci Nilai"**.
   - Hitung `total_score` dan `average_score` di server, ubah status ke `COMPLETED` (terkunci mutlak), lalu redirect kembali ke halaman Scan.
-- [ ] **4.5** Jalankan Feature Test lengkap untuk Portal Pewawancara:
+- [x] **4.5** Jalankan Feature Test lengkap untuk Portal Pewawancara:
   - Penguji Tahap 1 tidak bisa akses Tahap 2/3.
   - Penguji Tahap 2 ditolak jika Tahap 1 belum selesai.
   - Penguji Tahap 3 ditolak jika siswa Reguler atau Tahap 1/2 belum selesai.

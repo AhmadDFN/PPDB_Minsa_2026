@@ -20,6 +20,9 @@ class AdminLoginController extends Controller
     {
         if (Auth::guard('web')->check()) {
             $user = Auth::guard('web')->user();
+            if ($user->hasAnyRole(['interviewer_stage_1', 'interviewer_stage_2', 'interviewer_stage_3'])) {
+                return redirect()->route('interview.index');
+            }
             if ($user->isAdmin()) {
                 return redirect()->route('admin.dashboard');
             }
@@ -53,6 +56,10 @@ class AdminLoginController extends Controller
 
         // Prevent session fixation
         $request->session()->regenerate();
+
+        if ($result['user']->hasAnyRole(['interviewer_stage_1', 'interviewer_stage_2', 'interviewer_stage_3'])) {
+            return redirect()->intended(route('interview.index'));
+        }
 
         return redirect()->intended(route('admin.dashboard'));
     }

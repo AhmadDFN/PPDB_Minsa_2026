@@ -59,11 +59,11 @@ class AdminAuthenticationService
         }
 
         // Verify Spatie roles
-        if (! $user->hasAnyRole(['superadmin', 'admin_ppdb'])) {
+        if (! $user->hasAnyRole(['superadmin', 'admin_ppdb', 'interviewer_stage_1', 'interviewer_stage_2', 'interviewer_stage_3'])) {
             return [
                 'success' => false,
                 'user' => null,
-                'message' => 'Akun Anda tidak memiliki hak akses administrator PPDB.',
+                'message' => 'Akun Anda tidak memiliki hak akses yang valid.',
                 'code' => 'UNAUTHORIZED_ROLE',
             ];
         }

@@ -26,6 +26,7 @@ use App\Http\Controllers\Applicant\RegistrationFormController;
 use App\Http\Controllers\Applicant\RegistrationPdfController;
 use App\Http\Controllers\Applicant\RegistrationReviewController;
 use App\Http\Controllers\Applicant\RegistrationSubmissionController;
+use App\Http\Controllers\Interview\InterviewerPortalController;
 use App\Http\Controllers\RegistrationPdfVerificationController;
 use App\Models\AdmissionPeriod;
 use Illuminate\Support\Facades\Route;
@@ -63,7 +64,12 @@ require __DIR__.'/auth.php';
 
 // Generic authenticated dashboard redirector
 Route::middleware(['auth', 'active'])->get('/dashboard', function () {
-    if (auth()->user()->isAdmin()) {
+    $user = auth()->user();
+    if ($user->hasAnyRole(['interviewer_stage_1', 'interviewer_stage_2', 'interviewer_stage_3'])) {
+        return redirect()->route('interview.index');
+    }
+
+    if ($user->isAdmin()) {
         return redirect()->route('admin.dashboard');
     }
 
@@ -249,3 +255,16 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
             ->with('warning', "Modul {$name} dijadwalkan pada fase pengembangan berikutnya.");
     })->where('module', 'dokumen|periode|program|laporan|pengguna');
 });
+
+// Portal Pewawancara (Mobile-First, Non-SPA)
+Route::middleware(['auth', 'active', 'role:interviewer_stage_1|interviewer_stage_2|interviewer_stage_3'])
+    ->prefix('wawancara')
+    ->name('interview.')
+    ->group(function () {
+        Route::get('/', [InterviewerPortalController::class, 'index'])->name('index');
+        Route::post('/lookup', [InterviewerPortalController::class, 'lookup'])->name('lookup');
+        Route::get('/sesi/{session}', [InterviewerPortalController::class, 'showSession'])->name('session');
+        Route::post('/sesi/{session}/batal', [InterviewerPortalController::class, 'cancelSession'])->name('session.cancel');
+        Route::post('/sesi/{session}/simpan', [InterviewerPortalController::class, 'submitSession'])->name('session.submit');
+        Route::get('/sesi/{session}/foto', [InterviewerPortalController::class, 'photo'])->name('session.photo');
+    });
