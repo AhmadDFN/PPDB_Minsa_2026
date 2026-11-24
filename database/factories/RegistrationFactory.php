@@ -42,9 +42,20 @@ class RegistrationFactory extends Factory
     public function submitted(): static
     {
         return $this->state(fn () => [
-            'registration_number' => 'PPDB/2026-2027/REGULER/'.str_pad((string) fake()->unique()->numberBetween(1, 99999), 5, '0', STR_PAD_LEFT),
+            'registration_number' => null,
             'status' => RegistrationStatus::SUBMITTED,
             'submitted_at' => now(),
+        ]);
+    }
+
+    public function verified(): static
+    {
+        return $this->state(fn () => [
+            'registration_number' => '27'.str_pad((string) fake()->unique()->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
+            'queue_sequence' => fake()->unique()->numberBetween(1, 9999),
+            'status' => RegistrationStatus::SUBMITTED,
+            'submitted_at' => now(),
+            'verified_at' => now(),
         ]);
     }
 

@@ -123,9 +123,8 @@ class SubmitRegistrationAction
                 throw new RuntimeException('Pernyataan dan versi persetujuan pendaftaran belum dikonfigurasi.');
             }
 
-            if (empty($registration->registration_number)) {
-                $registration->registration_number = $this->numberGenerator->generateForPeriod($period);
-            }
+            // v2 (Opsi B): Nomor urut resmi (format 270001) diterbitkan saat pengesahan berkas oleh Panitia (ApproveAndAssignQueueNumberAction)
+            // Saat status SUBMITTED, pendaftaran masuk ke antrean verifikasi panitia.
 
             $registration->consent()->updateOrCreate(
                 ['registration_id' => $registration->id],

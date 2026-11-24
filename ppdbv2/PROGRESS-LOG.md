@@ -11,7 +11,7 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 |---|---|---|:-:|
 | Fase 0 | Pre-Flight & Kesehatan Fondasi | Selesai | 100% |
 | Fase 1 | Skema Database, Model & Seeder Role/Akun | Selesai | 100% |
-| Fase 2 | Rombak Penomoran Urut (Opsi B) & WA Fonnte | Belum Dimulai | 0% |
+| Fase 2 | Rombak Penomoran Urut (Opsi B) & WA Fonnte | Selesai | 100% |
 | Fase 3 | Panel Master Pengaturan Wawancara (Superadmin) | Belum Dimulai | 0% |
 | Fase 4 | Portal Pewawancara (Scan QR & Sequential Gate) | Belum Dimulai | 0% |
 | Fase 5 | Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV | Belum Dimulai | 0% |
@@ -19,6 +19,37 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 ---
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
+
+### [2026-11-24] Eksekusi Fase 2: Rombak Penomoran Urut (Opsi B) & Notifikasi WhatsApp (Task 2.1 - 2.6)
+- **Commit / Branch:** `main`
+- **Ringkasan Perubahan:**
+  - **Task 2.1**: Menunda penomoran saat formulir disubmit pendaftar (`SubmitRegistrationAction`). Status menjadi `SUBMITTED`, nomor registrasi & urutan bernilai `null` (ditandai "Menunggu Pengesahan Berkas" di dashboard & review).
+  - **Task 2.2**: Membuat `ApproveAndAssignQueueNumberAction` dan memperbarui `RegistrationNumberGeneratorService::generateQueueNumber()`. Validasi seluruh berkas wajib harus `APPROVED`, penomoran format 4-digit `{tahun}{4digit}` (contoh `270001`), pemetaan otomatis `interview_batch_id` berdasarkan rentang urutan (70/batch), pencatatan audit log `verified_and_queued`, dan fallback notifikasi WhatsApp via Fonnte API.
+  - **Task 2.3**: Menambahkan endpoint `POST /admin/document-verification/{registration}/sahkan` dan tombol antarmuka "Sahkan Berkas & Terbitkan Nomor" di daftar verifikasi berkas (`admin.document-verification.index`) dan detail pendaftar (`admin.applicants.show`).
+  - **Task 2.4**: Memperbarui template Bukti Pendaftaran PDF (`final.blade.php` & `RegistrationPdfRenderer`) untuk mencantumkan Nomor Urut Pendaftaran, rincian Jadwal Wawancara (gelombang, tanggal, waktu, ruangan), dan QR code verifikasi. Menambahkan pencegahan pembuatan PDF final sebelum berkas disahkan panitia.
+  - **Task 2.5**: Menambahkan template WhatsApp `DOCUMENT_APPROVED_SCHEDULE` di `CommunicationMessageTemplateService` dan migrasi tabel `communication_settings` dengan placeholder dinamis.
+  - **Task 2.6**: Menambahkan feature test komprehensif `tests/Feature/Interview/QueueNumberAndVerificationTest.php` dan menyesuaikan suite tes eksisting.
+- **File Utama yang Ditambah/Diubah:**
+  - `app/Actions/Registration/ApproveAndAssignQueueNumberAction.php` (baru)
+  - `app/Actions/Registration/SubmitRegistrationAction.php`
+  - `app/Actions/Registration/GenerateRegistrationPdfAction.php`
+  - `app/Http/Controllers/Admin/DocumentVerificationController.php`
+  - `app/Services/Registration/RegistrationNumberGeneratorService.php`
+  - `app/Services/Communication/CommunicationMessageTemplateService.php`
+  - `database/migrations/2026_11_24_140002_add_document_approved_schedule_template.php` (baru)
+  - `resources/views/admin/document-verification/index.blade.php`
+  - `resources/views/admin/applicants/show.blade.php`
+  - `resources/views/applicant/dashboard.blade.php`
+  - `resources/views/applicant/registration/review.blade.php`
+  - `resources/views/pdf/registration/final.blade.php`
+  - `routes/web.php`
+  - `tests/Feature/Interview/QueueNumberAndVerificationTest.php` (baru)
+- **Hasil Test Sederhana:**
+  - `php artisan test --filter=QueueNumberAndVerificationTest` → PASSED (6 tests, 30 assertions)
+  - `php artisan test` → PASSED (363 tests, 348 passed, 0 failed, 1610 assertions, 15 skipped)
+  - `vendor/bin/pint --test` → PASSED
+  - `npm run build` → PASSED
+- **Catatan Tambahan:** Fase 2 100% selesai dan siap dilanjutkan ke Fase 3 (Panel Master Pengaturan Wawancara Superadmin).
 
 ### [2026-11-24] Eksekusi Fase 1: Skema Database, Model & Seeder Role/Akun (Task 1.1 - 1.6)
 - **Commit / Branch:** `main`

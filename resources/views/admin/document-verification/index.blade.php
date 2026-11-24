@@ -42,12 +42,45 @@
         <div class="space-y-5">
             @forelse ($registrations as $registration)
                 <section class="rounded-xl border border-gray-200 bg-white shadow-xs overflow-hidden">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b border-gray-100 px-5 py-4">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-gray-100 px-5 py-4 bg-gray-50/50">
                         <div>
-                            <h2 class="font-bold text-gray-900">{{ $registration->applicant?->full_name ?? 'Calon peserta didik' }}</h2>
-                            <p class="text-xs text-gray-500 font-mono">{{ $registration->registration_number }} · {{ $registration->admissionPeriodProgram?->program?->name ?? '-' }}</p>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-bold text-gray-900">{{ $registration->applicant?->full_name ?? 'Calon peserta didik' }}</h2>
+                                @if ($registration->isVerified())
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        Terverifikasi
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                        Menunggu Pengesahan
+                                    </span>
+                                @endif
+                            </div>
+                            <p class="text-xs text-gray-500 font-mono mt-0.5">
+                                @if ($registration->registration_number)
+                                    No. Reg: <strong class="text-gray-800">{{ $registration->registration_number }}</strong> (Urut #{{ $registration->queue_sequence }})
+                                @else
+                                    <span class="text-amber-700 italic">Nomor Belum Terbit</span>
+                                @endif
+                                &bull; {{ $registration->admissionPeriodProgram?->program?->name ?? '-' }}
+                                @if ($registration->interviewBatch)
+                                    &bull; <span class="text-primary-700 font-semibold">{{ $registration->interviewBatch->name }}</span>
+                                @endif
+                            </p>
                         </div>
-                        <span class="text-xs text-gray-500">Dikirim {{ $registration->submitted_at?->format('d-m-Y H:i') }}</span>
+                        <div class="flex flex-wrap items-center gap-3">
+                            @if (!$registration->isVerified())
+                                <form method="POST" action="{{ route('admin.document-verification.approve-registration', $registration) }}" onsubmit="return confirm('Sahkan seluruh berkas dan terbitkan nomor urut pendaftaran untuk calon siswa ini?');">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-primary-700 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-primary-800 shadow-xs transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>Sahkan Berkas & Terbitkan Nomor</span>
+                                    </button>
+                                </form>
+                            @endif
+                            <span class="text-xs text-gray-500">Dikirim {{ $registration->submitted_at?->format('d-m-Y H:i') }}</span>
+                        </div>
                     </div>
                     <div class="divide-y divide-gray-100">
                         @forelse ($registration->documents as $document)

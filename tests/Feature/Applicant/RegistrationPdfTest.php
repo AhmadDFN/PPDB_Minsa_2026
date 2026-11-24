@@ -139,6 +139,7 @@ class RegistrationPdfTest extends TestCase
             'ppdb.registration.consent_statement' => 'Consent konfigurasi terbaru yang berbeda.',
             'ppdb.registration.consent_version' => 'v-baru',
         ]);
+        $this->verifyRegistration($data['registration']);
         $expectedNik = $data['user']->getDecryptedNik();
         $renderer = $this->mock(RegistrationPdfRenderer::class);
         $renderer->shouldReceive('render')
@@ -205,6 +206,8 @@ class RegistrationPdfTest extends TestCase
             ])
             ->assertRedirect(route('applicant.registration.review'));
 
+        $this->verifyRegistration($data['registration']);
+
         $this->actingAs($data['user'])
             ->post(route('applicant.registration.pdf.final'))
             ->assertRedirect()
@@ -257,6 +260,8 @@ class RegistrationPdfTest extends TestCase
                 'consent_name' => 'Budi Santoso',
             ])
             ->assertRedirect(route('applicant.registration.review'));
+
+        $this->verifyRegistration($data['registration']);
 
         $response = $this->actingAs($data['user'])
             ->post(route('applicant.registration.pdf.final'));
@@ -339,7 +344,7 @@ class RegistrationPdfTest extends TestCase
         $this->actingAs($data['user'])
             ->post(route('applicant.registration.pdf.final'))
             ->assertRedirect()
-            ->assertSessionHas('error', 'Bukti PDF final hanya dapat dibuat setelah pendaftaran berhasil dikirim.');
+            ->assertSessionHas('error', 'Bukti PDF final hanya dapat dibuat setelah pendaftaran disahkan panitia dan diterbitkan nomor urut.');
 
         $this->assertDatabaseCount('registration_pdf_versions', 0);
         $this->assertSame([], Storage::disk('ppdb_private')->allFiles('ppdb/pdfs'));
@@ -385,6 +390,8 @@ class RegistrationPdfTest extends TestCase
              BEGIN SELECT RAISE(ABORT, 'simulated persistence failure'); END"
         );
 
+        $this->verifyRegistration($data['registration']);
+
         $this->actingAs($data['user'])
             ->post(route('applicant.registration.pdf.final'))
             ->assertRedirect()
@@ -404,6 +411,15 @@ class RegistrationPdfTest extends TestCase
             $data['user']->getDecryptedNik(),
             json_encode($failureLog->changes, JSON_THROW_ON_ERROR),
         );
+    }
+
+    private function verifyRegistration(Registration $registration): void
+    {
+        $registration->update([
+            'registration_number' => '270001',
+            'queue_sequence' => 1,
+            'verified_at' => now(),
+        ]);
     }
 
     private function createRegistration(bool $complete = true): array

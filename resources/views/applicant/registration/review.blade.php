@@ -34,7 +34,7 @@
                     </div>
                     <div class="rounded-xl border border-green-200 bg-white px-4 py-3 sm:text-right">
                         <p class="text-xs font-semibold text-neutral-500">Nomor Registrasi</p>
-                        <p class="mt-1 break-all font-mono text-lg font-extrabold text-primary-800">{{ $registration->registration_number }}</p>
+                        <p class="mt-1 break-all font-mono text-lg font-extrabold text-primary-800">{{ $registration->registration_number ?: 'Menunggu Pengesahan Berkas' }}</p>
                     </div>
                 </div>
                 <dl class="mt-5 grid gap-4 border-t border-green-200 pt-4 text-sm sm:grid-cols-3">

@@ -26,16 +26,16 @@ Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan sat
 ---
 
 ## Fase 2: Rombak Penomoran Urut (Opsi B) & Notifikasi WhatsApp
-- [ ] **2.1** Sesuaikan alur *Final Submit* pendaftar: status menjadi `SUBMITTED`, tetapi **belum** menerbitkan nomor urut pendaftaran.
-- [ ] **2.2** Buat `ApproveAndAssignQueueNumberAction`:
+- [x] **2.1** Sesuaikan alur *Final Submit* pendaftar: status menjadi `SUBMITTED`, tetapi **belum** menerbitkan nomor urut pendaftaran.
+- [x] **2.2** Buat `ApproveAndAssignQueueNumberAction`:
   - Validasi seluruh dokumen wajib berstatus `APPROVED`.
   - Terbitkan `queue_sequence` (`1..n`) dan `registration_number` format `{tahun}{4digit}` (misal `270001`) secara atomik (`lockForUpdate`).
   - Auto-mapping `interview_batch_id` berdasarkan rentang kuota harian (misal 70/hari).
   - Catat Audit Log.
-- [ ] **2.3** Tambahkan tombol **"Sahkan Berkas & Terbitkan Nomor"** pada halaman detail verifikasi panitia (`/admin/pendaftar/{id}` atau `/admin/document-verification`).
-- [ ] **2.4** Update template PDF Bukti Pendaftaran Final: tampilkan Nomor Urut (`270001`), Tanggal & Jam Jadwal Wawancara, dan QR Code pemindaian.
-- [ ] **2.5** Tambahkan template pesan WhatsApp baru di Communication Center (Fonnte API) untuk notifikasi *"Berkas Terverifikasi + Nomor Urut + Jadwal Wawancara"* dan hubungkan ke `ApproveAndAssignQueueNumberAction`.
-- [ ] **2.6** Jalankan Feature Test: pastikan submit tidak menerbitkan nomor, pengesahan panitia menerbitkan nomor urut `270001`, `270002` secara berurutan, dan memicu pengiriman WA (mock/log).
+- [x] **2.3** Tambahkan tombol **"Sahkan Berkas & Terbitkan Nomor"** pada halaman detail verifikasi panitia (`/admin/pendaftar/{id}` atau `/admin/document-verification`).
+- [x] **2.4** Update template PDF Bukti Pendaftaran Final: tampilkan Nomor Urut (`270001`), Tanggal & Jam Jadwal Wawancara, dan QR Code pemindaian.
+- [x] **2.5** Tambahkan template pesan WhatsApp baru di Communication Center (Fonnte API) untuk notifikasi *"Berkas Terverifikasi + Nomor Urut + Jadwal Wawancara"* dan hubungkan ke `ApproveAndAssignQueueNumberAction`.
+- [x] **2.6** Jalankan Feature Test: pastikan submit tidak menerbitkan nomor, pengesahan panitia menerbitkan nomor urut `270001`, `270002` secara berurutan, dan memicu pengiriman WA (mock/log).
 
 ---
 

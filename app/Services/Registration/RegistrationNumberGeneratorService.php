@@ -57,6 +57,56 @@ class RegistrationNumberGeneratorService
     }
 
     /**
+     * Generate 6-digit YYNNNN queue and registration number for an admission period (Opsi B).
+     * Sequence runs globally across all programs for each intake year.
+     * Starts at 0001 and maxes out at 9999. E.g. '270001'.
+     *
+     * @return array{queue_sequence: int, registration_number: string}
+     *
+     * @throws RuntimeException
+     */
+    public function generateQueueNumber(AdmissionPeriod $period): array
+    {
+        $intakeYear = $this->extractIntakeYear($period);
+
+        DB::table('yearly_registration_sequences')->insertOrIgnore([
+            'intake_year' => $intakeYear,
+            'last_sequence' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        /** @var object{id: int, intake_year: string, last_sequence: int}|null $sequence */
+        $sequence = DB::table('yearly_registration_sequences')
+            ->where('intake_year', $intakeYear)
+            ->lockForUpdate()
+            ->first();
+
+        if ($sequence === null) {
+            throw new RuntimeException('Urutan nomor antrean pendaftaran tidak dapat dikunci.');
+        }
+
+        $nextSequence = (int) $sequence->last_sequence + 1;
+        if ($nextSequence > 9999) {
+            throw new RuntimeException('Urutan nomor antrean telah mencapai batas maksimal (9999). Silakan hubungi administrator.');
+        }
+
+        DB::table('yearly_registration_sequences')
+            ->where('id', $sequence->id)
+            ->update([
+                'last_sequence' => $nextSequence,
+                'updated_at' => now(),
+            ]);
+
+        $formattedNumber = $intakeYear.str_pad((string) $nextSequence, 4, '0', STR_PAD_LEFT);
+
+        return [
+            'queue_sequence' => $nextSequence,
+            'registration_number' => $formattedNumber,
+        ];
+    }
+
+    /**
      * Extract 2-digit intake year prefix from an admission period.
      * For example, '2026/2027' produces prefix '27'.
      */

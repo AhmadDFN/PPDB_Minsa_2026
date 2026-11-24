@@ -83,6 +83,7 @@ class GenerateRegistrationPdfAction
                     'admissionPeriod',
                     'admissionPeriodProgram.program',
                     'consent',
+                    'interviewBatch',
                 ]);
 
                 if ((int) $registration->data_revision !== $snapshot['data_revision']) {
@@ -179,6 +180,7 @@ class GenerateRegistrationPdfAction
                 'admissionPeriod',
                 'admissionPeriodProgram.program',
                 'consent',
+                'interviewBatch',
             ]);
 
             $this->assertCanGenerate($registration, $type);
@@ -205,7 +207,7 @@ class GenerateRegistrationPdfAction
                 || $registration->submitted_at === null
             ) {
                 throw ValidationException::withMessages([
-                    'pdf' => 'Bukti PDF final hanya dapat dibuat setelah pendaftaran berhasil dikirim.',
+                    'pdf' => 'Bukti PDF final hanya dapat dibuat setelah pendaftaran disahkan panitia dan diterbitkan nomor urut.',
                 ]);
             }
 
@@ -242,6 +244,15 @@ class GenerateRegistrationPdfAction
             'collection_instruction' => config('ppdb.pdf.collection_instruction'),
             'document_type' => $type,
             'registration_number' => $registration->registration_number ?: 'Belum diterbitkan',
+            'queue_sequence' => $registration->queue_sequence,
+            'verified_at' => $registration->verified_at?->copy()->locale('id')->translatedFormat('d F Y, H:i').' WIB',
+            'interview_batch' => $registration->interviewBatch ? [
+                'name' => $registration->interviewBatch->name,
+                'interview_date' => $registration->interviewBatch->interview_date?->copy()->locale('id')->translatedFormat('l, d F Y'),
+                'start_time' => $registration->interviewBatch->start_time ? substr((string) $registration->interviewBatch->start_time, 0, 5).' WIB' : '-',
+                'end_time' => $registration->interviewBatch->end_time ? substr((string) $registration->interviewBatch->end_time, 0, 5).' WIB' : '-',
+                'description' => $registration->interviewBatch->description,
+            ] : null,
             'data_revision' => (int) $registration->data_revision,
             'generated_at' => now()->locale('id')->translatedFormat('d F Y, H:i').' WIB',
             'submitted_at' => $registration->submitted_at?->copy()->locale('id')->translatedFormat('d F Y, H:i').' WIB',

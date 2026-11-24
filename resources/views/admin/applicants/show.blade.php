@@ -18,18 +18,37 @@
                         </h1>
                         @if ($registration->isSubmitted())
                             <x-ui.badge variant="success" dot>Terkirim (Resmi)</x-ui.badge>
+                            @if ($registration->isVerified())
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    Terverifikasi (#{{ $registration->queue_sequence }})
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                    Menunggu Pengesahan
+                                </span>
+                            @endif
                         @else
                             <x-ui.badge variant="warning" dot>Draf Pendaftaran</x-ui.badge>
                         @endif
                     </div>
                     <p class="text-xs sm:text-sm font-mono text-gray-500 mt-0.5">
-                        No. Registrasi: <strong class="text-gray-800">{{ $registration->registration_number ?? 'Belum Terbit' }}</strong>
+                        No. Registrasi: <strong class="text-gray-800">{{ $registration->registration_number ?? 'Belum Terbit (Menunggu Pengesahan)' }}</strong>
                         &bull; Periode: TP {{ $period?->academic_year ?? '-' }}
                     </p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
+                @if ($registration->isSubmitted() && !$registration->isVerified())
+                    <form method="POST" action="{{ route('admin.document-verification.approve-registration', $registration) }}" onsubmit="return confirm('Sahkan seluruh berkas dan terbitkan nomor urut pendaftaran untuk calon siswa ini?');">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-primary-700 hover:bg-primary-800 shadow-xs transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Sahkan Berkas & Terbitkan Nomor</span>
+                        </button>
+                    </form>
+                @endif
                 @can('reopen_registration')
                     @if ($registration->isSubmitted())
                         <a
@@ -551,6 +570,49 @@
                                     {{ $registration->submitted_at ? $registration->submitted_at->setTimezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') . ' WIB' : 'Belum Dikirim' }}
                                 </dd>
                             </div>
+
+                            <div class="sm:col-span-2 pt-2 border-t border-gray-100">
+                                <dt class="text-gray-500 font-medium">Status Pengesahan & Jadwal Wawancara</dt>
+                                <dd class="mt-1 flex flex-wrap items-center gap-2">
+                                    @if ($registration->isVerified())
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Disahkan Panitia (No. Reg: {{ $registration->registration_number }})
+                                        </span>
+                                        <span class="text-xs text-gray-600">Urut Ke-{{ $registration->queue_sequence }}</span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                                            Menunggu Pengesahan Berkas oleh Panitia
+                                        </span>
+                                    @endif
+                                </dd>
+                            </div>
+
+                            @if ($registration->isVerified())
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Gelombang / Sesi Wawancara</dt>
+                                    <dd class="mt-0.5 font-bold text-primary-700">
+                                        {{ $registration->interviewBatch?->name ?? 'Belum Ditentukan' }}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Jadwal Wawancara</dt>
+                                    <dd class="mt-0.5 text-gray-900">
+                                        {{ $registration->interviewBatch?->interview_date ? $registration->interviewBatch->interview_date->setTimezone('Asia/Jakarta')->translatedFormat('l, d F Y') : '-' }}
+                                        @if ($registration->interviewBatch?->start_time)
+                                            ({{ substr((string) $registration->interviewBatch->start_time, 0, 5) }} - {{ substr((string) $registration->interviewBatch->end_time, 0, 5) }} WIB)
+                                        @endif
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Disahkan Oleh</dt>
+                                    <dd class="mt-0.5 text-gray-700 font-medium">{{ $registration->verifier?->name ?? '-' }}</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Waktu Pengesahan</dt>
+                                    <dd class="mt-0.5 text-gray-700">{{ $registration->verified_at ? $registration->verified_at->setTimezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') . ' WIB' : '-' }}</dd>
+                                </div>
+                            @endif
 
                             @if ($registration->consent)
                                 <div class="sm:col-span-2 pt-2 border-t border-gray-100">

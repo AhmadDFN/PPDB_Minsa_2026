@@ -30,12 +30,13 @@ class DocumentVerificationTest extends TestCase
     public function test_verification_queue_only_lists_submitted_registrations(): void
     {
         $submitted = $this->documentFor(Registration::factory()->submitted()->create());
-        $this->documentFor(Registration::factory()->draft()->create());
+        $draft = $this->documentFor(Registration::factory()->draft()->create());
 
         $response = $this->actingAs($this->admin())->get(route('admin.document-verification.index'));
 
-        $response->assertOk()->assertSee($submitted->registration->registration_number);
-        $response->assertDontSee('Belum Terbit');
+        $response->assertOk()
+            ->assertSee($submitted->registration->applicant->full_name)
+            ->assertDontSee($draft->registration->applicant->full_name);
     }
 
     public function test_admin_without_permission_is_forbidden_and_preview_is_private(): void

@@ -150,6 +150,7 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::post('/{registration}/documents/{document}/reject', [DocumentVerificationController::class, 'reject'])->name('reject');
         Route::post('/{registration}/documents/{document}/revision', [DocumentVerificationController::class, 'revision'])->name('revision');
         Route::get('/{registration}/documents/{document}/history', [DocumentVerificationController::class, 'history'])->name('history');
+        Route::post('/{registration}/sahkan', [DocumentVerificationController::class, 'approveRegistration'])->name('approve-registration');
     });
 
     Route::middleware('can:manage_system_settings')->group(function () {

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Integration;
 
+use App\Actions\Registration\ApproveAndAssignQueueNumberAction;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\AdmissionPeriodStatus;
+use App\Enums\DocumentVerificationStatus;
 use App\Enums\Gender;
 use App\Enums\GuardianRelationship;
 use App\Enums\PdfDocumentType;
@@ -361,11 +363,6 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             'consent_name' => 'Orang Tua Reguler',
         ])->assertSessionHas('success');
 
-        $this->assertSame(
-            '27001',
-            $regulerApplicant['registration']->fresh()->registration_number
-        );
-
         // Buat dan submit pendaftar 2 (Unggulan 1)
         $unggulanApplicant1 = $this->createFullyPreparedApplicant(
             '3573010101190012',
@@ -377,11 +374,6 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             'consent' => '1',
             'consent_name' => 'Orang Tua Unggulan 1',
         ])->assertSessionHas('success');
-
-        $this->assertSame(
-            '27002',
-            $unggulanApplicant1['registration']->fresh()->registration_number
-        );
 
         // Buat dan submit pendaftar 3 (Unggulan 2)
         $unggulanApplicant2 = $this->createFullyPreparedApplicant(
@@ -395,11 +387,6 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             'consent_name' => 'Orang Tua Unggulan 2',
         ])->assertSessionHas('success');
 
-        $this->assertSame(
-            '27003',
-            $unggulanApplicant2['registration']->fresh()->registration_number
-        );
-
         // Buat dan submit pendaftar 4 (Reguler 2)
         $regulerApplicant2 = $this->createFullyPreparedApplicant(
             '3573010101190014',
@@ -412,8 +399,31 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             'consent_name' => 'Orang Tua Reguler 2',
         ])->assertSessionHas('success');
 
+        // Panitia memverifikasi dan mengesahkan berkas pendaftaran
+        $admin = User::factory()->admin()->create();
+        $action = app(ApproveAndAssignQueueNumberAction::class);
+
+        foreach ([$regulerApplicant, $unggulanApplicant1, $unggulanApplicant2, $regulerApplicant2] as $applicant) {
+            RegistrationDocument::query()->where('registration_id', $applicant['registration']->id)->update([
+                'verification_status' => DocumentVerificationStatus::APPROVED,
+            ]);
+            $action->execute($applicant['registration']->fresh(), $admin);
+        }
+
         $this->assertSame(
-            '27004',
+            '270001',
+            $regulerApplicant['registration']->fresh()->registration_number
+        );
+        $this->assertSame(
+            '270002',
+            $unggulanApplicant1['registration']->fresh()->registration_number
+        );
+        $this->assertSame(
+            '270003',
+            $unggulanApplicant2['registration']->fresh()->registration_number
+        );
+        $this->assertSame(
+            '270004',
             $regulerApplicant2['registration']->fresh()->registration_number
         );
     }
@@ -510,9 +520,18 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         ])->assertSessionHas('success');
 
         $registration = $data['registration']->fresh();
+        $this->assertSame(1, $registration->data_revision);
+
+        // Verifikasi dan sahkan berkas sebelum cetak bukti final
+        RegistrationDocument::query()->where('registration_id', $registration->id)->update([
+            'verification_status' => DocumentVerificationStatus::APPROVED,
+        ]);
+        $admin = User::factory()->admin()->create();
+        app(ApproveAndAssignQueueNumberAction::class)->execute($registration, $admin);
+
+        $registration->refresh();
         $initialNumber = $registration->registration_number;
         $initialSubmittedAt = $registration->submitted_at;
-        $this->assertSame(1, $registration->data_revision);
 
         // Generate PDF final v1
         $this->actingAs($user)->post(route('applicant.registration.pdf.final'))
@@ -743,7 +762,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         $regA = $applicantA['registration']->fresh();
         $this->assertSame(RegistrationStatus::SUBMITTED, $regA->status);
         $this->assertNotSame('PPDB/FORGED/NUMBER/99999', $regA->registration_number);
-        $this->assertMatchesRegularExpression('/^[0-9]{5}$/', $regA->registration_number);
+        $this->assertNull($regA->registration_number);
     }
 
     /**

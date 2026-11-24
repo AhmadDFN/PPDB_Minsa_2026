@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Applicant;
 
+use App\Actions\Registration\ApproveAndAssignQueueNumberAction;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\AdmissionPeriodStatus;
+use App\Enums\DocumentVerificationStatus;
 use App\Enums\Gender;
 use App\Enums\PreviousEducationLevel;
 use App\Enums\RegistrationStatus;
@@ -273,7 +275,8 @@ class RegistrationWorkflowTest extends TestCase
 
         $registration = $data['registration']->fresh();
         $this->assertSame(RegistrationStatus::SUBMITTED, $registration->status);
-        $this->assertSame('27001', $registration->registration_number);
+        $this->assertNull($registration->registration_number);
+        $this->assertNull($registration->queue_sequence);
         $this->assertNotNull($registration->submitted_at);
         $this->assertSame(1, $registration->data_revision);
 
@@ -294,7 +297,7 @@ class RegistrationWorkflowTest extends TestCase
         $this->actingAs($data['user'])
             ->get(route('applicant.dashboard'))
             ->assertOk()
-            ->assertSee($registration->registration_number)
+            ->assertSee('Menunggu Pengesahan Berkas')
             ->assertSee('Terkirim (Resmi)');
     }
 
@@ -317,7 +320,7 @@ class RegistrationWorkflowTest extends TestCase
         $this->assertSame($submittedAt, $registration->submitted_at?->toISOString());
         $this->assertDatabaseCount('registration_consents', 1);
         $this->assertDatabaseCount('registration_logs', 1);
-        $this->assertDatabaseCount('yearly_registration_sequences', 1);
+        $this->assertDatabaseCount('yearly_registration_sequences', 0);
     }
 
     public function test_sequence_is_unique_and_increments_within_the_same_period_program(): void
@@ -337,8 +340,16 @@ class RegistrationWorkflowTest extends TestCase
             ])->assertRedirect(route('applicant.registration.review'));
         }
 
-        $this->assertSame('27001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('27002', $second['registration']->fresh()->registration_number);
+        RegistrationDocument::query()->whereIn('registration_id', [$first['registration']->id, $second['registration']->id])->update([
+            'verification_status' => DocumentVerificationStatus::APPROVED,
+        ]);
+        $admin = User::factory()->admin()->create();
+        $action = app(ApproveAndAssignQueueNumberAction::class);
+        $action->execute($first['registration']->fresh(), $admin);
+        $action->execute($second['registration']->fresh(), $admin);
+
+        $this->assertSame('270001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('270002', $second['registration']->fresh()->registration_number);
         $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 
@@ -355,8 +366,16 @@ class RegistrationWorkflowTest extends TestCase
             ])->assertRedirect(route('applicant.registration.review'));
         }
 
-        $this->assertSame('27001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('27002', $second['registration']->fresh()->registration_number);
+        RegistrationDocument::query()->whereIn('registration_id', [$first['registration']->id, $second['registration']->id])->update([
+            'verification_status' => DocumentVerificationStatus::APPROVED,
+        ]);
+        $admin = User::factory()->admin()->create();
+        $action = app(ApproveAndAssignQueueNumberAction::class);
+        $action->execute($first['registration']->fresh(), $admin);
+        $action->execute($second['registration']->fresh(), $admin);
+
+        $this->assertSame('270001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('270002', $second['registration']->fresh()->registration_number);
         $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 
@@ -398,8 +417,16 @@ class RegistrationWorkflowTest extends TestCase
             'consent_name' => 'Orang Tua Siswa',
         ])->assertRedirect(route('applicant.registration.review'));
 
-        $this->assertSame('27001', $first['registration']->fresh()->registration_number);
-        $this->assertSame('27002', $second['registration']->fresh()->registration_number);
+        RegistrationDocument::query()->whereIn('registration_id', [$first['registration']->id, $second['registration']->id])->update([
+            'verification_status' => DocumentVerificationStatus::APPROVED,
+        ]);
+        $admin = User::factory()->admin()->create();
+        $action = app(ApproveAndAssignQueueNumberAction::class);
+        $action->execute($first['registration']->fresh(), $admin);
+        $action->execute($second['registration']->fresh(), $admin);
+
+        $this->assertSame('270001', $first['registration']->fresh()->registration_number);
+        $this->assertSame('270002', $second['registration']->fresh()->registration_number);
         $this->assertDatabaseCount('yearly_registration_sequences', 1);
     }
 

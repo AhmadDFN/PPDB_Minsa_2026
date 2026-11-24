@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Registration\ApproveAndAssignQueueNumberAction;
 use App\Enums\DocumentVerificationStatus;
 use App\Enums\RegistrationStatus;
 use App\Models\AdmissionPeriod;
@@ -16,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -73,6 +75,28 @@ class DocumentVerificationController
         $this->ensureDocument($registration, $document);
 
         return view('admin.document-verification.history', ['registration' => $registration, 'document' => $document->load('verificationHistory.actor')]);
+    }
+
+    public function approveRegistration(
+        Request $request,
+        Registration $registration,
+        ApproveAndAssignQueueNumberAction $action
+    ): RedirectResponse {
+        abort_unless($request->user()->can('approve_registration_queue') || $request->user()->can('verify_documents'), 403);
+
+        try {
+            $updated = $action->execute($registration, $request->user(), $request->ip(), $request->userAgent());
+
+            return back()->with('success', "Berkas berhasil disahkan! Nomor urut pendaftaran [{$updated->registration_number}] telah diterbitkan.");
+        } catch (ValidationException $e) {
+            $msg = collect($e->errors())->flatten()->first() ?? $e->getMessage();
+
+            return back()->with('error', $msg);
+        } catch (Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'Gagal mengesahkan berkas: '.$e->getMessage());
+        }
     }
 
     private function changeStatus(Request $request, Registration $registration, RegistrationDocument $document, DocumentVerificationStatus $status): RedirectResponse
