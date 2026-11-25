@@ -14,11 +14,42 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 | Fase 2 | Rombak Penomoran Urut (Opsi B) & WA Fonnte | Selesai | 100% |
 | Fase 3 | Panel Master Pengaturan Wawancara (Superadmin) | Selesai | 100% |
 | Fase 4 | Portal Pewawancara (Scan QR & Sequential Gate) | Selesai | 100% |
-| Fase 5 | Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV | Belum Dimulai | 0% |
+| Fase 5 | Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV | Selesai | 100% |
 
 ---
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
+
+### [2026-11-25] Eksekusi Fase 5: Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV (Task 5.1 - 5.4)
+- **Commit / Branch:** `main`
+- **Ringkasan Perubahan:**
+  - **Task 5.1**: Halaman Rekap Nilai Wawancara (`/admin/interview-recaps`) khusus `admin_ppdb` & `superadmin`:
+    - Menampilkan rincian skor per poin, **Jumlah (`total_score`)**, dan **Rata-rata (`average_score`)** secara terpisah untuk Tahap 1, Tahap 2, dan Tahap 3 dengan format `tabular-nums`.
+    - Filter berdasarkan Jadwal/Batch, Program (Reguler/Unggulan), Status Kelengkapan (`all`, `completed`, `incomplete`), dan pencarian Nama / Nomor Urut.
+    - Menambahkan menu navigasi **"Rekap Nilai Wawancara"** di sidebar admin (`admin-sidebar.blade.php`) untuk `admin_ppdb` dan `superadmin`.
+  - **Task 5.2**: Koreksi Nilai Ber-Audit (`AdminOverrideInterviewScoreAction` & Modal Koreksi):
+    - Form Request `OverrideInterviewScoreRequest` mewajibkan alasan koreksi minimal 10 karakter dan skor integer `0–100`.
+    - Menghitung ulang `total_score` dan `average_score` di server serta mencatat `last_edited_by` dan `last_edit_reason`.
+    - Mencatat JSON *before/after diff*, alasan, dan aktor ke `admin_configuration_audit_logs` dengan aksi `score_overridden`.
+  - **Task 5.3**: Ekspor CSV Dinamis & Tersanitasi (`ExportInterviewRecapCsvAction`):
+    - Ekspor *streamed CSV* (UTF-8 BOM) dengan kolom dinamis mengikuti kriteria aktif per tahap dan filter aktif.
+    - Sanitasi *anti-formula injection* (`'` prefix untuk sel berawalan `=`, `+`, `-`, `@`, tab, CR).
+  - **Task 5.4**: Pengujian Keamanan & Fungsionalitas (`InterviewRecapAndOverrideTest`):
+    - Seluruh role pewawancara (`interviewer_stage_1/2/3`) dan `applicant` mendapat `403 Forbidden` pada rute rekap, koreksi nilai, dan ekspor CSV.
+    - Validasi alasan koreksi, hitung ulang skor, audit log *before/after*, dan sanitasi CSV lulus 100% (4 tests, 43 assertions).
+- **File Utama yang Ditambah/Diubah:**
+  - `app/Actions/Interview/AdminOverrideInterviewScoreAction.php` (baru)
+  - `app/Actions/Interview/InterviewRecapQueryBuilder.php` (baru)
+  - `app/Actions/Interview/ExportInterviewRecapCsvAction.php` (baru)
+  - `app/Http/Requests/Admin/InterviewRecapFilterRequest.php` (baru)
+  - `app/Http/Requests/Admin/OverrideInterviewScoreRequest.php` (baru)
+  - `app/Http/Controllers/Admin/InterviewRecapController.php` (baru)
+  - `resources/views/admin/interview-recaps/index.blade.php` (baru)
+  - `resources/views/components/navigation/admin-sidebar.blade.php`
+  - `routes/web.php`
+  - `tests/Feature/Interview/InterviewRecapAndOverrideTest.php` (baru)
+  - `ppdbv2/todo-roadmap.md`
+  - `ppdbv2/PROGRESS-LOG.md`
 
 ### [2026-11-24] Eksekusi Fase 4: Portal Pewawancara (Mobile-First, Scan QR & Sequential Gate) (Task 4.1 - 4.5)
 - **Commit / Branch:** `main`

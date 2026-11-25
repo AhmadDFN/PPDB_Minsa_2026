@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DocumentRequirementController;
 use App\Http\Controllers\Admin\DocumentVerificationController;
 use App\Http\Controllers\Admin\InterviewBatchController;
 use App\Http\Controllers\Admin\InterviewCriterionController;
+use App\Http\Controllers\Admin\InterviewRecapController;
 use App\Http\Controllers\Admin\InterviewStageController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
@@ -226,6 +227,15 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
         Route::get('/', [RolePermissionController::class, 'index'])->name('index');
         Route::get('/{role}/permissions/edit', [RolePermissionController::class, 'edit'])->name('permissions.edit');
         Route::put('/{role}/permissions', [RolePermissionController::class, 'update'])->name('permissions.update');
+    });
+
+    // Rekap Nilai Wawancara & Koreksi Ber-Audit (Admin PPDB & Superadmin)
+    Route::middleware('can:view_interview_recaps')->prefix('interview-recaps')->name('interview-recaps.')->group(function () {
+        Route::get('/', [InterviewRecapController::class, 'index'])->name('index');
+        Route::get('/export', [InterviewRecapController::class, 'export'])->name('export');
+        Route::put('/sessions/{session}', [InterviewRecapController::class, 'override'])
+            ->middleware('can:override_interview_scores')
+            ->name('override');
     });
 
     // Master Pengaturan Wawancara (Superadmin only)

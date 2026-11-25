@@ -72,15 +72,15 @@ Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan sat
 ---
 
 ## Fase 5: Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV
-- [ ] **5.1** Buat halaman **Rekap Nilai Wawancara** (`/admin/interview-recaps`) khusus `admin_ppdb` & `superadmin`:
+- [x] **5.1** Buat halaman **Rekap Nilai Wawancara** (`/admin/interview-recaps`) khusus `admin_ppdb` & `superadmin`:
   - Tampilkan rincian poin, **Jumlah**, dan **Rata-rata terpisah per tahap** (Tahap 1, Tahap 2, Tahap 3).
   - Filter berdasarkan Batch/Hari, Program, Status Kelengkapan, dan pencarian Nama/Nomor Urut.
-- [ ] **5.2** Buat `AdminOverrideInterviewScoreAction` & Modal **Koreksi Nilai**:
+- [x] **5.2** Buat `AdminOverrideInterviewScoreAction` & Modal **Koreksi Nilai**:
   - Wajib isi alasan koreksi (minimal 10 karakter).
   - Hitung ulang `total_score` dan `average_score` tahap tersebut.
   - Simpan *before/after JSON diff*, alasan, dan aktor ke tabel Audit Log (`/admin/audit-logs`).
-- [ ] **5.3** Buat `ExportInterviewRecapCsvAction`: ekspor *streamed CSV* dengan kolom dinamis per tahap dan sanitasi *anti-formula injection*.
-- [ ] **5.4** Jalankan Feature Test akhir:
+- [x] **5.3** Buat `ExportInterviewRecapCsvAction`: ekspor *streamed CSV* dengan kolom dinamis per tahap dan sanitasi *anti-formula injection*.
+- [x] **5.4** Jalankan Feature Test akhir:
   - Pastikan semua role pewawancara mendapat `403 Forbidden` saat mencoba mengakses `/admin/interview-recaps`, koreksi nilai, atau ekspor CSV.
   - Pastikan koreksi admin wajib menyertakan alasan dan tercatat di Audit Log.
   - Jalankan full test suite (`php artisan test`) dan smoke test manual di produksi (`https://ahmaddanyfn.biz.id/`).
