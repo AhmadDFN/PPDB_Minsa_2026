@@ -20,7 +20,9 @@ return new class extends Migration
 
         Schema::create('registration_document_verifications', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('registration_document_id')->constrained('registration_documents')->cascadeOnDelete();
+            $table->foreignId('registration_document_id')
+                ->constrained('registration_documents', indexName: 'reg_doc_verifications_doc_id_foreign')
+                ->cascadeOnDelete();
             $table->foreignId('actor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('from_status', 30)->nullable();
             $table->string('to_status', 30);

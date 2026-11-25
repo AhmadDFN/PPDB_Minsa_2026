@@ -29,7 +29,10 @@ return new class extends Migration
 
         Schema::create('communication_channel_credentials', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('communication_channel_id')->unique()->constrained()->cascadeOnDelete();
+            $table->foreignId('communication_channel_id')
+                ->unique('comm_cred_channel_id_unique')
+                ->constrained('communication_channels', indexName: 'comm_cred_channel_id_foreign')
+                ->cascadeOnDelete();
             $table->text('credential_ciphertext');
             $table->unsignedInteger('credential_version')->default(1);
             $table->timestamps();
@@ -45,7 +48,10 @@ return new class extends Migration
         Schema::create('communication_audit_logs', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('communication_channel_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('communication_channel_id')
+                ->nullable()
+                ->constrained('communication_channels', indexName: 'comm_audit_channel_id_foreign')
+                ->nullOnDelete();
             $table->string('event', 80);
             $table->json('metadata')->nullable();
             $table->timestamp('created_at')->useCurrent();
