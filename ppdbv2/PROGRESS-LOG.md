@@ -20,6 +20,18 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-25] Hardening Fase 5 Wawancara — Sanitasi Sel Placeholder CSV (Task 5.3)
+- **Commit / Branch:** `main` (commit dan push disetujui pemilik)
+- **Ringkasan Perubahan:**
+  - Memastikan seluruh sel data CSV, termasuk placeholder `-`, melewati sanitasi anti-formula injection.
+  - Menambahkan regression assertion untuk placeholder CSV yang diawali tanda minus.
+- **File Utama yang Diubah:**
+  - `app/Actions/Interview/ExportInterviewRecapCsvAction.php`
+  - `tests/Feature/Interview/InterviewRecapAndOverrideTest.php`
+- **Hasil Test Sederhana:**
+  - `php artisan test --filter=InterviewRecapAndOverrideTest` → PASSED (4 tests, 44 assertions)
+- **Catatan Tambahan:** Tidak melakukan deployment atau smoke test produksi pada sesi ini.
+
 ### [2026-11-25] Eksekusi Fase 5: Rekap Nilai Admin, Koreksi Ber-Audit & Ekspor CSV (Task 5.1 - 5.4)
 - **Commit / Branch:** `main`
 - **Ringkasan Perubahan:**

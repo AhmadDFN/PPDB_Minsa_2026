@@ -83,4 +83,4 @@ Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan sat
 - [x] **5.4** Jalankan Feature Test akhir:
   - Pastikan semua role pewawancara mendapat `403 Forbidden` saat mencoba mengakses `/admin/interview-recaps`, koreksi nilai, atau ekspor CSV.
   - Pastikan koreksi admin wajib menyertakan alasan dan tercatat di Audit Log.
-  - Jalankan full test suite (`php artisan test`) dan smoke test manual di produksi (`https://ahmaddanyfn.biz.id/`).
+  - Jalankan full test suite (`php artisan test`). Smoke test produksi tetap **PENDING** karena deployment/live access memerlukan persetujuan tertulis pemilik.

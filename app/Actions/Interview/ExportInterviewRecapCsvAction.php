@@ -91,6 +91,12 @@ class ExportInterviewRecapCsvAction
                     }
                 }
 
+                // Sanitize every data cell, including placeholders such as "-".
+                $row = array_map(
+                    fn (mixed $value): string => $this->csvText((string) $value),
+                    $row
+                );
+
                 fputcsv($output, $row);
             }
 

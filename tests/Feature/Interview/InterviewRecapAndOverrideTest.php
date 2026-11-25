@@ -319,5 +319,6 @@ class InterviewRecapAndOverrideTest extends TestCase
         // Formula injection sanitized with leading single quote (fputcsv escapes quotes as "")
         $this->assertStringContainsString("'=CMD(\"\"calc\"\")", $content);
         $this->assertStringContainsString('88.00', $content);
+        $this->assertStringContainsString(",'-,", $content, 'Placeholder cells must be sanitized against formula injection.');
     }
 }
