@@ -53,4 +53,4 @@
 2. Scan PDF final menggunakan kamera ponsel, pastikan status/nomor yang ditampilkan sesuai, dan pastikan halaman verifikasi publik tidak membocorkan PII (ISS-006).
 3. Uji unggah pas foto calon siswa yang benar dengan latar biru dan dokumen asli yang dapat diterima loket (ISS-005).
 4. Jalankan pemeriksaan migrasi pada MySQL/MariaDB dan UAT staging. Audit Composer sekarang lulus tanpa advisory (ISS-007 resolved).
-5. Sesudah seluruh acceptance gap ditutup, lakukan review final sebelum commit/push/deploy. Untuk sesi ini tidak ada commit, push, atau deploy.
+5. Review kode selesai; commit `6814d47` berhasil dipush ke `origin/main`. Deployment tidak dilakukan. Sebelum staging/production, selesaikan UAT map/GPS pada form terautentikasi, scan QR fisik, uji foto asli berlatar biru, serta migrasi dan UAT MySQL/MariaDB.

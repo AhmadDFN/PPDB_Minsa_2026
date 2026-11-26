@@ -150,4 +150,5 @@ Pemilik meminta eksekusi otonom seluruh revisi, testing, sinkronisasi dokumentas
 - [x] Test otomatis dan browser UAT yang bisa dilakukan lokal. *(Suite 388 test; 373 passed, 15 skipped, 1.781 assertions; UAT submit/PDF sebelumnya, cascade wilayah dan copy alamat; IDOR dokumen dan PDF lintas akun 404; enam langkah form 360/390/768 tanpa overflow sebelum widget map ditambahkan; harness widget map 360/390 lulus. Feature test pin/Haversine lulus.)*
 - [ ] QR scan fisik, foto asli berlatar biru, uji MySQL/MariaDB dan staging. *(Manual/lingkungan eksternal pending; tidak dinyatakan lulus.)*
 - [x] Sinkronisasi laporan progres, known issues, status project, dan hasil UAT.
-- [ ] Final acceptance, review, commit/push/deploy. *(Ditahan karena UAT cakupan map mobile, ISS-005 foto, ISS-006 QR fisik, dan validasi MySQL/MariaDB/staging belum selesai. ISS-007 audit Composer dan ISS-009 cascade dataset resolved.)*
+- [x] Review kode, commit Conventional Commit, dan push ke `origin/main`. *(Commit `6814d47`, berhasil 26 November 2026.)*
+- [ ] Deployment dan acceptance lingkungan staging/production. *(Belum dilakukan; perlu verifikasi MySQL/MariaDB dan UAT staging.)*

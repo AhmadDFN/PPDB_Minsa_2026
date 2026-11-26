@@ -20,8 +20,8 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
-### [2026-11-26] Revisi Form Data Calon Siswa — Implementasi Lokal & UAT
-- **Status:** Implementasi tersedia di working tree; belum commit/push/deploy karena cakupan pin map offline/UAT map, QR scan fisik, foto asli, MySQL/MariaDB, dan staging masih pending.
+### [2026-11-26] Revisi Form Data Calon Siswa — Implementasi, Test, Commit & Push
+- **Status:** Commit `6814d47` telah dipush ke `origin/main` (26 November 2026). Tidak ada deployment; verifikasi staging/production dan acceptance manual tetap pending.
 - **Ringkasan Perubahan:**
   - Menambahkan field biodata, alamat, orang tua/wali, pendidikan, NISN kondisional, dan dokumen TK; nilai KK, nomor bantuan, serta NIK orang tua dienkripsi. Migrasi data lama mengosongkan kolom NIK plaintext setelah enkripsi/HMAC.
   - Kesiapan pendaftaran mencakup field baru; umur tetap dihitung runtime. PDF final memuat data keluarga yang ditentukan, NIK orang tua/wali tersamar, dan status setiap berkas yang telah diunggah.
@@ -39,7 +39,7 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
   - `php artisan route:list --path=pendaftar`, `view:cache`, `view:clear`, inline map JavaScript syntax check, local map dataset integrity, `git diff --check` → PASSED.
 - **UAT Browser Lokal:** Final submit, pengesahan admin dummy, dan PDF final berhasil (sebelum tambahan wilayah). Uji ulang cascade dan salin alamat lulus; akun dummy kedua mengakses PDF akun pertama dan menerima 404. JPG dummy menyelesaikan hambatan PNG/GD. Automated QR verification: 4 tests/13 assertions lulus; pemindaian QR aktual dari kamera/PDF belum dilakukan. OTP fisik/WhatsApp, staging, dan produksi tidak diuji.
 - **Bukti & Gap:** Lihat `docs/phases/FORM-REVISION-IMPLEMENTATION-REPORT-2026-11-26.md`, `livetest/06-HASIL-UAT-FORM-2026-11-26.md`, `KNOWN-ISSUES.md` ISS-004/005/006/008, serta resolved ISS-009.
-- **Commit/Push/Deploy:** Tidak dilakukan; map pin, foto asli, QR scan fisik, validasi MySQL/MariaDB, dan staging masih pending.
+- **Commit/Push/Deploy:** `6814d47` berhasil dipush ke `origin/main`; deployment tidak dilakukan. UAT map pada form terautentikasi/GPS permission, foto asli, QR scan fisik, MySQL/MariaDB dan staging tercatat sebagai pekerjaan manual lanjutan.
 
 ### [2026-11-25] Hardening Fase 5 Wawancara — Sanitasi Sel Placeholder CSV (Task 5.3)
 - **Commit / Branch:** `main` (commit dan push disetujui pemilik)
