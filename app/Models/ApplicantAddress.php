@@ -25,6 +25,10 @@ class ApplicantAddress extends Model
         'province',
         'postal_code',
         'distance_to_school_km',
+        'province_code',
+        'city_code',
+        'district_code',
+        'village_code',
     ];
 
     protected function casts(): array

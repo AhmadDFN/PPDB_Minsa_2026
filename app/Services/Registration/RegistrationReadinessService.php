@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\Registration;
 
 use App\Enums\AdmissionPeriodStatus;
-use App\Enums\PreviousEducationLevel;
 use App\Models\AdmissionPeriod;
 use App\Models\Applicant;
 use App\Models\Registration;
@@ -39,8 +38,17 @@ class RegistrationReadinessService
             'gender' => 'Jenis kelamin',
             'birth_place' => 'Tempat lahir',
             'birth_date' => 'Tanggal lahir',
+            'student_phone' => 'Nomor handphone calon siswa',
             'child_order' => 'Urutan anak',
             'siblings_count' => 'Jumlah saudara',
+            'religion' => 'Agama',
+            'family_card_number_encrypted' => 'Nomor Kartu Keluarga',
+            'hobby' => 'Hobi',
+            'aspiration' => 'Cita-cita',
+            'residence_status' => 'Status tempat tinggal',
+            'travel_time' => 'Waktu tempuh',
+            'transportation' => 'Transportasi',
+            'social_assistance_number_encrypted' => 'Nomor bantuan sosial atau keterangan Tidak Ada',
         ]);
 
         if (
@@ -49,6 +57,9 @@ class RegistrationReadinessService
         ) {
             $biodataMissing[] = 'NIK calon siswa';
         }
+        if (! $applicant->nisn_unavailable_reason && $this->isMissing($applicant->nisn)) {
+            $biodataMissing[] = 'NISN calon siswa';
+        }
 
         $addressMissing = $this->missingFields($applicant->address, [
             'address_line' => 'Alamat jalan/dusun',
@@ -56,6 +67,10 @@ class RegistrationReadinessService
             'kecamatan' => 'Kecamatan',
             'city' => 'Kota/kabupaten',
             'province' => 'Provinsi',
+            'rt' => 'RT',
+            'rw' => 'RW',
+            'postal_code' => 'Kode pos',
+            'distance_to_school_km' => 'Jarak ke madrasah',
         ]);
 
         $fatherMissing = $this->missingFields($applicant->father, [
@@ -66,6 +81,18 @@ class RegistrationReadinessService
             'monthly_income' => 'Penghasilan ayah',
             'phone' => 'Nomor telepon ayah',
             'is_alive' => 'Status ayah',
+            'birth_place' => 'Tempat lahir ayah',
+            'birth_date' => 'Tanggal lahir ayah',
+            'residence' => 'Domisili ayah',
+            'address_line' => 'Alamat ayah',
+            'rt' => 'RT ayah',
+            'rw' => 'RW ayah',
+            'province' => 'Provinsi ayah',
+            'city' => 'Kota/kabupaten ayah',
+            'kecamatan' => 'Kecamatan ayah',
+            'kelurahan' => 'Kelurahan ayah',
+            'postal_code' => 'Kode pos ayah',
+            'residence_status' => 'Status tempat tinggal ayah',
         ]);
         $motherMissing = $this->missingFields($applicant->mother, [
             'name' => 'Nama ibu',
@@ -75,6 +102,18 @@ class RegistrationReadinessService
             'monthly_income' => 'Penghasilan ibu',
             'phone' => 'Nomor telepon ibu',
             'is_alive' => 'Status ibu',
+            'birth_place' => 'Tempat lahir ibu',
+            'birth_date' => 'Tanggal lahir ibu',
+            'residence' => 'Domisili ibu',
+            'address_line' => 'Alamat ibu',
+            'rt' => 'RT ibu',
+            'rw' => 'RW ibu',
+            'province' => 'Provinsi ibu',
+            'city' => 'Kota/kabupaten ibu',
+            'kecamatan' => 'Kecamatan ibu',
+            'kelurahan' => 'Kelurahan ibu',
+            'postal_code' => 'Kode pos ibu',
+            'residence_status' => 'Status tempat tinggal ibu',
         ]);
 
         $educationMissing = [];
@@ -82,11 +121,13 @@ class RegistrationReadinessService
 
         if ($education === null || $education->education_level === null) {
             $educationMissing[] = 'Jenjang pendidikan sebelumnya';
-        } elseif (
-            $education->education_level !== PreviousEducationLevel::NONE
-            && $this->isMissing($education->school_name)
-        ) {
-            $educationMissing[] = 'Nama sekolah/lembaga asal';
+        } else {
+            if ($this->isMissing($education->school_name)) {
+                $educationMissing[] = 'Nama sekolah/lembaga asal';
+            }
+            if ($this->isMissing($education->npsn)) {
+                $educationMissing[] = 'NPSN sekolah asal';
+            }
         }
 
         $period = $registration?->admissionPeriod;

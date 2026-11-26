@@ -23,12 +23,14 @@ class ApplicantEducation extends Model
         'school_name',
         'npsn',
         'city',
+        'nisn_unavailable',
     ];
 
     protected function casts(): array
     {
         return [
             'education_level' => PreviousEducationLevel::class,
+            'nisn_unavailable' => 'boolean',
         ];
     }
 

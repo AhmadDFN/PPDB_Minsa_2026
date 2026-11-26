@@ -3,6 +3,8 @@
 
 Dokumen ini menguraikan skenario langkah demi langkah (*step-by-step test journey*) saat Anda atau AI menjalankan live test sebagai masing-masing peran.
 
+> **Skema default:** mulai dari login akun dummy. `/daftar`, `/aktivasi`, OTP, dan WhatsApp bukan bagian dari prasyarat skenario ini; alur tersebut diuji manual terpisah oleh pemilik proyek.
+
 ---
 
 ## SKENARIO 1: Pengujian Sebagai Pendaftar Baru (Status DRAFT)

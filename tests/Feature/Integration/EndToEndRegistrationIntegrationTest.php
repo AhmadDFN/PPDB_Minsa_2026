@@ -160,9 +160,18 @@ class EndToEndRegistrationIntegrationTest extends TestCase
                 'gender' => 'L',
                 'birth_place' => 'Kota Madiun',
                 'birth_date' => '2020-01-15',
+                'student_phone' => '081234567890',
                 'nisn' => '0123456789',
                 'child_order' => 1,
                 'siblings_count' => 2,
+                'family_card_number' => '3573010101190001',
+                'religion' => 'Islam',
+                'hobby' => 'Membaca',
+                'aspiration' => 'Guru/Dosen',
+                'residence_status' => 'Rumah orang tua',
+                'travel_time' => '10 - 19 menit',
+                'transportation' => 'Jalan Kaki',
+                'social_assistance_number' => 'Tidak Ada',
             ])->assertRedirect(route('applicant.biodata.edit'))
             ->assertSessionHas('success');
 
@@ -177,7 +186,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
                 'city' => 'Kota Madiun',
                 'province' => 'Jawa Timur',
                 'postal_code' => '63117',
-                'distance_to_school_meters' => 850,
+                'distance_to_school_km' => 0.85,
             ])->assertRedirect(route('applicant.address.edit'))
             ->assertSessionHas('success');
 
@@ -186,18 +195,42 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             ->post(route('applicant.parents.update'), [
                 'father_name' => 'Bambang Sudarmono',
                 'father_nik' => '3573010101800001',
-                'father_is_alive' => '1',
-                'father_education' => 'S1',
+                'father_birth_place' => 'Madiun',
+                'father_birth_date' => '1980-01-01',
+                'father_status_label' => 'Masih Hidup',
+                'father_education' => 'D4/S1',
                 'father_occupation' => 'Pegawai Swasta',
-                'father_monthly_income' => 'Rp 5.000.000 - Rp 10.000.000',
+                'father_monthly_income' => '4.800.001 - 6.500.000',
                 'father_phone' => '081234567891',
+                'father_residence' => 'Kota Madiun',
+                'father_address_line' => 'Jalan Pahlawan Nomor 123',
+                'father_rt' => '002',
+                'father_rw' => '005',
+                'father_province' => 'Jawa Timur',
+                'father_city' => 'Kota Madiun',
+                'father_kecamatan' => 'Kartoharjo',
+                'father_kelurahan' => 'Kartoharjo',
+                'father_postal_code' => '63117',
+                'father_residence_status' => 'Rumah Orangtua',
                 'mother_name' => 'Siti Aminah',
                 'mother_nik' => '3573010101850002',
-                'mother_is_alive' => '1',
+                'mother_birth_place' => 'Madiun',
+                'mother_birth_date' => '1985-01-01',
+                'mother_status_label' => 'Masih Hidup',
                 'mother_education' => 'D3',
                 'mother_occupation' => 'Wiraswasta',
-                'mother_monthly_income' => 'Rp 3.000.000 - Rp 5.000.000',
+                'mother_monthly_income' => '2.500.001 - 3.500.000',
                 'mother_phone' => '081234567892',
+                'mother_residence' => 'Kota Madiun',
+                'mother_address_line' => 'Jalan Pahlawan Nomor 123',
+                'mother_rt' => '002',
+                'mother_rw' => '005',
+                'mother_province' => 'Jawa Timur',
+                'mother_city' => 'Kota Madiun',
+                'mother_kecamatan' => 'Kartoharjo',
+                'mother_kelurahan' => 'Kartoharjo',
+                'mother_postal_code' => '63117',
+                'mother_residence_status' => 'Rumah Orangtua',
                 'has_guardian' => '0',
             ])->assertRedirect(route('applicant.parents.edit'))
             ->assertSessionHas('success');
@@ -554,7 +587,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             'city' => 'Kota Madiun',
             'province' => 'Jawa Timur',
             'postal_code' => '63117',
-            'distance_to_school_meters' => 500,
+            'distance_to_school_km' => 0.5,
         ])->assertSessionHas('success');
 
         $registration->refresh();
@@ -663,7 +696,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
             'city' => 'Kota Madiun',
             'province' => 'Jawa Timur',
             'postal_code' => '63118',
-            'distance_to_school_meters' => 600,
+            'distance_to_school_km' => 0.6,
         ])->assertSessionHas('success');
 
         $this->assertSame(2, $applicantA['registration']->fresh()->data_revision);

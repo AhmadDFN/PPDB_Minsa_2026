@@ -131,7 +131,7 @@ class Registration extends Model
      */
     public function scopeSubmitted(Builder $query): Builder
     {
-        return $query->where('status', RegistrationStatus::SUBMITTED->value);
+        return $query->where('registrations.status', RegistrationStatus::SUBMITTED->value);
     }
 
     /**
@@ -139,7 +139,7 @@ class Registration extends Model
      */
     public function scopeDraft(Builder $query): Builder
     {
-        return $query->where('status', RegistrationStatus::DRAFT->value);
+        return $query->where('registrations.status', RegistrationStatus::DRAFT->value);
     }
 
     /**

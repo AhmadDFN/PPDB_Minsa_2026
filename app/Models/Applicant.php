@@ -9,11 +9,13 @@ use App\Enums\GuardianRelationship;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Database\Factories\ApplicantFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Crypt;
 
 class Applicant extends Model
 {
@@ -26,9 +28,22 @@ class Applicant extends Model
         'gender',
         'birth_place',
         'birth_date',
+        'student_phone',
         'nisn',
         'child_order',
         'siblings_count',
+        'family_card_number_encrypted',
+        'social_assistance_number_encrypted',
+        'nisn_unavailable_reason',
+        'religion',
+        'hobby',
+        'hobby_other',
+        'aspiration',
+        'aspiration_other',
+        'residence_status',
+        'travel_time',
+        'transportation',
+        'social_assistance_number',
     ];
 
     protected function casts(): array
@@ -39,6 +54,34 @@ class Applicant extends Model
             'child_order' => 'integer',
             'siblings_count' => 'integer',
         ];
+    }
+
+    protected function familyCardNumber(): Attribute
+    {
+        return $this->encryptedValue('family_card_number_encrypted');
+    }
+
+    protected function socialAssistanceNumber(): Attribute
+    {
+        return $this->encryptedValue('social_assistance_number_encrypted');
+    }
+
+    private function encryptedValue(string $column): Attribute
+    {
+        return Attribute::make(
+            get: function () use ($column): ?string {
+                $encrypted = $this->getRawOriginal($column);
+                if (! is_string($encrypted) || $encrypted === '') {
+                    return null;
+                }
+
+                try {
+                    return Crypt::decryptString($encrypted);
+                } catch (\Throwable) {
+                    return null;
+                }
+            },
+        );
     }
 
     public function user(): BelongsTo

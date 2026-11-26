@@ -81,13 +81,14 @@ class ApplicantEducationTest extends TestCase
         ]);
     }
 
-    public function test_applicant_can_save_education_with_none_level_and_no_school_name(): void
+    public function test_applicant_can_save_none_level_when_required_school_identifiers_are_provided(): void
     {
         [$user, $applicant] = $this->createApplicantUser();
 
         $response = $this->actingAs($user, 'web')->post(route('applicant.education.update'), [
             'education_level' => 'none',
-            'school_name' => '',
+            'school_name' => 'TK Contoh',
+            'npsn' => '12345678',
             'nav_action' => 'next',
         ]);
 
@@ -97,7 +98,7 @@ class ApplicantEducationTest extends TestCase
         $this->assertDatabaseHas('applicant_educations', [
             'applicant_id' => $applicant->id,
             'education_level' => PreviousEducationLevel::NONE->value,
-            'school_name' => null,
+            'school_name' => 'TK Contoh',
         ]);
     }
 
@@ -120,11 +121,13 @@ class ApplicantEducationTest extends TestCase
         $this->actingAs($user, 'web')->post(route('applicant.education.update'), [
             'education_level' => 'paud',
             'school_name' => 'PAUD Melati',
+            'npsn' => '12345678',
         ]);
 
         $this->actingAs($user, 'web')->post(route('applicant.education.update'), [
             'education_level' => 'tk',
             'school_name' => 'TK Harapan Bangsa',
+            'npsn' => '12345679',
         ]);
 
         $this->assertSame(1, ApplicantEducation::where('applicant_id', $applicant->id)->count());

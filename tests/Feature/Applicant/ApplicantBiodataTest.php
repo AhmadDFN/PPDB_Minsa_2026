@@ -74,6 +74,7 @@ class ApplicantBiodataTest extends TestCase
             'gender' => 'L',
             'birth_place' => 'Kota Madiun',
             'birth_date' => '2019-08-20',
+            'student_phone' => '081234567890',
             'nisn' => '0123456789',
             'child_order' => 2,
             'siblings_count' => 3,
@@ -88,6 +89,7 @@ class ApplicantBiodataTest extends TestCase
         $this->assertSame(Gender::MALE, $applicant->gender);
         $this->assertSame('Kota Madiun', $applicant->birth_place);
         $this->assertSame('2019-08-20', $applicant->birth_date->format('Y-m-d'));
+        $this->assertSame('081234567890', $applicant->student_phone);
         $this->assertSame('0123456789', $applicant->nisn);
         $this->assertSame(2, $applicant->child_order);
         $this->assertSame(3, $applicant->siblings_count);
@@ -103,6 +105,7 @@ class ApplicantBiodataTest extends TestCase
             'birth_place' => 'Madiun',
             'birth_date' => '2019-04-10',
             'nisn' => null,
+            'nisn_unavailable' => '1',
             'child_order' => 1,
             'siblings_count' => 1,
             'nav_action' => 'next',
@@ -151,6 +154,21 @@ class ApplicantBiodataTest extends TestCase
         $response->assertSessionHasErrors(['gender']);
     }
 
+    public function test_biodata_validation_rejects_invalid_student_phone(): void
+    {
+        [$user] = $this->createApplicantUser();
+
+        $this->actingAs($user, 'web')->post(route('applicant.biodata.update'), [
+            'full_name' => 'Testing Name',
+            'gender' => 'L',
+            'birth_place' => 'Madiun',
+            'birth_date' => '2019-01-01',
+            'student_phone' => 'telepon-rumah',
+            'child_order' => 1,
+            'siblings_count' => 1,
+        ])->assertSessionHasErrors('student_phone');
+    }
+
     public function test_biodata_update_ignores_tampered_nik_field(): void
     {
         $originalNik = '3573010101190001';
@@ -169,6 +187,24 @@ class ApplicantBiodataTest extends TestCase
         $user->refresh();
         $this->assertSame($originalNik, $user->getDecryptedNik());
         $this->assertSame(NikManager::hash($originalNik), $user->nik_lookup_hash);
+    }
+
+    public function test_marking_nisn_unavailable_clears_a_previously_saved_nisn(): void
+    {
+        [$user, $applicant] = $this->createApplicantUser([], ['nisn' => '0123456789']);
+
+        $this->actingAs($user)->post(route('applicant.biodata.update'), [
+            'full_name' => $applicant->full_name,
+            'gender' => 'L',
+            'birth_place' => $applicant->birth_place,
+            'birth_date' => $applicant->birth_date->format('Y-m-d'),
+            'nisn_unavailable' => '1',
+            'child_order' => 1,
+            'siblings_count' => 1,
+        ])->assertSessionHas('success');
+
+        $this->assertNull($applicant->fresh()->nisn);
+        $this->assertNotNull($applicant->fresh()->nisn_unavailable_reason);
     }
 
     public function test_cannot_update_another_applicants_biodata(): void

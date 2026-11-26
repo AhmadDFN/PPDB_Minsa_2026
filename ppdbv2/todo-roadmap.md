@@ -2,6 +2,20 @@
 
 Gunakan dokumen ini sebagai panduan eksekusi berurutan. Setiap menyelesaikan satu item: **kerjakan → jalankan test sederhana → update checklist ini & `PROGRESS-LOG.md` → commit & `git push origin main`**. Jika ada blocker, catat di `KNOWN-ISSUES.md` lalu lanjut ke task lain yang tidak bergantung.
 
+## Track Revisi Form Data Calon Siswa (26 November 2026)
+
+- [x] Additive migration untuk field biodata/alamat/orang tua/pendidikan dan penyimpanan encrypted KK, nomor bantuan, serta NIK orang tua; backfill legacy NIK.
+- [x] Form Request, Action, checkbox NISN kondisional, No. Handphone calon siswa, kesiapan field, kebutuhan dokumen, review/admin/PDF privat dan UI Blade untuk field yang telah disepakati.
+- [x] Perbaikan overflow langkah form; biodata/alamat/orang tua/pendidikan/dokumen/tinjau diperiksa pada 360 px, seluruhnya tanpa overflow halaman; browser recheck dilakukan pada 26 Nov 2026.
+- [x] PDF final dapat dibuat lewat JPG; NIK pada PDF dimasking. UAT final submit/admin verify/PDF dan IDOR manual dokumen lintas akun menghasilkan 404.
+- [x] Wilayah cascade dari dataset lokal berlisensi (91.599 baris) dan koordinat Kampus 1 dari direktori Kemendikdasmen; cascade serta salin alamat diuji pada browser lokal. Dataset 2025 disertakan dengan atribusi/lisensi upstream.
+- [x] Widget peta offline dari OSM lokal, pin tap/drag/keyboard, geolocation opt-in, preview dan kalkulasi Haversine backend; test membuktikan koordinat tidak disimpan. Harness browser komponen 360×800/390×844 lulus tanpa overflow. Cakupan map hanya sekitar Kampus 1; UAT full form map pending (ISS-004/ISS-008).
+- [x] Full test (388 total; 373 lulus, 15 skipped; 1.781 assertions), Pint, build, npm/Composer audit, route/view, JavaScript syntax, map data integrity, dan diff-check.
+- [ ] Verifikasi foto asli/latar biru (ISS-005); JPG dummy UAT bukan bukti foto sesuai ketentuan.
+- [ ] Scan QR aktual dari PDF final pada perangkat/kamera; automated verification tests sudah lulus (ISS-006).
+- [x] `composer audit` lulus setelah retry (tidak ada security vulnerability advisories; percobaan pertama sempat HTTP 502).
+- [ ] Sinkronisasi/push/deploy hanya setelah acceptance gap tersisa dan gate visual map mobile, DB MySQL/MariaDB, QR fisik, foto asli, serta staging ditutup.
+
 ---
 
 ## Fase 0: Pre-Flight & Kesehatan Fondasi (Wajib Pertama)

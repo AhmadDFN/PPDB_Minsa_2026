@@ -39,7 +39,7 @@ class DocumentRequirementService
         $registration->loadMissing('admissionPeriodProgram');
         $programId = $registration->admissionPeriodProgram?->program_id;
 
-        return DocumentRequirement::query()
+        $requirements = DocumentRequirement::query()
             ->where('admission_period_id', $registration->admission_period_id)
             ->where(function ($query) use ($programId): void {
                 $query->whereNull('program_id');
@@ -51,6 +51,15 @@ class DocumentRequirementService
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
+
+        $registration->loadMissing('applicant');
+        if ($registration->applicant?->nisn_unavailable_reason) {
+            $requirements = $requirements
+                ->reject(fn (DocumentRequirement $requirement): bool => strtoupper($requirement->code) === 'NISN')
+                ->values();
+        }
+
+        return $requirements;
     }
 
     public function findForRegistrationOrFail(int|string $requirementId, Registration $registration): DocumentRequirement

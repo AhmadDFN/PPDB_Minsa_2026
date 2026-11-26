@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\RegistrationReopenController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SystemSettingController;
+use App\Http\Controllers\Applicant\AdministrativeRegionController;
 use App\Http\Controllers\Applicant\ApplicantPasswordChangeController;
 use App\Http\Controllers\Applicant\DashboardController;
 use App\Http\Controllers\Applicant\DocumentController;
@@ -84,6 +85,7 @@ Route::get('/verifikasi/bukti-pendaftaran/{token}', [RegistrationPdfVerification
 
 // Protected Applicant Area
 Route::middleware(['auth', 'active', 'applicant'])->prefix('pendaftar')->name('applicant.')->group(function () {
+    Route::get('/wilayah', [AdministrativeRegionController::class, 'index'])->name('regions.index');
     // Mandatory Password Change (accessible even when on temporary password)
     Route::get('/ganti-password', [ApplicantPasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/ganti-password', [ApplicantPasswordChangeController::class, 'update'])->name('password.change.update');

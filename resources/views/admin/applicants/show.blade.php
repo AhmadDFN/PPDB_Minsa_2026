@@ -170,6 +170,10 @@
                                 <dt class="text-gray-500 font-medium">Nomor WhatsApp Akun</dt>
                                 <dd class="mt-0.5 font-mono text-gray-900">{{ $applicant?->user?->phone ?? '-' }}</dd>
                             </div>
+                            <div>
+                                <dt class="text-gray-500 font-medium">No. Handphone Calon Siswa</dt>
+                                <dd class="mt-0.5 font-mono text-gray-900">{{ $applicant?->student_phone ?? '-' }}</dd>
+                            </div>
                         </dl>
                     </div>
                 </div>

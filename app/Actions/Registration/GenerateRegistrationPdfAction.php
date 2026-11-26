@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions\Registration;
 
+use App\Enums\DocumentVerificationStatus;
 use App\Enums\PdfDocumentType;
 use App\Exceptions\RegistrationPdfGenerationException;
+use App\Models\ApplicantGuardian;
 use App\Models\Registration;
 use App\Models\RegistrationLog;
 use App\Models\RegistrationPdfVersion;
@@ -265,29 +267,66 @@ class GenerateRegistrationPdfAction
                 : 'Belum ditentukan',
             'applicant' => [
                 'full_name' => $applicant->full_name,
-                'nik' => $type === PdfDocumentType::FINAL ? $nik : NikManager::mask($nik),
+                'student_phone' => $applicant->student_phone,
+                'nik' => NikManager::mask($nik),
+                'family_card_number' => NikManager::mask((string) $applicant->family_card_number),
+                'social_assistance_number' => $this->maskAssistanceNumber($applicant->social_assistance_number),
                 'gender' => $applicant->gender?->label() ?? 'Belum diisi',
                 'birth_place' => $applicant->birth_place,
                 'birth_date' => $applicant->birth_date?->copy()->locale('id')->translatedFormat('d F Y'),
                 'nisn' => $applicant->nisn,
                 'child_order' => $applicant->child_order,
                 'siblings_count' => $applicant->siblings_count,
+                'religion' => $applicant->religion,
+                'hobby' => $applicant->hobby === 'Lainnya' ? $applicant->hobby_other : $applicant->hobby,
+                'aspiration' => $applicant->aspiration === 'Lainnya' ? $applicant->aspiration_other : $applicant->aspiration,
+                'residence_status' => $applicant->residence_status,
+                'travel_time' => $applicant->travel_time,
+                'transportation' => $applicant->transportation,
             ],
             'address' => $applicant->address?->full_address,
+            'distance_to_school_km' => $applicant->address?->distance_to_school_km,
             'father' => [
                 'name' => $applicant->father?->name,
+                'nik' => NikManager::mask((string) $applicant->father?->nik),
+                'birth_place' => $applicant->father?->birth_place,
+                'birth_date' => $applicant->father?->birth_date?->copy()->locale('id')->translatedFormat('d F Y'),
+                'status' => $applicant->father?->status_label ?? ($applicant->father?->is_alive ? 'Masih Hidup' : 'Sudah Meninggal'),
+                'education' => $applicant->father?->education,
                 'phone' => $applicant->father?->phone,
                 'occupation' => $applicant->father?->occupation,
+                'monthly_income' => $applicant->father?->monthly_income,
+                'residence' => $applicant->father?->residence,
+                'address' => $this->guardianAddress($applicant->father),
+                'residence_status' => $applicant->father?->residence_status,
             ],
             'mother' => [
                 'name' => $applicant->mother?->name,
+                'nik' => NikManager::mask((string) $applicant->mother?->nik),
+                'birth_place' => $applicant->mother?->birth_place,
+                'birth_date' => $applicant->mother?->birth_date?->copy()->locale('id')->translatedFormat('d F Y'),
+                'status' => $applicant->mother?->status_label ?? ($applicant->mother?->is_alive ? 'Masih Hidup' : 'Sudah Meninggal'),
+                'education' => $applicant->mother?->education,
                 'phone' => $applicant->mother?->phone,
                 'occupation' => $applicant->mother?->occupation,
+                'monthly_income' => $applicant->mother?->monthly_income,
+                'residence' => $applicant->mother?->residence,
+                'address' => $this->guardianAddress($applicant->mother),
+                'residence_status' => $applicant->mother?->residence_status,
             ],
             'guardian' => $applicant->guardian === null ? null : [
                 'name' => $applicant->guardian->name,
+                'nik' => NikManager::mask((string) $applicant->guardian->nik),
+                'birth_place' => $applicant->guardian->birth_place,
+                'birth_date' => $applicant->guardian->birth_date?->copy()->locale('id')->translatedFormat('d F Y'),
+                'status' => $applicant->guardian->status_label,
+                'education' => $applicant->guardian->education,
                 'phone' => $applicant->guardian->phone,
                 'occupation' => $applicant->guardian->occupation,
+                'monthly_income' => $applicant->guardian->monthly_income,
+                'residence' => $applicant->guardian->residence,
+                'address' => $this->guardianAddress($applicant->guardian),
+                'residence_status' => $applicant->guardian->residence_status,
             ],
             'education' => [
                 'level' => $education?->education_level?->label() ?? 'Belum diisi',
@@ -296,6 +335,17 @@ class GenerateRegistrationPdfAction
                 'city' => $education?->city,
             ],
             'program_name' => $program?->name ?: 'Belum dipilih',
+            'documents' => $registration->documents()
+                ->with('requirement')
+                ->orderBy('id')
+                ->get()
+                ->map(fn ($document): array => [
+                    'name' => $document->requirement?->name ?? 'Dokumen pendaftaran',
+                    'status' => $document->verification_status instanceof DocumentVerificationStatus
+                        ? $document->verification_status->label()
+                        : 'Menunggu pemeriksaan',
+                ])
+                ->all(),
             'consent' => $registration->consent?->is_agreed
                 ? [
                     'statement_text' => $registration->consent->statement_text,
@@ -348,6 +398,38 @@ class GenerateRegistrationPdfAction
         }
 
         return 'data:'.$image['mime'].';base64,'.base64_encode($bytes);
+    }
+
+    private function guardianAddress(?ApplicantGuardian $guardian): ?string
+    {
+        if ($guardian === null) {
+            return null;
+        }
+
+        return implode(', ', array_filter([
+            $guardian->address_line,
+            $guardian->rt ? 'RT '.$guardian->rt : null,
+            $guardian->rw ? 'RW '.$guardian->rw : null,
+            $guardian->kelurahan,
+            $guardian->kecamatan,
+            $guardian->city,
+            $guardian->province,
+            $guardian->postal_code,
+        ]));
+    }
+
+    private function maskAssistanceNumber(?string $number): ?string
+    {
+        if ($number === null || in_array(mb_strtolower(trim($number)), ['tidak ada', '-'], true)) {
+            return $number;
+        }
+
+        $digits = preg_replace('/\D/', '', $number);
+        if (! is_string($digits) || $digits === '') {
+            return 'Tercatat';
+        }
+
+        return str_repeat('*', max(0, strlen($digits) - 4)).substr($digits, -4);
     }
 
     private function verificationUrl(string $token, string $registrationNumber): string

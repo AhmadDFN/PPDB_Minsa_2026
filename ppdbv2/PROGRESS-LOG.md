@@ -20,6 +20,27 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-26] Revisi Form Data Calon Siswa — Implementasi Lokal & UAT
+- **Status:** Implementasi tersedia di working tree; belum commit/push/deploy karena cakupan pin map offline/UAT map, QR scan fisik, foto asli, MySQL/MariaDB, dan staging masih pending.
+- **Ringkasan Perubahan:**
+  - Menambahkan field biodata, alamat, orang tua/wali, pendidikan, NISN kondisional, dan dokumen TK; nilai KK, nomor bantuan, serta NIK orang tua dienkripsi. Migrasi data lama mengosongkan kolom NIK plaintext setelah enkripsi/HMAC.
+  - Kesiapan pendaftaran mencakup field baru; umur tetap dihitung runtime. PDF final memuat data keluarga yang ditentukan, NIK orang tua/wali tersamar, dan status setiap berkas yang telah diunggah.
+  - Menambahkan No. Handphone Calon Siswa terpisah dari WA akun/OTP orang tua; nilai tervalidasi, readiness, review, admin detail, dan PDF privat diperbarui. NISN yang ditandai belum tersedia kini dibersihkan dari nilai lama.
+  - Menambahkan snapshot lokal wilayah administrasi 2025 beserta atribusi/lisensi upstream, migration, seeder, API bertingkat dan cascading select; kode wilayah divalidasi terhadap parent dan label disimpan dari katalog. Seeder lokal mengimpor 91.599 baris (38 provinsi, 83.762 desa/kelurahan).
+  - Widget peta offline dibuat dari potongan OpenStreetMap sekitar Kampus 1 (2.805 fitur; 138 jalan dan 2.667 bangunan), beserta skrip konversi, atribusi, dan catatan ODbL. Pin mendukung tap/klik, drag, keyboard; geolocation hanya diminta lewat tombol eksplisit. Preview dan backend menghitung Haversine; koordinat tidak disimpan. Fallback jarak manual aktif. Harness browser komponen memverifikasi tap/drag/keyboard, titik luar cakupan, jarak manual, 360×800 dan 390×844 tanpa overflow; bukan UAT form pendaftar penuh. Cakupan visual masih sekitar kampus.
+  - Recheck browser mobile pada biodata/alamat/orang tua/pendidikan/dokumen/tinjau di viewport 360×800: tidak ada overflow horizontal. Cascade Jatim → Kota Madiun → Taman → Demangan dan tombol salin alamat orang tua berhasil. Harness widget map di 360×800/390×844 juga tanpa overflow dan console errors.
+- **File Utama:** migrations, models, Form Requests, Actions, readiness/profile services, Blade formulir/PDF, factories, feature tests, dan roadmap terkait.
+- **Hasil Test Faktual:**
+  - `php artisan test` → PASSED (388 tests; 373 passed; 15 skipped; 1,781 assertions).
+  - `vendor/bin/pint --test` → PASSED.
+  - `npm.cmd run build` → PASSED.
+  - `npm.cmd audit` → PASSED (0 vulnerabilities).
+  - `composer audit` → PASSED saat retry (Packagist pulih; tidak ditemukan security vulnerability advisories; percobaan pertama mendapat HTTP/2 502).
+  - `php artisan route:list --path=pendaftar`, `view:cache`, `view:clear`, inline map JavaScript syntax check, local map dataset integrity, `git diff --check` → PASSED.
+- **UAT Browser Lokal:** Final submit, pengesahan admin dummy, dan PDF final berhasil (sebelum tambahan wilayah). Uji ulang cascade dan salin alamat lulus; akun dummy kedua mengakses PDF akun pertama dan menerima 404. JPG dummy menyelesaikan hambatan PNG/GD. Automated QR verification: 4 tests/13 assertions lulus; pemindaian QR aktual dari kamera/PDF belum dilakukan. OTP fisik/WhatsApp, staging, dan produksi tidak diuji.
+- **Bukti & Gap:** Lihat `docs/phases/FORM-REVISION-IMPLEMENTATION-REPORT-2026-11-26.md`, `livetest/06-HASIL-UAT-FORM-2026-11-26.md`, `KNOWN-ISSUES.md` ISS-004/005/006/008, serta resolved ISS-009.
+- **Commit/Push/Deploy:** Tidak dilakukan; map pin, foto asli, QR scan fisik, validasi MySQL/MariaDB, dan staging masih pending.
+
 ### [2026-11-25] Hardening Fase 5 Wawancara — Sanitasi Sel Placeholder CSV (Task 5.3)
 - **Commit / Branch:** `main` (commit dan push disetujui pemilik)
 - **Ringkasan Perubahan:**

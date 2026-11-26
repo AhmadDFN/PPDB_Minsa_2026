@@ -75,13 +75,39 @@
                     <!-- NISN -->
                     <x-forms.input
                         name="nisn"
+                        id="nisn"
                         label="Nomor Induk Siswa Nasional (NISN)"
                         type="text"
                         maxlength="10"
-                        placeholder="10 digit NISN (jika ada)"
+                        placeholder="10 digit NISN"
                         :value="old('nisn', $applicant->nisn)"
-                        help="Kosongkan jika calon siswa belum memiliki NISN dari TK/RA."
+                        required
+                        help="Isi NISN, atau centang pilihan di bawah jika belum memiliki NISN."
                     />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <x-forms.input name="family_card_number" label="Nomor Kartu Keluarga" type="text" inputmode="numeric" maxlength="16" :value="old('family_card_number', $applicant->family_card_number)" required help="16 digit. Nomor disimpan terenkripsi." />
+                    <x-forms.select name="religion" label="Agama" :selected="old('religion', $applicant->religion)" :options="['Islam'=>'Islam','Kristen Protestan'=>'Kristen Protestan','Katolik'=>'Katolik','Hindu'=>'Hindu','Buddha'=>'Buddha','Konghucu'=>'Konghucu']" required />
+                </div>
+
+                <x-forms.input name="student_phone" label="No. Handphone Calon Siswa" type="tel" inputmode="tel" autocomplete="tel" :value="old('student_phone', $applicant->student_phone)" required help="Jika belum memiliki nomor sendiri, isi nomor yang dapat dihubungi." />
+
+                <label for="nisn_unavailable" class="flex items-start gap-3 rounded-xl border border-neutral-200 p-4 text-sm text-neutral-700">
+                    <input id="nisn_unavailable" name="nisn_unavailable" type="checkbox" value="1" @checked(old('nisn_unavailable', $education?->nisn_unavailable ?? false)) class="mt-1 h-5 w-5 rounded border-neutral-300 text-primary-600" />
+                    <span>Siswa belum mempunyai NISN dari asal TK</span>
+                </label>
+                <p class="-mt-4 text-xs text-neutral-500">Jika belum memiliki NISN, lampiran scan NISN tidak diwajibkan.</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <x-forms.select name="hobby" label="Hobi" :selected="old('hobby', $applicant->hobby)" :options="['Olahraga'=>'Olahraga','Kesenian'=>'Kesenian','Membaca'=>'Membaca','Menulis'=>'Menulis','Jalan-jalan'=>'Jalan-jalan','Lainnya'=>'Lainnya']" required />
+                    <x-forms.input name="hobby_other" label="Hobi lainnya" type="text" :value="old('hobby_other', $applicant->hobby_other)" />
+                    <x-forms.select name="aspiration" label="Cita-cita" :selected="old('aspiration', $applicant->aspiration)" :options="['PNS'=>'PNS','TNI/POLRI'=>'TNI/POLRI','Guru/Dosen'=>'Guru/Dosen','Dokter'=>'Dokter','Politikus'=>'Politikus','Wiraswasta'=>'Wiraswasta','Seniman/Artis'=>'Seniman/Artis','Ilmuwan'=>'Ilmuwan','Agamawan'=>'Agamawan','Lainnya'=>'Lainnya']" required />
+                    <x-forms.input name="aspiration_other" label="Cita-cita lainnya" type="text" :value="old('aspiration_other', $applicant->aspiration_other)" />
+                    <x-forms.select name="residence_status" label="Status Tempat Tinggal" :selected="old('residence_status', $applicant->residence_status)" :options="['Rumah orang tua'=>'Rumah orang tua','Rumah Saudara/ kerabat'=>'Rumah Saudara/kerabat','Rumah Dinas'=>'Rumah Dinas','Rumah Sewa / kontrak'=>'Rumah Sewa/kontrak','Lainnya'=>'Lainnya']" required />
+                    <x-forms.select name="travel_time" label="Waktu Tempuh" :selected="old('travel_time', $applicant->travel_time)" :options="['1 - 10 menit'=>'1 - 10 menit','10 - 19 menit'=>'10 - 19 menit','20 - 29 menit'=>'20 - 29 menit','30 - 39 menit'=>'30 - 39 menit','> 1 jam'=>'> 1 jam']" required />
+                    <x-forms.select name="transportation" label="Transportasi ke Sekolah" :selected="old('transportation', $applicant->transportation)" :options="['Jalan Kaki'=>'Jalan Kaki','Sepeda'=>'Sepeda','Antar Jemput Sekolah'=>'Antar Jemput Sekolah']" required />
+                    <x-forms.input name="social_assistance_number" label="Nomor KIP / PKH / KKS" type="text" :value="old('social_assistance_number', $applicant->social_assistance_number)" required help="Jika tidak memiliki kartu, isi Tidak Ada." />
                 </div>
 
                 <!-- Tempat & Tanggal Lahir -->
@@ -148,4 +174,19 @@
             </form>
         </x-ui.card>
     </div>
+    @push('scripts')
+    <script>
+        (() => {
+            const checkbox = document.getElementById('nisn_unavailable');
+            const nisn = document.getElementById('nisn');
+            if (!checkbox || !nisn) return;
+            const syncNisnRequirement = () => {
+                nisn.required = !checkbox.checked;
+                nisn.disabled = checkbox.checked;
+            };
+            checkbox.addEventListener('change', syncNisnRequirement);
+            syncNisnRequirement();
+        })();
+    </script>
+    @endpush
 </x-layouts.applicant>

@@ -82,7 +82,18 @@ class ApplicantProfileService
 
         // 1. Biodata Status (mandatory: full_name, gender, birth_place, birth_date, child_order, siblings_count)
         $hasBasicBio = ! empty($applicant->full_name) && ! empty($applicant->gender) && ! empty($applicant->birth_place) && ! empty($applicant->birth_date);
-        $hasCompleteBio = $hasBasicBio && $applicant->child_order !== null && $applicant->siblings_count !== null;
+        $hasCompleteBio = $hasBasicBio
+            && $applicant->child_order !== null
+            && $applicant->siblings_count !== null
+            && filled($applicant->religion)
+            && filled($applicant->family_card_number_encrypted)
+            && ($applicant->nisn_unavailable_reason || filled($applicant->nisn))
+            && filled($applicant->hobby)
+            && filled($applicant->aspiration)
+            && filled($applicant->residence_status)
+            && filled($applicant->travel_time)
+            && filled($applicant->transportation)
+            && filled($applicant->social_assistance_number_encrypted);
         $biodataStatus = [
             'status' => $hasCompleteBio ? 'lengkap' : ($hasBasicBio ? 'belum_lengkap' : 'belum_diisi'),
             'label' => $hasCompleteBio ? 'Lengkap' : ($hasBasicBio ? 'Belum Lengkap' : 'Belum Diisi'),
@@ -91,7 +102,9 @@ class ApplicantProfileService
 
         // 2. Address Status (mandatory: address_line, kelurahan, kecamatan, city, province)
         $address = $applicant->address;
-        $hasAddress = $address && ! empty($address->address_line) && ! empty($address->kelurahan) && ! empty($address->kecamatan) && ! empty($address->city) && ! empty($address->province);
+        $hasAddress = $address && ! empty($address->address_line) && ! empty($address->rt) && ! empty($address->rw)
+            && ! empty($address->postal_code) && ! empty($address->distance_to_school_km)
+            && ! empty($address->kelurahan) && ! empty($address->kecamatan) && ! empty($address->city) && ! empty($address->province);
         $addressStatus = [
             'status' => $hasAddress ? 'lengkap' : 'belum_diisi',
             'label' => $hasAddress ? 'Lengkap' : 'Belum Diisi',
@@ -100,7 +113,10 @@ class ApplicantProfileService
 
         // 3. Father Status (mandatory: name, education, occupation, monthly_income)
         $father = $applicant->father;
-        $hasFather = $father && ! empty($father->name) && ! empty($father->occupation);
+        $hasFather = $father && ! empty($father->name) && ! empty($father->nik_encrypted)
+            && ! empty($father->birth_place) && ! empty($father->birth_date) && ! empty($father->education)
+            && ! empty($father->occupation) && ! empty($father->monthly_income) && ! empty($father->phone)
+            && ! empty($father->address_line) && ! empty($father->postal_code) && ! empty($father->residence_status);
         $fatherStatus = [
             'status' => $hasFather ? 'lengkap' : 'belum_diisi',
             'label' => $hasFather ? 'Lengkap' : 'Belum Diisi',
@@ -109,7 +125,10 @@ class ApplicantProfileService
 
         // 4. Mother Status (mandatory: name, education, occupation, monthly_income)
         $mother = $applicant->mother;
-        $hasMother = $mother && ! empty($mother->name) && ! empty($mother->occupation);
+        $hasMother = $mother && ! empty($mother->name) && ! empty($mother->nik_encrypted)
+            && ! empty($mother->birth_place) && ! empty($mother->birth_date) && ! empty($mother->education)
+            && ! empty($mother->occupation) && ! empty($mother->monthly_income) && ! empty($mother->phone)
+            && ! empty($mother->address_line) && ! empty($mother->postal_code) && ! empty($mother->residence_status);
         $motherStatus = [
             'status' => $hasMother ? 'lengkap' : 'belum_diisi',
             'label' => $hasMother ? 'Lengkap' : 'Belum Diisi',
@@ -132,7 +151,7 @@ class ApplicantProfileService
         if ($education) {
             if ($education->education_level === PreviousEducationLevel::NONE) {
                 $hasEducation = true;
-            } elseif (! empty($education->school_name)) {
+            } elseif (! empty($education->school_name) && ! empty($education->npsn)) {
                 $hasEducation = true;
             }
         }

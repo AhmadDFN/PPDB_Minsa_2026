@@ -9,6 +9,23 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEducationRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $education = $this->user()?->applicant?->education;
+        if (! $education) {
+            return;
+        }
+
+        $stored = [
+            'education_level' => $education->education_level?->value ?? $education->education_level,
+            'school_name' => $education->school_name,
+            'npsn' => $education->npsn,
+            'city' => $education->city,
+            'nisn_unavailable' => $education->nisn_unavailable,
+        ];
+        $this->merge(array_filter(array_diff_key($stored, $this->all()), static fn (mixed $value): bool => $value !== null));
+    }
+
     public function authorize(): bool
     {
         return $this->user() && $this->user()->isApplicant();
@@ -21,8 +38,9 @@ class UpdateEducationRequest extends FormRequest
     {
         return [
             'education_level' => ['required', 'string', 'in:ra,tk,paud,other,none'],
-            'school_name' => ['required_unless:education_level,none', 'nullable', 'string', 'max:255'],
-            'npsn' => ['nullable', 'string', 'max:10'],
+            'school_name' => ['required', 'string', 'max:255'],
+            'npsn' => ['required', 'string', 'regex:/^\d{8}$/'],
+            'nisn_unavailable' => ['nullable', 'boolean'],
             'city' => ['nullable', 'string', 'max:100'],
         ];
     }
@@ -35,9 +53,10 @@ class UpdateEducationRequest extends FormRequest
         return [
             'education_level.required' => 'Jenjang pendidikan anak sebelumnya wajib dipilih.',
             'education_level.in' => 'Pilihan jenjang pendidikan tidak valid.',
-            'school_name.required_unless' => 'Nama sekolah / lembaga asal wajib diisi jika anak pernah bersekolah TK/RA/PAUD.',
+            'school_name.required' => 'Nama sekolah / lembaga asal wajib diisi.',
             'school_name.max' => 'Nama sekolah maksimal 255 karakter.',
-            'npsn.max' => 'NPSN maksimal 10 karakter.',
+            'npsn.required' => 'NPSN TK/RA wajib diisi.',
+            'npsn.regex' => 'NPSN harus terdiri dari 8 digit angka.',
         ];
     }
 }

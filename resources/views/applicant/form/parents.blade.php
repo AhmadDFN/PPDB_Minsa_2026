@@ -21,23 +21,43 @@
 
         @php
             $educations = [
-                'Tidak Sekolah' => 'Tidak Sekolah',
-                'SD / MI' => 'SD / MI / Sederajat',
-                'SMP / MTs' => 'SMP / MTs / Sederajat',
-                'SMA / MA / SMK' => 'SMA / MA / SMK / Sederajat',
-                'D1 / D2 / D3' => 'Diploma (D1 / D2 / D3)',
-                'S1 / D4' => 'Sarjana (S1 / D4)',
+                'Tidak Bersekolah' => 'Tidak Bersekolah',
+                'SD/Sederajat' => 'SD/Sederajat',
+                'SMP/Sederajat' => 'SMP/Sederajat',
+                'SMA/Sederajat' => 'SMA/Sederajat',
+                'D1' => 'D1',
+                'D2' => 'D2',
+                'D3' => 'D3',
+                'D4/S1' => 'D4/S1',
                 'S2' => 'Magister (S2)',
                 'S3' => 'Doktor (S3)',
+                'Lainnya' => 'Lainnya',
             ];
 
             $incomes = [
-                'Tidak Berpenghasilan' => 'Tidak Berpenghasilan',
-                '< 1.000.000' => 'Kurang dari Rp 1.000.000',
-                '1.000.000 - 3.000.000' => 'Rp 1.000.000 - Rp 3.000.000',
-                '3.000.000 - 5.000.000' => 'Rp 3.000.000 - Rp 5.000.000',
-                '5.000.000 - 10.000.000' => 'Rp 5.000.000 - Rp 10.000.000',
-                '> 10.000.000' => 'Lebih dari Rp 10.000.000',
+                'dibawah 800.000' => 'dibawah 800.000',
+                '800.001 - 1.200.000' => '800.001 - 1.200.000',
+                '1.200.001 - 1.800.000' => '1.200.001 - 1.800.000',
+                '1.800.001 - 2.500.000' => '1.800.001 - 2.500.000',
+                '2.500.001 - 3.500.000' => '2.500.001 - 3.500.000',
+                '3.500.001 - 4.800.000' => '3.500.001 - 4.800.000',
+                '4.800.001 - 6.500.000' => '4.800.001 - 6.500.000',
+                '6.500.001 - 10.000.000' => '6.500.001 - 10.000.000',
+                '10.000.001 - 20.000.000' => '10.000.001 - 20.000.000',
+                'diatas 20.000.001' => 'diatas 20.000.001',
+            ];
+
+            $occupations = array_combine(
+                ['Tidak bekerja', 'Pensiunan', 'PNS', 'TNI/POLRI', 'Guru/Dosen', 'Wiraswasta', 'Pegawai Swasta', 'Pengacara/Jaksa/Hakim/Notaris', 'Seniman/Pelukis/Artis', 'Dokter/Bidan/Perawat', 'Pilot/Pramugara', 'Buruh(Tani/Pabrik,Bangunan)', 'Politikus', 'Lainnya'],
+                ['Tidak bekerja', 'Pensiunan', 'PNS', 'TNI/POLRI', 'Guru/Dosen', 'Wiraswasta', 'Pegawai Swasta', 'Pengacara/Jaksa/Hakim/Notaris', 'Seniman/Pelukis/Artis', 'Dokter/Bidan/Perawat', 'Pilot/Pramugara', 'Buruh(Tani/Pabrik,Bangunan)', 'Politikus', 'Lainnya'],
+            );
+
+            $residenceStatuses = [
+                'Rumah Orangtua' => 'Rumah Orangtua',
+                'Rumah Saudara/Kerabat' => 'Rumah Saudara/Kerabat',
+                'Rumah Dinas' => 'Rumah Dinas',
+                'Rumah Sewa/Kontrak' => 'Rumah Sewa/Kontrak',
+                'Lainnya' => 'Lainnya',
             ];
         @endphp
 
@@ -78,11 +98,13 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <x-forms.input name="father_birth_place" label="Tempat Lahir Ayah" type="text" :value="old('father_birth_place', $father?->birth_place)" required />
+                        <x-forms.input name="father_birth_date" label="Tanggal Lahir Ayah" type="date" :value="old('father_birth_date', $father?->birth_date?->format('Y-m-d'))" required />
                         <x-forms.select
-                            name="father_is_alive"
-                            label="Status Keberadaan Ayah"
-                            :selected="old('father_is_alive', $father ? ($father->is_alive ? '1' : '0') : '1')"
-                            :options="['1' => 'Masih Hidup', '0' => 'Sudah Meninggal']"
+                            name="father_status_label"
+                            label="Status Ayah"
+                            :selected="old('father_status_label', $father?->status_label ?? 'Masih Hidup')"
+                            :options="['Masih Hidup' => 'Masih Hidup', 'Sudah Meninggal' => 'Sudah Meninggal', 'Tidak di ketahui' => 'Tidak diketahui']"
                             required
                         />
 
@@ -106,12 +128,11 @@
                             required
                         />
 
-                        <x-forms.input
+                        <x-forms.select
                             name="father_occupation"
-                            label="Pekerjaan Ayah"
-                            type="text"
-                            placeholder="Contoh: Karyawan Swasta / PNS / Wiraswasta"
-                            :value="old('father_occupation', $father?->occupation)"
+                            label="Pekerjaan Utama Ayah"
+                            :options="$occupations"
+                            :selected="old('father_occupation', $father?->occupation)"
                             required
                         />
 
@@ -123,6 +144,11 @@
                             :options="$incomes"
                             required
                         />
+                    </div>
+                    <h3 class="pt-4 border-t text-sm font-bold text-neutral-800">Alamat dan tempat tinggal ayah</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        @include('applicant.form.partials.parent-address-fields', ['prefix' => 'father', 'record' => $father, 'required' => true, 'studentAddress' => $studentAddress])
+                        <x-forms.select name="father_residence_status" label="Status tempat tinggal ayah" :options="$residenceStatuses" :selected="old('father_residence_status', $father?->residence_status)" required />
                     </div>
                 </div>
             </x-ui.card>
@@ -161,11 +187,13 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <x-forms.input name="mother_birth_place" label="Tempat Lahir Ibu" type="text" :value="old('mother_birth_place', $mother?->birth_place)" required />
+                        <x-forms.input name="mother_birth_date" label="Tanggal Lahir Ibu" type="date" :value="old('mother_birth_date', $mother?->birth_date?->format('Y-m-d'))" required />
                         <x-forms.select
-                            name="mother_is_alive"
-                            label="Status Keberadaan Ibu"
-                            :selected="old('mother_is_alive', $mother ? ($mother->is_alive ? '1' : '0') : '1')"
-                            :options="['1' => 'Masih Hidup', '0' => 'Sudah Meninggal']"
+                            name="mother_status_label"
+                            label="Status Ibu"
+                            :selected="old('mother_status_label', $mother?->status_label ?? 'Masih Hidup')"
+                            :options="['Masih Hidup' => 'Masih Hidup', 'Sudah Meninggal' => 'Sudah Meninggal', 'Tidak di ketahui' => 'Tidak diketahui']"
                             required
                         />
 
@@ -189,12 +217,11 @@
                             required
                         />
 
-                        <x-forms.input
+                        <x-forms.select
                             name="mother_occupation"
-                            label="Pekerjaan Ibu"
-                            type="text"
-                            placeholder="Contoh: Ibu Rumah Tangga / Guru / PNS"
-                            :value="old('mother_occupation', $mother?->occupation)"
+                            label="Pekerjaan Utama Ibu"
+                            :options="$occupations"
+                            :selected="old('mother_occupation', $mother?->occupation)"
                             required
                         />
 
@@ -206,6 +233,11 @@
                             :options="$incomes"
                             required
                         />
+                    </div>
+                    <h3 class="pt-4 border-t text-sm font-bold text-neutral-800">Alamat dan tempat tinggal ibu</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        @include('applicant.form.partials.parent-address-fields', ['prefix' => 'mother', 'record' => $mother, 'required' => true, 'studentAddress' => $studentAddress])
+                        <x-forms.select name="mother_residence_status" label="Status tempat tinggal ibu" :options="$residenceStatuses" :selected="old('mother_residence_status', $mother?->residence_status)" required />
                     </div>
                 </div>
             </x-ui.card>
@@ -261,12 +293,24 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <x-forms.input
+                        <x-forms.input name="guardian_birth_place" label="Tempat Lahir Wali" type="text" :value="old('guardian_birth_place', $guardian?->birth_place)" />
+                        <x-forms.input name="guardian_birth_date" label="Tanggal Lahir Wali" type="date" :value="old('guardian_birth_date', $guardian?->birth_date?->format('Y-m-d'))" />
+                        <x-forms.select name="guardian_status_label" label="Status Wali" :selected="old('guardian_status_label', $guardian?->status_label ?? 'Masih Hidup')" :options="['Masih Hidup'=>'Masih Hidup','Sudah Meninggal'=>'Sudah Meninggal','Tidak di ketahui'=>'Tidak diketahui']" />
+                        <x-forms.select name="guardian_education" label="Pendidikan Terakhir Wali" :options="$educations" :selected="old('guardian_education', $guardian?->education)" />
+                        <x-forms.select name="guardian_monthly_income" label="Penghasilan Rata-rata Wali" :options="$incomes" :selected="old('guardian_monthly_income', $guardian?->monthly_income)" />
+                    </div>
+                    <h3 class="pt-4 border-t text-sm font-bold text-neutral-800">Alamat dan tempat tinggal wali</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        @include('applicant.form.partials.parent-address-fields', ['prefix' => 'guardian', 'record' => $guardian, 'required' => old('has_guardian', $guardian ? '1' : '0') == '1', 'studentAddress' => $studentAddress])
+                        <x-forms.select name="guardian_residence_status" label="Status tempat tinggal wali" :options="$residenceStatuses" :selected="old('guardian_residence_status', $guardian?->residence_status)" />
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <x-forms.select
                             name="guardian_occupation"
-                            label="Pekerjaan Wali"
-                            type="text"
-                            placeholder="Pekerjaan wali"
-                            :value="old('guardian_occupation', $guardian?->occupation)"
+                            label="Pekerjaan Utama Wali"
+                            :options="$occupations"
+                            :selected="old('guardian_occupation', $guardian?->occupation)"
                         />
 
                         <x-forms.input
@@ -299,6 +343,18 @@
     </div>
 
     <script>
+        document.querySelectorAll('[data-copy-address]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                const prefix = button.dataset.copyAddress;
+                document.querySelectorAll(`[data-parent="${prefix}"][data-parent-address]`).forEach((input) => {
+                    const studentInput = document.getElementById(input.dataset.parentAddress === 'residence' ? 'city' : input.dataset.parentAddress);
+                    const regionName = document.querySelector(`[data-region-group="student"] [data-region-name="${input.dataset.parentAddress}"]`);
+                    input.value = studentInput?.value || regionName?.value || input.dataset.studentAddress || '';
+                });
+                await window.copyStudentRegionToParent(prefix);
+            });
+        });
+
         function toggleGuardianSection(show) {
             const el = document.getElementById('guardian_section');
             if (el) {

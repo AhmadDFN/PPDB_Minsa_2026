@@ -73,5 +73,16 @@ class AdmissionPeriodSeeder extends Seeder
             'max_size_kb' => 5120,
             'sort_order' => 3,
         ]);
+
+        foreach ([
+            ['code' => 'SURAT_AKTIF_TK', 'name' => 'Surat Keterangan Aktif TK/RA', 'is_required' => true, 'sort_order' => 4],
+            ['code' => 'NISN', 'name' => 'Bukti NISN dari TK/RA', 'is_required' => true, 'sort_order' => 5],
+            ['code' => 'PIAGAM', 'name' => 'Sertifikat / Piagam Kejuaraan (opsional)', 'is_required' => false, 'sort_order' => 6],
+        ] as $documentRequirement) {
+            DocumentRequirement::firstOrCreate(
+                ['admission_period_id' => $period->id, 'code' => $documentRequirement['code']],
+                [...$documentRequirement, 'allowed_mimes' => 'application/pdf,image/jpeg,image/png', 'max_size_kb' => 5120],
+            );
+        }
     }
 }

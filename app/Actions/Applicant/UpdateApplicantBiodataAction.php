@@ -6,6 +6,8 @@ namespace App\Actions\Applicant;
 
 use App\Enums\Gender;
 use App\Models\Applicant;
+use App\Models\ApplicantEducation;
+use Illuminate\Support\Facades\Crypt;
 
 class UpdateApplicantBiodataAction
 {
@@ -31,10 +33,29 @@ class UpdateApplicantBiodataAction
             'gender' => $gender,
             'birth_place' => trim($data['birth_place']),
             'birth_date' => $data['birth_date'],
-            'nisn' => ! empty($data['nisn']) ? trim($data['nisn']) : null,
+            'student_phone' => trim($data['student_phone']),
+            'nisn' => ! empty($data['nisn_unavailable'])
+                ? null
+                : (! empty($data['nisn']) ? trim($data['nisn']) : null),
+            'nisn_unavailable_reason' => ! empty($data['nisn_unavailable']) ? 'Belum memiliki NISN dari asal TK' : null,
+            'family_card_number_encrypted' => Crypt::encryptString(trim($data['family_card_number'])),
+            'religion' => $data['religion'],
+            'hobby' => $data['hobby'],
+            'hobby_other' => $data['hobby'] === 'Lainnya' ? trim((string) $data['hobby_other']) : null,
+            'aspiration' => $data['aspiration'],
+            'aspiration_other' => $data['aspiration'] === 'Lainnya' ? trim((string) $data['aspiration_other']) : null,
+            'residence_status' => $data['residence_status'],
+            'travel_time' => $data['travel_time'],
+            'transportation' => $data['transportation'],
+            'social_assistance_number_encrypted' => Crypt::encryptString(trim($data['social_assistance_number'])),
             'child_order' => (int) $data['child_order'],
             'siblings_count' => (int) $data['siblings_count'],
         ]);
+
+        ApplicantEducation::query()->updateOrCreate(
+            ['applicant_id' => $applicant->id],
+            ['nisn_unavailable' => ! empty($data['nisn_unavailable'])],
+        );
 
         // Keep User.name synchronized
         $applicant->user->update([

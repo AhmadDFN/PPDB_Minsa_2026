@@ -43,6 +43,7 @@ class RegistrationFormController extends Controller
 
         return view('applicant.form.biodata', [
             'applicant' => $applicant,
+            'education' => $applicant->education,
             'maskedNik' => $maskedNik,
             'age' => $age,
             'currentStep' => 1,
@@ -127,6 +128,7 @@ class RegistrationFormController extends Controller
             'father' => $father,
             'mother' => $mother,
             'guardian' => $guardian,
+            'studentAddress' => $applicant->address,
             'currentStep' => 3,
         ]);
     }

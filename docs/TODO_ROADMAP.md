@@ -25,6 +25,16 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 - [x] Regression test untuk rollback audit, cache, sanitasi HTML, identity, role, dan password hash.
 - [ ] Verifikasi schema production melalui `migrate:status`/phpMyAdmin, migration additive oleh pemilik, deployment, dan live acceptance.
 
+## Revisi Form Calon Siswa (26 November 2026) — Local Only
+
+- [x] Schema additive, enkripsi KK/nomor bantuan/NIK orang tua, No. Handphone calon siswa terpisah, Form Request, Action, readiness, dokumen, review/admin, dan PDF final berisi status berkas unggahan serta NIK termasking.
+- [x] Snapshot wilayah lokal 2025 (91.599 entri) dengan sumber/lisensi terdokumentasi, API cascading dengan validasi parent-child, serta shortcut salin wilayah alamat siswa.
+- [x] Automated regression: 388 tests, 373 passed, 15 skipped, 1.781 assertions; Pint, Vite build, Composer/NPM audit, route/view, JavaScript syntax, map data integrity, dan diff-check lulus.
+- [x] Browser lokal: cascade wilayah/copy alamat; IDOR dokumen dan PDF lintas akun 404; enam langkah pada 360 px tanpa overflow.
+- [x] Peta offline OSM lokal, pin tap/drag/keyboard, geolocation opt-in, dan Haversine server-side; feature test memastikan koordinat tidak disimpan. Harness komponen browser pada 360×800/390×844 lulus tanpa overflow; cakupan visual terbatas sekitar Kampus 1. Fallback jarak manual tersedia tanpa mengirim koordinat ke provider.
+- [ ] UAT map di form pendaftar penuh, foto asli/latar biru, scan QR aktual, skema MySQL/MariaDB dan staging.
+- [ ] Review akhir, commit/push/deploy setelah seluruh acceptance gaps tertutup.
+
 ## Phase 5A — Verifikasi Dokumen & Review Pendaftar
 
 - [x] Queue admin hanya menampilkan pendaftaran `SUBMITTED` dengan filter pencarian/status.

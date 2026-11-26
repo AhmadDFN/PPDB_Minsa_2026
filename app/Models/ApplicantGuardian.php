@@ -6,9 +6,11 @@ namespace App\Models;
 
 use App\Enums\GuardianRelationship;
 use Database\Factories\ApplicantGuardianFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Crypt;
 
 class ApplicantGuardian extends Model
 {
@@ -27,6 +29,23 @@ class ApplicantGuardian extends Model
         'monthly_income',
         'phone',
         'is_alive',
+        'nik_encrypted',
+        'nik_lookup_hash',
+        'status_label',
+        'residence',
+        'address_line',
+        'rt',
+        'rw',
+        'province',
+        'province_code',
+        'city',
+        'city_code',
+        'kecamatan',
+        'district_code',
+        'kelurahan',
+        'village_code',
+        'postal_code',
+        'residence_status',
     ];
 
     protected function casts(): array
@@ -36,6 +55,23 @@ class ApplicantGuardian extends Model
             'birth_date' => 'date',
             'is_alive' => 'boolean',
         ];
+    }
+
+    protected function nik(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value): ?string {
+                if ($this->nik_encrypted) {
+                    try {
+                        return Crypt::decryptString($this->nik_encrypted);
+                    } catch (\Throwable) {
+                        return null;
+                    }
+                }
+
+                return $value === null ? null : (string) $value;
+            },
+        );
     }
 
     public function applicant(): BelongsTo

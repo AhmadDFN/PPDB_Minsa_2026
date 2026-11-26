@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             AdmissionPeriodSeeder::class,
             InterviewAccountSeeder::class,
             InterviewMasterSeeder::class,
+            AdministrativeRegionSeeder::class,
         ]);
     }
 }

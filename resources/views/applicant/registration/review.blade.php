@@ -99,6 +99,7 @@
                     <div><dt class="text-xs text-neutral-500">Tempat, tanggal lahir</dt><dd class="font-medium text-neutral-800">{{ $applicant->birth_place ?: '—' }}, {{ $applicant->birth_date?->translatedFormat('d F Y') ?? '—' }}</dd></div>
                     <div><dt class="text-xs text-neutral-500">Jenis kelamin</dt><dd class="font-medium text-neutral-800">{{ $applicant->gender?->value === 'L' ? 'Laki-laki' : ($applicant->gender?->value === 'P' ? 'Perempuan' : '—') }}</dd></div>
                     <div><dt class="text-xs text-neutral-500">NISN</dt><dd class="font-medium text-neutral-800">{{ $applicant->nisn ?: '—' }}</dd></div>
+                    <div><dt class="text-xs text-neutral-500">No. handphone calon siswa</dt><dd class="font-medium text-neutral-800">{{ $applicant->student_phone ?: '—' }}</dd></div>
                     <div><dt class="text-xs text-neutral-500">Anak ke- / jumlah saudara</dt><dd class="font-medium text-neutral-800">{{ $applicant->child_order ?? '—' }} / {{ $applicant->siblings_count ?? '—' }}</dd></div>
                     <div><dt class="text-xs text-neutral-500">Usia pada tanggal acuan periode</dt><dd class="font-medium text-neutral-800">{{ $age['formatted'] ?? 'Belum dapat dihitung' }}</dd></div>
                 </dl>

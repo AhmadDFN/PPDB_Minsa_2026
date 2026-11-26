@@ -72,7 +72,7 @@ class RegistrationWorkflowTest extends TestCase
             'birth_place' => 'Kota Madiun',
             'birth_date' => '2020-01-15',
             'child_order' => $complete ? 1 : null,
-            'siblings_count' => $complete ? 0 : null,
+            'siblings_count' => $complete ? 1 : null,
         ]);
 
         $period ??= AdmissionPeriod::factory()->create([
@@ -120,31 +120,52 @@ class RegistrationWorkflowTest extends TestCase
                 'kecamatan' => 'Taman',
                 'city' => 'Kota Madiun',
                 'province' => 'Jawa Timur',
+                'postal_code' => '63136',
+                'distance_to_school_km' => 1.5,
             ]);
             ApplicantGuardian::factory()->father()->create([
                 'applicant_id' => $applicant->id,
                 'name' => 'Budi Santoso',
                 'nik' => '3573010101750001',
-                'education' => 'SMA/SMK',
+                'education' => 'SMA/Sederajat',
                 'occupation' => 'Wiraswasta',
-                'monthly_income' => '3.000.000 - 5.000.000',
+                'monthly_income' => '2.500.001 - 3.500.000',
                 'phone' => '081234567890',
                 'is_alive' => true,
+                'status_label' => 'Masih Hidup',
+                'birth_place' => 'Madiun',
+                'birth_date' => '1975-01-01',
+                'residence' => 'Kota Madiun',
+                'address_line' => 'Jalan Merpati Nomor 10',
+                'rt' => '001',
+                'rw' => '002',
+                'postal_code' => '63136',
+                'residence_status' => 'Rumah Orangtua',
             ]);
             ApplicantGuardian::factory()->mother()->create([
                 'applicant_id' => $applicant->id,
                 'name' => 'Siti Aminah',
                 'nik' => '3573010101850002',
-                'education' => 'SMA/SMK',
+                'education' => 'SMA/Sederajat',
                 'occupation' => 'Guru',
-                'monthly_income' => '3.000.000 - 5.000.000',
+                'monthly_income' => '2.500.001 - 3.500.000',
                 'phone' => '081234567891',
                 'is_alive' => true,
+                'status_label' => 'Masih Hidup',
+                'birth_place' => 'Madiun',
+                'birth_date' => '1980-01-01',
+                'residence' => 'Kota Madiun',
+                'address_line' => 'Jalan Merpati Nomor 10',
+                'rt' => '001',
+                'rw' => '002',
+                'postal_code' => '63136',
+                'residence_status' => 'Rumah Orangtua',
             ]);
             ApplicantEducation::factory()->create([
                 'applicant_id' => $applicant->id,
                 'education_level' => PreviousEducationLevel::NONE,
-                'school_name' => null,
+                'school_name' => 'TK Contoh',
+                'npsn' => '12345678',
             ]);
 
             $path = 'ppdb/documents/registration-'.$registration->id.'.pdf';
@@ -636,7 +657,7 @@ class RegistrationWorkflowTest extends TestCase
                 'birth_date' => '2020-01-15',
                 'nisn' => $data['applicant']->nisn,
                 'child_order' => 1,
-                'siblings_count' => 0,
+                'siblings_count' => 1,
             ])
             ->assertSessionHas('success');
 
@@ -672,7 +693,7 @@ class RegistrationWorkflowTest extends TestCase
                 'birth_date' => '2020-01-15',
                 'nisn' => $data['applicant']->nisn,
                 'child_order' => 1,
-                'siblings_count' => 0,
+                'siblings_count' => 1,
             ]);
 
         $this->assertSame(1, $data['registration']->fresh()->data_revision);
@@ -701,7 +722,7 @@ class RegistrationWorkflowTest extends TestCase
                 'birth_date' => '2020-01-15',
                 'nisn' => $data['applicant']->nisn,
                 'child_order' => 1,
-                'siblings_count' => 0,
+                'siblings_count' => 1,
             ])
             ->assertSessionHasErrors('registration');
 

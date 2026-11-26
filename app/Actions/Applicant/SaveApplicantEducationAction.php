@@ -32,9 +32,10 @@ class SaveApplicantEducationAction
             ['applicant_id' => $applicant->id],
             [
                 'education_level' => $level,
-                'school_name' => $isNone ? null : (! empty($data['school_name']) ? trim($data['school_name']) : null),
-                'npsn' => $isNone ? null : (! empty($data['npsn']) ? trim($data['npsn']) : null),
+                'school_name' => ! empty($data['school_name']) ? trim($data['school_name']) : null,
+                'npsn' => ! empty($data['npsn']) ? trim($data['npsn']) : null,
                 'city' => $isNone ? null : (! empty($data['city']) ? trim($data['city']) : null),
+                'nisn_unavailable' => (bool) ($data['nisn_unavailable'] ?? false),
             ]
         );
     }

@@ -53,6 +53,10 @@ class ApplicantAddressTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Alamat Domisili Tempat Tinggal');
         $response->assertSee('Kota Madiun');
+        $response->assertSee('offline-campus-map');
+        $response->assertSee('Gunakan Lokasi Perangkat');
+        $response->assertSee('OpenStreetMap contributors');
+        $this->assertFileExists(public_path('maps/min1-madiun-campus.json'));
     }
 
     public function test_applicant_can_create_and_update_address(): void
@@ -121,11 +125,58 @@ class ApplicantAddressTest extends TestCase
             'kecamatan' => 'Manguharjo',
             'city' => 'Kota Madiun',
             'province' => 'Jawa Timur',
+            'postal_code' => '63136',
+            'distance_to_school_km' => 2.5,
             'nav_action' => 'next',
         ]);
 
         $response->assertRedirect(route('applicant.parents.edit'));
         $response->assertSessionHas('success');
+    }
+
+    public function test_applicant_location_coordinates_calculate_distance_without_storing_coordinates(): void
+    {
+        [$user, $applicant] = $this->createApplicantUser();
+        $campus = config('ppdb.school.campus_one');
+
+        $response = $this->actingAs($user, 'web')->post(route('applicant.address.update'), [
+            'address_line' => 'Jl. Sitinggil No. 3',
+            'rt' => '003',
+            'rw' => '002',
+            'kelurahan' => 'Demangan',
+            'kecamatan' => 'Taman',
+            'city' => 'Kota Madiun',
+            'province' => 'Jawa Timur',
+            'postal_code' => '63136',
+            'latitude' => $campus['latitude'],
+            'longitude' => $campus['longitude'],
+            'nav_action' => 'save',
+        ]);
+
+        $response->assertRedirect()->assertSessionHas('success');
+        $address = $applicant->fresh()->address;
+        $this->assertSame('0.00', $address->distance_to_school_km);
+        $this->assertNull($address->getRawOriginal('latitude'));
+        $this->assertNull($address->getRawOriginal('longitude'));
+    }
+
+    public function test_address_rejects_a_pin_without_both_coordinates(): void
+    {
+        [$user] = $this->createApplicantUser();
+
+        $this->actingAs($user, 'web')->post(route('applicant.address.update'), [
+            'address_line' => 'Jl. Sitinggil No. 3',
+            'rt' => '003',
+            'rw' => '002',
+            'kelurahan' => 'Demangan',
+            'kecamatan' => 'Taman',
+            'city' => 'Kota Madiun',
+            'province' => 'Jawa Timur',
+            'postal_code' => '63136',
+            'latitude' => '-7.6591',
+            'distance_to_school_km' => '1.5',
+            'nav_action' => 'save',
+        ])->assertSessionHasErrors('longitude');
     }
 
     public function test_address_validation_rejects_missing_mandatory_fields(): void

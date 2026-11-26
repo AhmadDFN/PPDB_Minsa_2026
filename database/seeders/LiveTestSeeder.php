@@ -105,6 +105,7 @@ class LiveTestSeeder extends Seeder
                 'gender' => Gender::MALE,
                 'birth_place' => 'Madiun',
                 'birth_date' => '2019-08-15',
+                'student_phone' => '081234560001',
                 'child_order' => 1,
                 'siblings_count' => 1,
             ]
@@ -149,6 +150,7 @@ class LiveTestSeeder extends Seeder
                 'gender' => Gender::FEMALE,
                 'birth_place' => 'Madiun',
                 'birth_date' => '2019-05-10',
+                'student_phone' => '081234560002',
                 'child_order' => 2,
                 'siblings_count' => 2,
             ]
@@ -255,6 +257,7 @@ class LiveTestSeeder extends Seeder
                 'gender' => Gender::MALE,
                 'birth_place' => 'Madiun',
                 'birth_date' => '2019-07-20',
+                'student_phone' => '081234560003',
                 'child_order' => 1,
                 'siblings_count' => 0,
             ]

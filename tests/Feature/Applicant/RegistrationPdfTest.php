@@ -7,6 +7,7 @@ namespace Tests\Feature\Applicant;
 use App\Enums\AccountStatus;
 use App\Enums\AccountType;
 use App\Enums\AdmissionPeriodStatus;
+use App\Enums\DocumentVerificationStatus;
 use App\Enums\PdfDocumentType;
 use App\Enums\PreviousEducationLevel;
 use App\Enums\RegistrationStatus;
@@ -25,6 +26,7 @@ use App\Models\RegistrationLog;
 use App\Models\RegistrationPdfVersion;
 use App\Models\User;
 use App\Services\Registration\RegistrationPdfRenderer;
+use App\Support\NikManager;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPdf;
 use Dompdf\Canvas;
@@ -120,7 +122,7 @@ class RegistrationPdfTest extends TestCase
         $this->assertSame('%PDF-1.7', $renderedPdf);
     }
 
-    public function test_final_renderer_receives_full_nik_and_historical_consent_snapshot(): void
+    public function test_final_renderer_masks_nik_and_keeps_historical_consent_snapshot(): void
     {
         Storage::fake('ppdb_private');
         $data = $this->createRegistration();
@@ -144,13 +146,20 @@ class RegistrationPdfTest extends TestCase
         $renderer = $this->mock(RegistrationPdfRenderer::class);
         $renderer->shouldReceive('render')
             ->once()
-            ->withArgs(function (PdfDocumentType $type, array $documentData, ?string $verificationUrl) use ($expectedNik): bool {
+            ->withArgs(function (PdfDocumentType $type, array $documentData, ?string $verificationUrl) use ($expectedNik, $data): bool {
                 $this->assertSame(PdfDocumentType::FINAL, $type);
-                $this->assertSame($expectedNik, $documentData['applicant']['nik']);
+                $this->assertSame(NikManager::mask($expectedNik), $documentData['applicant']['nik']);
+                $this->assertSame($data['applicant']->student_phone, $documentData['applicant']['student_phone']);
                 $this->assertSame('Consent historis yang disetujui.', $documentData['consent']['statement_text']);
                 $this->assertStringContainsString('registration_number=', (string) $verificationUrl);
-                $this->assertArrayNotHasKey('nik', $documentData['father']);
-                $this->assertArrayNotHasKey('nik', $documentData['mother']);
+                $fatherNik = $data['applicant']->father->nik;
+                $motherNik = $data['applicant']->mother->nik;
+                $this->assertSame(NikManager::mask($fatherNik), $documentData['father']['nik']);
+                $this->assertSame(NikManager::mask($motherNik), $documentData['mother']['nik']);
+                $this->assertStringNotContainsString($fatherNik, json_encode($documentData['father'], JSON_THROW_ON_ERROR));
+                $this->assertStringNotContainsString($motherNik, json_encode($documentData['mother'], JSON_THROW_ON_ERROR));
+                $this->assertSame('Akta Kelahiran', $documentData['documents'][0]['name']);
+                $this->assertSame('Diterima', $documentData['documents'][0]['status']);
 
                 return true;
             })
@@ -308,7 +317,7 @@ class RegistrationPdfTest extends TestCase
                 'birth_date' => '2020-01-15',
                 'nisn' => $data['applicant']->nisn,
                 'child_order' => 1,
-                'siblings_count' => 0,
+                'siblings_count' => 1,
             ])
             ->assertSessionHas('success');
 
@@ -495,7 +504,8 @@ class RegistrationPdfTest extends TestCase
             ApplicantEducation::factory()->create([
                 'applicant_id' => $applicant->id,
                 'education_level' => PreviousEducationLevel::NONE,
-                'school_name' => null,
+                'school_name' => 'TK Contoh',
+                'npsn' => '12345678',
             ]);
 
             $documentPath = 'ppdb/documents/'.$registration->id.'/akta.pdf';
@@ -510,6 +520,7 @@ class RegistrationPdfTest extends TestCase
                 'file_size_bytes' => strlen($documentContents),
                 'file_hash' => hash('sha256', $documentContents),
                 'uploaded_at' => now(),
+                'verification_status' => DocumentVerificationStatus::APPROVED,
             ]);
         }
 

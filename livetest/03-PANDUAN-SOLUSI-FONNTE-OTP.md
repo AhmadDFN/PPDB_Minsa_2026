@@ -63,7 +63,23 @@ Untuk mengatasi batasan di atas tanpa merusak fitur keamanan produksi, telah dis
 
 ---
 
-## 3. Tata Cara Pelaksanaan Strategi 1 (Pre-Seeded — 100% Mandiri oleh AI)
+## 3. Tata Cara Pelaksanaan Skema Default (Akun Dummy — Tanpa OTP)
+
+Ini adalah skema yang digunakan untuk live test fitur aplikasi. Tidak perlu membuka `/daftar`, tidak perlu menerima OTP, dan tidak perlu mengirim data ke nomor WhatsApp.
+
+1. Siapkan database lokal/test:
+   ```bash
+   php artisan migrate
+   php artisan db:seed --class=LiveTestSeeder
+   php artisan optimize:clear
+   ```
+2. Gunakan akun dummy pada `02-KREDENSIAL-DAN-AKUN-UJI.md`.
+3. Uji alur sesuai peran pada `01-SKENARIO-PER-ROLE.md`.
+4. Reset kondisi data uji dengan menjalankan ulang `LiveTestSeeder` bila diperlukan.
+
+Pendaftaran akun baru dan integrasi OTP Fonnte hanya diuji manual oleh pemilik proyek menggunakan nomor WhatsApp milik sendiri.
+
+## 4. Tata Cara Pelaksanaan Strategi 1 Lama (Pre-Seeded — 100% Mandiri oleh AI)
 
 Jika Anda ingin AI melakukan live test secara mandiri menggunakan browser:
 
@@ -90,7 +106,7 @@ Jika Anda ingin AI melakukan live test secara mandiri menggunakan browser:
 
 ---
 
-## 4. Tata Cara Pelaksanaan Strategi 2 (Human-in-the-Loop — Uji Integrasi Fonnte Riil)
+## 5. Tata Cara Pelaksanaan Strategi 2 (Human-in-the-Loop — Uji Integrasi Fonnte Riil)
 
 Jika Anda ingin membuktikan bahwa integrasi Fonnte di server produksi benar-benar mengirimkan WhatsApp secara live:
 
@@ -122,7 +138,7 @@ Jika Anda ingin membuktikan bahwa integrasi Fonnte di server produksi benar-bena
 
 ---
 
-## 5. Ringkasan Rekomendasi untuk Sesi Live Test
+## 6. Ringkasan Rekomendasi untuk Sesi Live Test
 
-- Untuk **uji fitur formulir, verifikasi berkas admin, master wawancara, dan cetak PDF**: Gunakan **Strategi 1 (Akun Pre-Seeded)** karena sangat cepat, stabil, dan tidak memakan kuota pesan Fonnte.
-- Untuk **uji coba khusus pengiriman WhatsApp**: Gunakan **Strategi 2 (Human-in-the-Loop)** satu kali untuk membuktikan pengiriman pesan live ke ponsel Anda.
+- Untuk **uji fitur aplikasi**: Gunakan **Skema Default Akun Dummy** karena cepat, stabil, repeatable, dan tidak memerlukan WhatsApp.
+- Untuk **uji coba khusus pengiriman WhatsApp**: Pemilik proyek menjalankan **Strategi Human-in-the-Loop** secara manual satu kali menggunakan nomor WhatsApp sendiri.

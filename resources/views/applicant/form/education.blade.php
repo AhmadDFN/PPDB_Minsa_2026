@@ -122,6 +122,7 @@
                             type="text"
                             placeholder="Contoh: RA Perwanida 1 Kota Madiun"
                             :value="old('school_name', $education?->school_name)"
+                            required
                             help="Tuliskan nama lengkap lembaga pendidikan anak sebelumnya."
                         />
                     </div>
@@ -131,10 +132,12 @@
                             name="npsn"
                             label="NPSN Sekolah Asal"
                             type="text"
-                            maxlength="10"
+                            maxlength="8"
+                            inputmode="numeric"
                             placeholder="Contoh: 69752310"
                             :value="old('npsn', $education?->npsn)"
-                            help="Nomor Pokok Sekolah Nasional (8 digit, opsional jika tidak tahu)."
+                            required
+                            help="Nomor Pokok Sekolah Nasional (wajib, 8 digit)."
                         />
 
                         <x-forms.input

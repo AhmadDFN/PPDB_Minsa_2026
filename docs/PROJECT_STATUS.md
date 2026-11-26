@@ -2,7 +2,7 @@
 ## Sumber Kebenaran Tunggal Progres Pengembangan Sistem
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
-**Terakhir Diperbarui**: 25 November 2026
+**Terakhir Diperbarui**: 26 November 2026
 **Dokumentasi Versi**: 1.6.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
@@ -18,6 +18,8 @@
 
 > **Fase 5 Modul Wawancara — 25 November 2026:** Rekap nilai admin, koreksi nilai ber-audit, dan ekspor CSV streamed telah diaudit dan diperkuat. Sanitasi anti-formula injection kini berlaku untuk seluruh sel data, termasuk placeholder `-`. Focused suite lulus 4 test/44 assertion; full suite dan quality gates lulus. Commit dan push ke `main` disetujui pemilik; deployment dan smoke test produksi tidak dilakukan.
 
+> **Revisi Form Calon Siswa — 26 November 2026 (STATUS: PARTIAL, LOCAL ONLY):** Implementasi form additive, field No. Handphone calon siswa, dan perlindungan enkripsi data sensitif tersedia pada working tree. Dataset wilayah lokal 2025 (91.599 baris), API cascade tervalidasi, salin alamat orang tua, serta koordinat Kampus 1 dari direktori Kemendikdasmen telah ditambahkan. Widget peta memakai data OSM statis lokal dengan pin tap/drag/keyboard dan Haversine; koordinat tidak disimpan. Harness browser widget lulus pada 360×800/390×844, tetapi UAT map di form pendaftar terautentikasi masih pending dan cakupan visual hanya sekitar Kampus 1. PDF privat mencakup data keluarga, NIK tersamar, dan status dokumen yang diunggah. Full suite lulus (388 test, 373 passed, 15 skipped, 1.781 assertions); Pint, Vite build, npm/Composer audit, route/view, map JS syntax dan diff-check lulus. UAT submit/verifikasi admin/PDF final pernah berhasil; recheck IDOR PDF serta dokumen lintas akun menghasilkan 404. Viewport 360 px untuk enam langkah formulir telah diuji sebelum widget map ditambah. Masih pending: form UAT GPS/map, foto asli/latar biru, scan QR fisik, validasi MySQL/MariaDB, staging dan production. Tidak ada commit/push/deploy pada perubahan ini. Rincian: `ppdbv2/PROGRESS-LOG.md`, `ppdbv2/KNOWN-ISSUES.md`, `livetest/06-HASIL-UAT-FORM-2026-11-26.md`.
+
 ---
 
 ## 1. STATUS FASE SAAT INI
@@ -31,6 +33,7 @@
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
 | **Commit Baseline Sebelum Hotfix** | `550d0e2` |
+| **Revisi Form Calon Siswa** | **PARTIAL / LOCAL ONLY — belum siap rilis** |
 
 ---
 

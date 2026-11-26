@@ -19,6 +19,40 @@ class ApplicantParentsTest extends TestCase
 {
     use RefreshDatabase;
 
+    private function completeParentPayload(): array
+    {
+        $parent = [
+            'name' => 'Parent Test',
+            'nik' => '3573010101800001',
+            'birth_place' => 'Madiun',
+            'birth_date' => '1980-01-01',
+            'status_label' => 'Masih Hidup',
+            'education' => 'D4/S1',
+            'occupation' => 'PNS',
+            'monthly_income' => '2.500.001 - 3.500.000',
+            'phone' => '081234567890',
+            'residence' => 'Kota Madiun',
+            'address_line' => 'Jl. Sitinggil No. 1',
+            'rt' => '001',
+            'rw' => '002',
+            'province' => 'Jawa Timur',
+            'city' => 'Kota Madiun',
+            'kecamatan' => 'Taman',
+            'kelurahan' => 'Demangan',
+            'postal_code' => '63136',
+            'residence_status' => 'Rumah Orangtua',
+        ];
+        $payload = [];
+        foreach (['father', 'mother'] as $prefix) {
+            foreach ($parent as $field => $value) {
+                $payload[$prefix.'_'.$field] = $value;
+            }
+        }
+        $payload['has_guardian'] = '0';
+
+        return $payload;
+    }
+
     private function createApplicantUser(array $userAttributes = [], array $applicantAttributes = []): array
     {
         $nik = $userAttributes['nik'] ?? '3573010101190001';
@@ -62,28 +96,26 @@ class ApplicantParentsTest extends TestCase
     {
         [$user, $applicant] = $this->createApplicantUser();
 
-        $response = $this->actingAs($user, 'web')->post(route('applicant.parents.update'), [
+        $response = $this->actingAs($user, 'web')->post(route('applicant.parents.update'), array_merge($this->completeParentPayload(), [
             // Father
             'father_name' => 'Bambang Sudibyo',
             'father_nik' => '3573010101800001',
-            'father_is_alive' => '1',
-            'father_education' => 'S1 / D4',
-            'father_occupation' => 'PNS / ASN',
-            'father_monthly_income' => '5.000.000 - 10.000.000',
+            'father_education' => 'D4/S1',
+            'father_occupation' => 'PNS',
+            'father_monthly_income' => '2.500.001 - 3.500.000',
             'father_phone' => '081234567890',
 
             // Mother
             'mother_name' => 'Siti Aminah',
             'mother_nik' => '3573010101850002',
-            'mother_is_alive' => '1',
-            'mother_education' => 'S1 / D4',
-            'mother_occupation' => 'Guru / Dosen Swasta',
-            'mother_monthly_income' => '3.000.000 - 5.000.000',
+            'mother_education' => 'D4/S1',
+            'mother_occupation' => 'Guru/Dosen',
+            'mother_monthly_income' => '2.500.001 - 3.500.000',
             'mother_phone' => '081234567891',
 
             'has_guardian' => '0',
             'nav_action' => 'save',
-        ]);
+        ]));
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -92,14 +124,14 @@ class ApplicantParentsTest extends TestCase
             'applicant_id' => $applicant->id,
             'relationship_type' => GuardianRelationship::FATHER->value,
             'name' => 'Bambang Sudibyo',
-            'occupation' => 'PNS / ASN',
+            'occupation' => 'PNS',
         ]);
 
         $this->assertDatabaseHas('applicant_guardians', [
             'applicant_id' => $applicant->id,
             'relationship_type' => GuardianRelationship::MOTHER->value,
             'name' => 'Siti Aminah',
-            'occupation' => 'Guru / Dosen Swasta',
+            'occupation' => 'Guru/Dosen',
         ]);
 
         $this->assertSame(2, ApplicantGuardian::where('applicant_id', $applicant->id)->count());
@@ -109,20 +141,20 @@ class ApplicantParentsTest extends TestCase
     {
         [$user, $applicant] = $this->createApplicantUser();
 
-        $response = $this->actingAs($user, 'web')->post(route('applicant.parents.update'), [
+        $response = $this->actingAs($user, 'web')->post(route('applicant.parents.update'), array_merge($this->completeParentPayload(), [
             'father_name' => 'Bambang Sudibyo',
             'father_nik' => '3573010101800001',
-            'father_is_alive' => '1',
-            'father_education' => 'S1 / D4',
+            'father_status_label' => 'Masih Hidup',
+            'father_education' => 'D4/S1',
             'father_occupation' => 'Wiraswasta',
-            'father_monthly_income' => '5.000.000 - 10.000.000',
+            'father_monthly_income' => '2.500.001 - 3.500.000',
             'father_phone' => '081234567890',
             'mother_name' => 'Siti Aminah',
             'mother_nik' => '3573010101850002',
-            'mother_is_alive' => '1',
-            'mother_education' => 'S1 / D4',
-            'mother_occupation' => 'Ibu Rumah Tangga',
-            'mother_monthly_income' => '3.000.000 - 5.000.000',
+            'mother_status_label' => 'Masih Hidup',
+            'mother_education' => 'D4/S1',
+            'mother_occupation' => 'Tidak bekerja',
+            'mother_monthly_income' => '2.500.001 - 3.500.000',
             'mother_phone' => '081234567891',
 
             // Guardian
@@ -132,7 +164,7 @@ class ApplicantParentsTest extends TestCase
             'guardian_phone' => '081299998888',
             'guardian_occupation' => 'Pensiunan',
             'nav_action' => 'next',
-        ]);
+        ]));
 
         $response->assertRedirect(route('applicant.education.edit'));
 
@@ -144,24 +176,22 @@ class ApplicantParentsTest extends TestCase
         ]);
 
         // When subsequently toggled off, guardian record is removed
-        $this->actingAs($user, 'web')->post(route('applicant.parents.update'), [
+        $this->actingAs($user, 'web')->post(route('applicant.parents.update'), array_merge($this->completeParentPayload(), [
             'father_name' => 'Bambang Sudibyo',
             'father_nik' => '3573010101800001',
-            'father_is_alive' => '1',
-            'father_education' => 'S1 / D4',
+            'father_education' => 'D4/S1',
             'father_occupation' => 'Wiraswasta',
-            'father_monthly_income' => '5.000.000 - 10.000.000',
+            'father_monthly_income' => '2.500.001 - 3.500.000',
             'father_phone' => '081234567890',
             'mother_name' => 'Siti Aminah',
             'mother_nik' => '3573010101850002',
-            'mother_is_alive' => '1',
-            'mother_education' => 'S1 / D4',
-            'mother_occupation' => 'Ibu Rumah Tangga',
-            'mother_monthly_income' => '3.000.000 - 5.000.000',
+            'mother_education' => 'D4/S1',
+            'mother_occupation' => 'Tidak bekerja',
+            'mother_monthly_income' => '2.500.001 - 3.500.000',
             'mother_phone' => '081234567891',
             'has_guardian' => '0',
             'nav_action' => 'save',
-        ]);
+        ]));
 
         $this->assertSame(2, ApplicantGuardian::where('applicant_id', $applicant->id)->count());
         $this->assertDatabaseMissing('applicant_guardians', [
@@ -184,14 +214,12 @@ class ApplicantParentsTest extends TestCase
         $response->assertSessionHasErrors([
             'father_name',
             'father_nik',
-            'father_is_alive',
             'father_education',
             'father_occupation',
             'father_monthly_income',
             'father_phone',
             'mother_name',
             'mother_nik',
-            'mother_is_alive',
             'mother_education',
             'mother_occupation',
             'mother_monthly_income',

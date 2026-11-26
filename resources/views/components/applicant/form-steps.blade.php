@@ -16,8 +16,8 @@
 
 <div class="mb-8">
     <!-- Desktop Step Indicator -->
-    <nav aria-label="Progress" class="hidden sm:block">
-        <ol class="flex items-center justify-between border border-slate-800 rounded-2xl bg-slate-900/90 p-2 shadow-lg backdrop-blur-md">
+    <nav aria-label="Progress" class="hidden sm:block max-w-full overflow-x-auto">
+        <ol class="flex min-w-[850px] items-center justify-between border border-slate-800 rounded-2xl bg-slate-900/90 p-2 shadow-lg backdrop-blur-md">
             @foreach ($steps as $stepNum => $step)
                 @php
                     $isCurrent = $currentStep === $stepNum;

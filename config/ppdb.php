@@ -57,6 +57,14 @@ return [
         'collection_instruction' => 'Cetak bukti pendaftaran ini dan serahkan ke loket PTSP MIN 1 Kota Madiun.',
     ],
 
+    'school' => [
+        'campus_one' => [
+            // Official school directory NPSN 60720864 (Kemendikdasmen).
+            'latitude' => -7.6591,
+            'longitude' => 111.5146,
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Registration Submission
