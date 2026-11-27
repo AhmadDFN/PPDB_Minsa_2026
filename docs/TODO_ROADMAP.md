@@ -3,6 +3,8 @@
 
 ## Rekonsiliasi Admin/Superadmin (20 November 2026)
 
+- [ ] Periksa semua variasi status dashboard dan lakukan audit aksesibilitas lengkap setelah perbaikan palet/kontras; preview sintetis keadaan draft telah dilakukan.
+
 - [ ] Next Atelier: uji dashboard pendaftar terautentikasi dan semua variasi status, aksesibilitas dan alur E2E; selesaikan rekonsiliasi konten landing sebelum menganggap desain tervalidasi penuh.
 
 - [ ] Calm Academic: selesaikan UAT visual dashboard pendaftar, pemeriksaan aksesibilitas/responsif lengkap, dan rekonsiliasi konten landing dengan pemilik; lihat `ppdbv2/PROGRESS-LOG.md`.

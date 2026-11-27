@@ -118,3 +118,43 @@
     .atelier-login-form { padding: 0; }
     .calm-login .atelier-login-form [class*='shadow-lg'] { border: 1px solid #d9dfdf; padding: 1.5rem; }
 }
+
+/* Palette: #0b132b, #1c2541, #3a506b, #5bc0be; white is the reading surface. */
+.calm-academic {
+    --calm-ink: #0b132b;
+    --calm-muted: #3a506b;
+    --calm-border: #b9c9d4;
+    --calm-bg: #f4f8fa;
+    --calm-surface: #fff;
+}
+.calm-academic :focus-visible { outline-color: #3a506b; }
+.calm-academic input:focus { border-color: #3a506b; box-shadow: 0 0 0 3px rgb(58 80 107 / 25%); }
+.calm-landing #beranda, .atelier-login-aside, .calm-dashboard .atelier-dashboard-hero { background: #0b132b !important; }
+.calm-landing #beranda h1, .calm-landing #beranda .lg\:col-span-7 > p,
+.calm-landing #beranda .lg\:col-span-7 > p strong { color: #fff !important; }
+.calm-landing #beranda h1 .text-gradient-neon { color: #5bc0be !important; -webkit-text-fill-color: #5bc0be !important; }
+.calm-landing #beranda .lg\:col-span-7 > .max-w-lg > div:first-child span,
+.calm-landing #beranda .lg\:col-span-7 > .max-w-lg > div:first-child span:first-child { color: #fff !important; }
+.calm-landing #beranda .lg\:col-span-7 > .flex > [class*='bg-gradient'] { background: #5bc0be !important; color: #0b132b !important; }
+.calm-landing #beranda .lg\:col-span-7 > .flex > [class*='bg-gradient'] * { color: inherit !important; }
+.calm-landing .glass-panel, .calm-landing .glass-panel-hover,
+.calm-landing [class*='bg-emerald-950'], .calm-landing [class*='bg-cyan-950'],
+.calm-landing [class*='bg-teal-950'], .calm-landing [class*='bg-amber-950'] { background-color: #fff !important; }
+.calm-landing a[class*='bg-gradient'], .calm-landing button[class*='bg-gradient'] { background: #1c2541 !important; color: #fff !important; }
+.calm-landing a[class*='bg-gradient'] *, .calm-landing button[class*='bg-gradient'] * { color: inherit !important; }
+.atelier-period-card { background: #fff; color: #0b132b; }
+.atelier-period-label, .atelier-period-date, .atelier-eyebrow { color: #3a506b; }
+.atelier-login-aside .atelier-eyebrow, .atelier-login-caption { color: #fff; }
+.calm-login .calm-login-content .btn-primary { background: #1c2541; border-color: #1c2541; color: #fff; }
+.calm-login .calm-login-content a, .calm-login .calm-login-content button:not([type='submit']) { color: #3a506b; }
+.calm-dashboard .atelier-dashboard-hero h1, .calm-dashboard .atelier-dashboard-hero h1 span,
+.calm-dashboard .atelier-dashboard-hero > div > div > p { color: #fff !important; }
+.calm-dashboard .atelier-dashboard-hero h1 span { color: #5bc0be !important; }
+.calm-dashboard .atelier-dashboard-hero .space-y-3 > .flex > span { background: #fff !important; color: #0b132b !important; border-color: #b9c9d4 !important; }
+.calm-dashboard .atelier-dashboard-hero .space-y-3 > .flex > span * { color: #0b132b !important; }
+.calm-dashboard .atelier-dashboard-hero .space-y-3 a { background: #fff !important; color: #0b132b !important; }
+.calm-dashboard .atelier-dashboard-hero .space-y-3 a * { color: #0b132b !important; }
+.calm-dashboard .atelier-dashboard-hero .shrink-0 > div { background: #fff !important; }
+.calm-dashboard main a[class*='bg-emerald-600'] { background: #1c2541 !important; color: #fff !important; }
+.calm-dashboard main a[class*='bg-emerald-600'] * { color: #fff !important; }
+.calm-dashboard main [style*='width:'] { background: #3a506b !important; }

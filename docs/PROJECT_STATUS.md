@@ -6,6 +6,8 @@
 **Dokumentasi Versi**: 1.6.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
+> **Perbaikan kontras — 27 November 2026:** Palet pilihan pemilik diterapkan pada tiga halaman pendaftar, dengan teks/badge pada banner gelap diperbaiki dan preview dashboard sintetis diperiksa. UAT seluruh status dan audit aksesibilitas penuh masih pending; rincian `ppdbv2/PROGRESS-LOG.md`.
+
 > **Next Atelier — 27 November 2026:** Redesign lokal landing, login, dan dashboard pendaftar menerapkan arahan skill baru. Kartu peserta fiktif diganti informasi periode riil; countdown tidak memakai tanggal cadangan tanpa periode aktif. UAT visual dashboard dan rekonsiliasi konten landing masih pending. Rincian `ppdbv2/PROGRESS-LOG.md`.
 
 > **Calm Academic — 27 November 2026:** Tema visual lokal diterapkan pada landing, login pendaftar dan dashboard pendaftar. Landing/login diperiksa pada browser; UAT visual dashboard terautentikasi dan review konten landing masih pending. Konten lama tentang seleksi/pengumuman serta penyerahan fisik memerlukan rekonsiliasi terhadap aturan proyek. Detail `ppdbv2/PROGRESS-LOG.md`.

@@ -20,6 +20,12 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Perbaikan Kontras dan Palet Color Hunt
+- Palet pilihan pemilik `#0B132B`, `#1C2541`, `#3A506B`, `#5BC0BE` diterapkan pada landing, login, dan dashboard; putih digunakan sebagai permukaan agar teks tetap terbaca.
+- Memperbaiki teks gelap pada badge/status dan tombol di latar gelap. Kontras pasangan utama: putih/`#0B132B` 18,38:1, `#5BC0BE`/`#0B132B` 8,52:1, putih/`#1C2541` 15,10:1, `#3A506B`/putih 8,27:1.
+- Landing dan dashboard diperiksa secara visual di browser lokal, termasuk dashboard dengan data sintetis dan viewport 390 px tanpa overflow. Preview sementara dihapus; seluruh variasi status dan audit aksesibilitas penuh belum diuji.
+- `php artisan test`: 392 test (377 passed, 15 skipped, 1.800 assertions). Pint, Vite build, audit Composer/npm dan `git diff --check` lulus.
+
 ### [2026-11-27] Next Atelier — Landing, Login dan Dashboard
 - Kedua lampiran pemilik identik (SHA-256 sama); satu salinan disimpan sebagai `ppdbv2/skills/ppdb-next-atelier/SKILL.md`.
 - Menerapkan hero editorial berwarna ink, panel identitas pada login desktop, serta banner dashboard yang lebih tegas. Scope mengikuti tiga halaman yang disetujui sebelumnya; form lainnya dan admin tidak didesain ulang.
