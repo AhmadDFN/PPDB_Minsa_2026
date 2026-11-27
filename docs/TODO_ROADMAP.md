@@ -27,6 +27,8 @@ Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADM
 
 ## Revisi Form Calon Siswa (26 November 2026) — Local Only
 
+- [ ] Insiden migrasi MariaDB: periksa backup dan tabel wilayah parsial, tentukan pemulihan dengan pemilik, validasi perbaikan pada MariaDB aman, dan tangani lima advisory Composer; lihat ISS-011.
+
 - [x] Schema additive, enkripsi KK/nomor bantuan/NIK orang tua, No. Handphone calon siswa terpisah, Form Request, Action, readiness, dokumen, review/admin, dan PDF final berisi status berkas unggahan serta NIK termasking.
 - [x] Snapshot wilayah lokal 2025 (91.599 entri) dengan sumber/lisensi terdokumentasi, API cascading dengan validasi parent-child, serta shortcut salin wilayah alamat siswa.
 - [x] Automated regression: 388 tests, 373 passed, 15 skipped, 1.781 assertions; Pint, Vite build, Composer/NPM audit, route/view, JavaScript syntax, map data integrity, dan diff-check lulus.

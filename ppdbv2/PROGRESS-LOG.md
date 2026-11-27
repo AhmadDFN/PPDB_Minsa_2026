@@ -20,6 +20,14 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Perbaikan Migrasi Wilayah MariaDB
+- **Status:** Perbaikan disiapkan; belum dideploy dan belum divalidasi pada server MariaDB.
+- **Temuan:** Log pemilik menunjukkan `migrate:fresh --seed` menghapus tabel lalu gagal pada foreign key `ar_parent_fk`. Indeks unik fluent dibuat Laravel setelah foreign key, sehingga kolom referensi belum terindeks ketika constraint dipasang.
+- **Perbaikan:** Indeks `ar_code_uq` dideklarasikan eksplisit sebelum foreign key; regression test memeriksa urutan SQL MySQL. Constraint dan bentuk tabel tetap sama.
+- **Pengujian lokal:** `php artisan test` lulus (389 test: 374 passed, 15 skipped, 1.784 assertions); Pint, Vite build, npm audit (0 vulnerability), dan `git diff --check` lulus. Uji urutan SQL tidak menggantikan pengujian MariaDB aktual.
+- **Pemulihan:** Jangan ulangi `migrate:fresh`. Verifikasi backup dan dampak hilangnya data terlebih dahulu; periksa status migrasi serta struktur dan isi tabel `administrative_regions` yang mungkin tertinggal sebagian. Tentukan pemulihan bersama pemilik sebelum tindakan destruktif atau deployment. Seeder belum berjalan karena migrasi gagal.
+- **Audit:** `composer audit` menemukan lima advisory pada `symfony/http-kernel`, `symfony/mailer`, dan `symfony/routing`; tindak lanjut terpisah diperlukan.
+
 ### [2026-11-26] Revisi Form Data Calon Siswa — Implementasi, Test, Commit & Push
 - **Status:** Commit `6814d47` telah dipush ke `origin/main` (26 November 2026). Tidak ada deployment; verifikasi staging/production dan acceptance manual tetap pending.
 - **Ringkasan Perubahan:**

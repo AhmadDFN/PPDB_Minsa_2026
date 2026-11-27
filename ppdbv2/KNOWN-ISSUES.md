@@ -7,6 +7,13 @@ Dokumen ini berfungsi sebagai **penampung error dan hal yang belum bisa dikerjak
 
 ## Daftar Isu Aktif (Open / Pending)
 
+### [ISS-011] Migrasi Wilayah Gagal dan Pemulihan Database Tertunda
+- **Tanggal:** 2026-11-27
+- **Status:** `OPEN` — perbaikan lokal tersedia; server dan pemulihan data belum diverifikasi.
+- **Temuan:** Log menunjukkan `migrate:fresh --seed` menghapus tabel kemudian gagal pada foreign key `administrative_regions`. Migrasi dapat meninggalkan tabel parsial dan seeder belum dijalankan.
+- **Tindak lanjut:** Verifikasi backup, status migrasi, struktur dan isi tabel parsial; evaluasi pemulihan data dengan pemilik. Jangan ulangi `migrate:fresh` atau menghapus tabel. Uji perbaikan pada MariaDB yang aman sebelum deployment.
+- **Keamanan dependensi:** Audit Composer terkini melaporkan lima advisory pada tiga paket Symfony; penanganan terpisah masih diperlukan.
+
 ### [ISS-004] Cakupan Pin Manual Peta Offline Terbatas di Area Kampus
 - **Tanggal Dicatat:** 2026-11-26
 - **Fase / Task Terkait:** Revisi form calon siswa, workflow update form

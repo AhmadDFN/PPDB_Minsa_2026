@@ -6,6 +6,8 @@
 **Dokumentasi Versi**: 1.6.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
+> **Insiden migrasi wilayah — 27 November 2026:** Log yang diberikan menunjukkan `migrate:fresh --seed` menghapus tabel sebelum migrasi `administrative_regions` gagal. Urutan indeks unik dan foreign key diperbaiki secara lokal; validasi MariaDB, pemeriksaan tabel parsial, backup/pemulihan data, dan deployment masih pending. Audit Composer juga menemukan lima advisory pada tiga paket Symfony. Lihat `ppdbv2/KNOWN-ISSUES.md` ISS-011 dan `ppdbv2/PROGRESS-LOG.md`.
+
 > **Rekonsiliasi Admin/Superadmin — 20 November 2026:** Blueprint dan governance dokumentasi tersedia di `docs/blueprints/`. Audit kode aktual menemukan dashboard, applicant management, reopen, dan branding settings telah tersedia; verifikasi dokumen, ekspor, master periode/program/persyaratan, lifecycle akun admin, serta audit viewer belum memiliki UI/controller lengkap. Permission di seeder tidak dihitung sebagai implementasi. Fase blueprint ini tidak mengubah kode, database, `.env`, akun, deployment, commit, atau push.
 
 > **Phase 5A — 23 November 2026:** Verifikasi dokumen telah committed dan pushed ke `origin/main` pada `6e7f4d9` dan `3b5731a` (305 passed, 11 skipped, 1.376 assertions). Deployment, migration production, dan live verification tetap **PENDING**.
