@@ -55,3 +55,7 @@ Pemilik menyatakan telah menjalankan `migrate:fresh --seed` dan seeder uji pada 
 - BLOCKED: dua fixture SUBMITTED tidak memiliki dokumen; uji verifikasi dan pengesahan belum aman. Tidak ada nomor baru, perubahan konfigurasi, atau pesan WhatsApp yang dikirim agen.
 - Risiko keamanan: sandi bawaan yang terlacak pada source/Git berhasil dipakai login live setelah fresh seed. Rotasi dan penghapusan default statis diperlukan sebelum launch.
 - Versi server pada dashboard menampilkan Laravel 13.42.0; commit rilis yang terpasang belum dibuktikan. Perbaikan kode lokal Fonnte dan nomor tidak boleh dianggap sudah live.
+
+## Uji ulang superadmin sekitar 20.04 WIB
+
+Login/logout berhasil; setelah logout rute admin menuju login admin. Empat contoh template dan variabel tersedia terlihat di Communication Center. Nama institusi berhasil diubah melalui superadmin menjadi `PPDB MIN 1 KOTA MADIUN`, tercatat di audit, dan tampil pada login pendaftar. Menu akun, roles, master periode/program/dokumen, batch/tahap wawancara, dan audit terbuka. Petunjuk default lama `PPDBM` di form pengaturan masih terlihat; kode lokal diperbaiki dan belum diuji ulang di server. OTP/Fonnte, pengesahan berkas, serta mutasi master belum dibuktikan. Rincian: `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.

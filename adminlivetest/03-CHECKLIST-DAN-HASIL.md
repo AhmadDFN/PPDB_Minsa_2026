@@ -75,3 +75,13 @@ Pemilik menyatakan telah menjalankan `migrate:fresh --seed` dan seeder uji pada 
 | SUP-04 | PARTIAL | Pada viewport browser 732 px, halaman verifikasi berkas memiliki scrollWidth 717 px; screenshot menunjukkan konten utama dapat dibaca. Ukuran 360/390/768/1440, keyboard, dan console belum diuji. |
 
 **Isu yang perlu ditindak:** AL-004 (sandi bawaan seeder telah dipakai login live dan terlacak source/Git), AL-005 (branding), AL-006 (template kosong), AL-007 (fixture dokumen tidak tersedia), AL-008 (redirect login staf). Tidak ada perubahan data server oleh agen dalam putaran ini selain sesi login/logout dan filter GET.
+
+## Uji ulang superadmin setelah rilis kode — 27 November 2026, sekitar 20.00–20.04 WIB
+
+- **PASS login/logout dan proteksi:** akun superadmin masuk ke dashboard; setelah logout, `/admin/dashboard` mengarah ke `/admin/login` seperti yang diharapkan. AL-008 terverifikasi selesai di live.
+- **PASS tampilan template:** empat contoh pesan WhatsApp dan daftar variabel masing-masing tampil di Communication Center. AL-006 selesai untuk tampilan editor; pengiriman OTP Fonnte dan lupa password tetap belum diuji ujung ke ujung. Mode gateway masih legacy environment dan channel database belum ada.
+- **PASS perubahan branding:** Superadmin menyimpan `PPDB MIN 1 KOTA MADIUN`; halaman menunjukkan sukses, nilai baru tampil, dan audit mencatat perubahan `institution_display_name`. Halaman login pendaftar setelah logout menampilkan nama resmi itu. AL-005 selesai untuk nilai aktif.
+- **Temuan kecil baru:** petunjuk statis pada form pengaturan masih menyebut `Default: PPDBM MIN 1 KOTA MADIUN` dan placeholder lama. Kode lokal dikoreksi; uji ulang petunjuk di live menunggu rilis berikutnya.
+- **PASS akses baca:** halaman akun staf, role/permission, periode, program, persyaratan, batch dan tahap wawancara, serta audit terbuka untuk superadmin. Audit memuat aktivitas `setting_updated` dari perubahan branding.
+- **Belum dibuktikan:** pembuatan/reset akun, perubahan role, mutasi master, verifikasi dan pengesahan dokumen, ekspor laporan, OTP lupa password, dan pengiriman WhatsApp. Dua fixture SUBMITTED hasil seed sebelumnya belum memiliki dokumen; tidak ada pengesahan atau pengiriman pesan pada putaran ini.
+- UI dashboard menampilkan Laravel 13.42.0, tetapi hash commit server tidak tersedia. Perilaku editor dan redirect menunjukkan perbaikan terlihat, bukan bukti seluruh commit telah terpasang.

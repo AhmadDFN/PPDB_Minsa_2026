@@ -90,6 +90,13 @@ Catat blocker dan temuan yang masih terbuka ke Phase 11; status lintas proyek ke
 - AL-006: editor lokal menampilkan template tersimpan atau default dan placeholder; verifikasi pengiriman Fonnte live tetap pending.
 - AL-008: tamu pada rute admin diarahkan ke login admin. Seluruh perbaikan masih memerlukan deployment dan uji ulang live.
 
+## Uji ulang 27 November 2026 sekitar 20.04 WIB
+
+- AL-005 **VERIFIED_LIVE untuk nilai aktif**: superadmin menyimpan nama resmi PPDB, mendapat pesan sukses, audit mencatat perubahan, dan login pendaftar menampilkan nama baru. Petunjuk `Default: PPDBM` pada form masih salah; placeholder dan petunjuk diperbaiki lokal, menunggu rilis berikutnya.
+- AL-006 **VERIFIED_LIVE untuk editor**: keempat contoh dan daftar variabel tampil. Status pengiriman Fonnte/OTP tetap **OPEN** sampai diuji dengan penerima uji.
+- AL-008 **VERIFIED_LIVE**: setelah logout, akses `/admin/dashboard` diarahkan ke `/admin/login`.
+- SUP-02/INT-01/ADM-11 tetap **PARTIAL**: halaman dan audit terbuka, tetapi mutasi akun/role/master, ekspor, dan skenario negatif belum diuji.
+
 ## Keputusan pemilik tentang AL-004 dan lingkungan uji
 
 - Pada 27 November 2026 pemilik menetapkan `ahmaddanyfn.biz.id` sebagai situs **uji yang dapat direset**, meski aplikasinya menggunakan mode `production`. Panel resmi MIN nanti berada di lingkungan lain.

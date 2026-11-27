@@ -59,7 +59,7 @@
                         id="institution_display_name"
                         value="{{ old('institution_display_name', $institutionName) }}"
                         class="w-full max-w-xl px-4 py-2.5 rounded-xl border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition @error('institution_display_name') border-red-500 ring-1 ring-red-500 @enderror"
-                        placeholder="Contoh: PPDBM MIN 1 KOTA MADIUN"
+                        placeholder="Contoh: PPDB MIN 1 KOTA MADIUN"
                         required
                         maxlength="100"
                     >
@@ -67,7 +67,7 @@
                         <p class="mt-1.5 text-xs text-red-600 font-medium">{{ $message }}</p>
                     @enderror
                     <p class="mt-2 text-xs text-gray-500">
-                        Default: <code>PPDBM MIN 1 KOTA MADIUN</code>. Nama ini akan langsung muncul di pesan WhatsApp dan header aplikasi.
+                        Default: <code>PPDB MIN 1 KOTA MADIUN</code>. Nama ini akan langsung muncul di pesan WhatsApp dan header aplikasi.
                     </p>
                 </div>
 

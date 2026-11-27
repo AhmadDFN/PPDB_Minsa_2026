@@ -43,9 +43,9 @@ Checklist lengkap dan stop conditions berada di [`docs/phases/PHASE-11-LAUNCH-RE
 - [ ] Tindak lanjuti AL-004: pastikan kredensial yang pernah ada dalam dokumen Git tidak digunakan di server live; rotasi yang terpengaruh dan periksa log akses. Dokumen baru telah menghapus nilai terbuka, tetapi riwayat Git tetap perlu penanganan terpisah.
 - [ ] **P0 sebelum panel resmi MIN diluncurkan:** siapkan sandi baru untuk seluruh akun staf, pastikan default seeder statis tidak dipakai, simpan rahasia di luar Git, dan verifikasi akses/log. Pemilik menerima akun uji sementara pada `ahmaddanyfn.biz.id` yang dapat direset (AL-004).
 - [ ] **P1 UAT:** siapkan dokumen dummy pada fixture SUBMITTED setelah fresh seed, lalu uji verifikasi, pengesahan/nomor `YYNNNN`, PDF/QR, audit, dan WhatsApp hanya ke penerima uji terkendali (AL-007).
-- [ ] **P1 komunikasi:** deploy/recheck editor template yang menampilkan contoh isi dan placeholder, lalu uji Fonnte/OTP pemulihan dengan penerima uji (AL-006).
-- [ ] **P2 branding:** selaraskan nilai nama institusi live dari `PPDBM` menjadi `PPDB` sesuai keputusan pemilik dan verifikasi seluruh tampilan/pesan (AL-005).
-- [ ] **P3 UX staf:** setelah logout, akses rute admin tanpa sesi harus menuju `/admin/login`, lalu ulangi uji ADM-01 (AL-008).
+- [ ] **P1 komunikasi:** contoh isi dan placeholder editor telah terlihat di live; lanjutkan uji Fonnte/OTP pemulihan dengan penerima uji (AL-006).
+- [ ] **P2 branding:** nilai aktif live dan login pendaftar sudah menampilkan `PPDB`; petunjuk default statis yang masih `PPDBM` diperbaiki lokal dan menunggu uji ulang sesudah rilis (AL-005).
+- [x] **P3 UX staf:** setelah logout, akses rute admin tanpa sesi menuju `/admin/login`; sudah diverifikasi live (AL-008).
 
 ### P1 — Operational readiness
 
