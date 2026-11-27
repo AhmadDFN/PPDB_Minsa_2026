@@ -85,3 +85,18 @@ Pemilik menyatakan telah menjalankan `migrate:fresh --seed` dan seeder uji pada 
 - **PASS akses baca:** halaman akun staf, role/permission, periode, program, persyaratan, batch dan tahap wawancara, serta audit terbuka untuk superadmin. Audit memuat aktivitas `setting_updated` dari perubahan branding.
 - **Belum dibuktikan:** pembuatan/reset akun, perubahan role, mutasi master, verifikasi dan pengesahan dokumen, ekspor laporan, OTP lupa password, dan pengiriman WhatsApp. Dua fixture SUBMITTED hasil seed sebelumnya belum memiliki dokumen; tidak ada pengesahan atau pengiriman pesan pada putaran ini.
 - UI dashboard menampilkan Laravel 13.42.0, tetapi hash commit server tidak tersedia. Perilaku editor dan redirect menunjukkan perbaikan terlihat, bukan bukti seluruh commit telah terpasang.
+
+## Uji ulang khusus superadmin — 27 November 2026, sekitar 20.26 WIB
+
+Pemilik mengizinkan satu pesan uji ke nomor pribadinya dan akan mengonfirmasi penerimaan secara manual. Nomor tidak dicatat di laporan. **Tidak ada pesan yang dikirim** pada putaran ini: Communication Center live masih memakai konfigurasi Fonnte legacy, tanpa channel database maupun aksi kirim pesan uji. Tombol `Test connection` hanya tersedia untuk channel database yang sudah dibuat; tombol itu memeriksa perangkat, bukan mengirim pesan. Reset password akun administrator menggunakan email, bukan WhatsApp. Alur pendaftar tidak dipicu karena ruang lingkup putaran ini khusus superadmin. Status Fonnte **BELUM DIUJI**.
+
+| Area | Hasil live |
+|---|---|
+| Login, dashboard, logout | **PASS**: login superadmin berhasil; dashboard menunjukkan 3 pendaftar, 2 terkirim, 1 draf. Setelah logout, akses langsung `/admin/dashboard` kembali ke `/admin/login`. |
+| Pengaturan | **PASS baca**: nama aktif dan petunjuk default sama-sama `PPDB MIN 1 KOTA MADIUN`; perbaikan teks statis sudah terlihat live. |
+| Communication Center | **PASS parsial**: empat contoh template tampil; menyimpan ulang isi yang sama menghasilkan pesan sukses. **BELUM DIUJI**: pengiriman WhatsApp, koneksi perangkat, dan penerimaan di HP. |
+| Laporan | **PASS parsial**: laporan menunjukkan 2 pendaftaran terkirim; unduhan CSV berhasil. Isi dan ketahanan CSV terhadap formula belum diperiksa pada putaran ini. |
+| Akun dan role | **PASS baca**: empat akun staf aktif tampil; `admin_ppdb` 3 akun/8 permission, `superadmin` 1 akun/20 permission dan dilindungi. Mutasi akun, reset email, serta permission belum diuji. |
+| Audit aktivitas | **TEMUAN AL-009**: perubahan template berhasil, tetapi daftar audit tetap hanya menampilkan perubahan pengaturan sebelumnya. Kode menyimpan audit komunikasi di tabel terpisah yang belum digabung oleh `AdminActivityLogService`. |
+
+Tidak ada akun, role, token, periode, data pendaftar, atau kredensial yang diubah. Satu-satunya mutasi adalah penyimpanan ulang empat template tanpa perubahan isi. Uji penerimaan pesan menunggu jalur kirim uji terkontrol di panel superadmin atau uji OTP pendaftar pada sesi yang memang mencakup pendaftar.

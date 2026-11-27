@@ -102,3 +102,18 @@ Catat blocker dan temuan yang masih terbuka ke Phase 11; status lintas proyek ke
 - Pada 27 November 2026 pemilik menetapkan `ahmaddanyfn.biz.id` sebagai situs **uji yang dapat direset**, meski aplikasinya menggunakan mode `production`. Panel resmi MIN nanti berada di lingkungan lain.
 - Penggunaan akun seeder dan kredensial uji pada domain ini diterima sementara untuk memperlancar UAT. AL-004 tetap tercatat sebagai temuan keamanan **wajib ditutup sebelum panel resmi diluncurkan**, bukan penghalang untuk melanjutkan pengujian pada domain ini.
 - Jangan memindahkan database, akun, atau sandi uji ke panel resmi. Siapkan rahasia baru, verifikasi izin, dan uji login pada lingkungan resmi sebelum dibuka bagi pengguna.
+
+## AL-009 — Audit komunikasi tidak muncul di Audit Aktivitas
+
+- **Kasus / status:** SUP-03/ADM-11; OPEN; 27 November 2026 sekitar 20.26 WIB.
+- **Prioritas:** sedang; superadmin tidak dapat melihat perubahan template WhatsApp dari satu halaman audit aktivitas.
+- **Bukti live:** penyimpanan ulang empat template menampilkan sukses, tetapi `/admin/audit-logs` tetap menunjukkan satu aktivitas `setting_updated` lama dan tidak menawarkan sumber komunikasi.
+- **Akar penyebab kode:** `CommunicationChannelController` mencatat `message_templates_updated` melalui `CommunicationAuditService` ke `communication_audit_logs`; `AdminActivityLogService::SOURCES` dan union audit belum menyertakan tabel itu.
+- **Tindak lanjut:** gabungkan audit komunikasi dengan tampilan audit administratif, filter, ringkasan, dan tes regresi tanpa membuka credential/isi pesan.
+
+## AL-010 — Tidak ada jalur kirim pesan uji dari superadmin
+
+- **Kasus / status:** SUP-03; OPEN; 27 November 2026 sekitar 20.26 WIB.
+- **Prioritas:** sedang untuk UAT gateway; pemilik telah mengizinkan satu pengiriman ke HP pribadinya, tetapi panel tidak memiliki aksi kirim uji. Situs masih memakai Fonnte legacy environment tanpa channel database.
+- **Bukti:** Communication Center hanya menyediakan validasi/simpan channel, `Test connection` pada channel database, dan editor template. Kode `CommunicationChannelController` tidak memiliki endpoint kirim pesan uji. Tidak ada pesan dikirim, sehingga hasil provider dan penerimaan manual belum dapat dinilai.
+- **Tindak lanjut:** sediakan aksi kirim uji khusus superadmin dengan penerima terkendali, rate limit, audit aman, validasi nomor, pesan tanpa OTP/password, dan respons diterima provider yang dibedakan dari penerimaan di HP. Uji sekali ke nomor yang disetujui pemilik setelah fitur tersedia.

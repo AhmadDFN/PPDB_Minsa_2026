@@ -38,12 +38,15 @@ Checklist lengkap dan stop conditions berada di [`docs/phases/PHASE-11-LAUNCH-RE
 - [ ] Uji master period/program/requirements, system settings, admin lifecycle, Communication Center, template, dan audit viewer.
 - [ ] Uji batch/stage/criteria, sequential gate, score lock, correction audit, recap, CSV export, dan role isolation wawancara.
 - [ ] Tutup checklist live admin/superadmin; angka lama 2 PASS, 13 PARTIAL, 1 BLOCKED, 2 belum diuji adalah historis sebelum fresh seed. Gunakan hasil putaran baru pada `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
-- [ ] Lanjutkan putaran superadmin dari sesi browser uji setelah login oleh pemilik; verifikasi pengaturan, akun staf, komunikasi, master wawancara, audit, dan UI responsif tanpa mengubah konfigurasi live atau mengirim WA ke penerima nyata.
+- [ ] Lanjutkan UAT superadmin untuk mutasi aman akun staf, permission, master, audit, dan UI responsif. Login, baca menu, simpan ulang template, branding, serta unduhan CSV sudah diuji; pengiriman WA menunggu jalur kirim uji terkontrol (AL-010).
 - [ ] Cocokkan akun superadmin live yang pernah berhasil login dengan inventaris seeder; gunakan kredensial aktif dari penyimpanan privat. Seeder `firstOrCreate` tidak memulihkan sandi akun yang ada. Jangan menjalankan `LiveTestSeeder` pada produksi untuk memperoleh akses.
 - [ ] Tindak lanjuti AL-004: pastikan kredensial yang pernah ada dalam dokumen Git tidak digunakan di server live; rotasi yang terpengaruh dan periksa log akses. Dokumen baru telah menghapus nilai terbuka, tetapi riwayat Git tetap perlu penanganan terpisah.
 - [ ] **P0 sebelum panel resmi MIN diluncurkan:** siapkan sandi baru untuk seluruh akun staf, pastikan default seeder statis tidak dipakai, simpan rahasia di luar Git, dan verifikasi akses/log. Pemilik menerima akun uji sementara pada `ahmaddanyfn.biz.id` yang dapat direset (AL-004).
 - [ ] **P1 UAT:** siapkan dokumen dummy pada fixture SUBMITTED setelah fresh seed, lalu uji verifikasi, pengesahan/nomor `YYNNNN`, PDF/QR, audit, dan WhatsApp hanya ke penerima uji terkendali (AL-007).
 - [ ] **P1 komunikasi:** contoh isi dan placeholder editor telah terlihat di live; lanjutkan uji Fonnte/OTP pemulihan dengan penerima uji (AL-006).
+- [ ] **P1 audit superadmin (AL-009):** tampilkan audit komunikasi pada `/admin/audit-logs`, termasuk filter/ringkasan, tanpa token atau isi pesan; uji regresi dan verifikasi live.
+- [ ] **P1 kirim uji superadmin (AL-010):** sediakan pengiriman satu pesan uji tanpa rahasia ke penerima yang disetujui, dengan validasi nomor, rate limit, audit aman, dan status provider; uji sekali ke HP pemilik dan tunggu konfirmasi penerimaan manual. Belum ada pesan terkirim pada putaran 20.26 WIB.
+- [x] **UAT superadmin 20.26 WIB:** login/logout, branding dan petunjuk default, simpan ulang template, serta unduhan CSV berhasil. Audit komunikasi dan kirim uji tercatat sebagai gap; mutasi akun/role/master masih menunggu uji terpisah.
 - [ ] **P2 branding:** nilai aktif live dan login pendaftar sudah menampilkan `PPDB`; petunjuk default statis yang masih `PPDBM` diperbaiki lokal dan menunggu uji ulang sesudah rilis (AL-005).
 - [x] **P3 UX staf:** setelah logout, akses rute admin tanpa sesi menuju `/admin/login`; sudah diverifikasi live (AL-008).
 
