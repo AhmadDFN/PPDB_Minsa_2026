@@ -7,6 +7,12 @@ Dokumen ini berfungsi sebagai **penampung error dan hal yang belum bisa dikerjak
 
 ## Daftar Isu Aktif (Open / Pending)
 
+### [ISS-013] Penomoran dan Pengesahan Pendaftaran Memerlukan Rekonsiliasi
+- **Tanggal:** 2026-11-27
+- **Status:** OPEN — keputusan aturan bisnis diperlukan.
+- **Gejala:** fixture live SUBMITTED sudah menampilkan nomor registrasi sebelum disahkan. Blueprint wawancara menyebut penerbitan nomor urut enam digit saat pengesahan, sementara AGENTS mencatat format YYNNN dan status terbatas DRAFT/SUBMITTED.
+- **Tindak lanjut:** audit kode, aturan dan keputusan pemilik; uji pengesahan pada fixture terisolasi dengan gateway tiruan. Rincian `adminlivetest/04-LOG-TEMUAN.md` AL-002.
+
 ### [ISS-011] Migrasi Wilayah Gagal dan Pemulihan Database Tertunda
 - **Tanggal:** 2026-11-27
 - **Status:** `OPEN` — perbaikan lokal tersedia; server dan pemulihan data belum diverifikasi.

@@ -20,6 +20,12 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Live test admin dan superadmin — parsial
+- Panitia dan superadmin berhasil login; pencarian dan detail fixture, pratinjau berkas, approve/revisi/tolak, riwayat dan halaman laporan diperiksa. Hanya data dummy digunakan untuk perubahan status dokumen.
+- Tiga pewawancara masuk ke tahap masing-masing dan mendapat 403 saat mengakses rekap. Pendaftar mendapat 403 pada dashboard admin; panitia mendapat 403 pada pengaturan superadmin.
+- Sepuluh halaman modul superadmin terbuka; operasi perubahan konfigurasi, pengesahan yang dapat mengirim WhatsApp, lock/sequential gate dan IDOR antar fixture masih pending. Checklist: 2 PASS, 13 PARTIAL, 1 BLOCKED, 2 BELUM DIUJI; rincian `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
+- Pendaftaran dummy tetap SUBMITTED; satu berkas diterima, satu revisi, satu ditolak, satu menunggu. Nomor registrasi sudah tampil sebelum pengesahan, perlu rekonsiliasi aturan (AL-002).
+
 ### [2026-11-27] Rencana Live Test Admin dan Superadmin
 - Menyusun panduan `adminlivetest/` berisi prasyarat fixture, 18 skenario per peran, checklist hasil, batas keamanan, dan template temuan/perbaikan.
 - Konflik blueprint wawancara dengan status/nomor pada AGENTS dicatat untuk keputusan pemilik; belum ada live test atau perubahan data/server yang dilakukan pada penyusunan rencana.
