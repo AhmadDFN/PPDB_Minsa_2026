@@ -30,6 +30,10 @@
 
 ## 3. P1 — Acceptance pendaftar dan dokumen
 
+- [x] Putaran live 27 November: pengisian akun DRAFT sampai 100%, empat unggahan dummy, PDF draf dua halaman, dan 403/404 batas akses dasar. Rincian ada di `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+- [ ] Rilis dan verifikasi koreksi teks nomor setelah pengesahan serta bahasa tanggal acuan usia di portal pendaftar.
+- [ ] Lengkapi fixture SUBMITTED yang saat ini 43% tanpa dokumen; uji alur pengesahan dan PDF final dengan data yang konsisten.
+- [ ] Uji OTP memakai akun yang terhubung ke nomor uji pemilik; lanjutkan submit final ketika pernyataan data dapat disetujui.
 - [ ] Uji registrasi baru, OTP benar/salah/kedaluwarsa, resend, sibling support, recovery, dan mandatory password change.
 - [ ] Uji enam modul formulir pada desktop, 360, 390, dan 768 px tanpa overflow atau console error.
 - [ ] Uji dataset wilayah cascading dan salin alamat orang tua.

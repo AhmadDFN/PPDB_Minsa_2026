@@ -59,3 +59,23 @@ Pemilik menyatakan telah menjalankan `migrate:fresh --seed` dan seeder uji pada 
 ## Uji ulang superadmin sekitar 20.04 WIB
 
 Login/logout berhasil; setelah logout rute admin menuju login admin. Empat contoh template dan variabel tersedia terlihat di Communication Center. Nama institusi berhasil diubah melalui superadmin menjadi `PPDB MIN 1 KOTA MADIUN`, tercatat di audit, dan tampil pada login pendaftar. Menu akun, roles, master periode/program/dokumen, batch/tahap wawancara, dan audit terbuka. Petunjuk default lama `PPDBM` di form pengaturan masih terlihat; kode lokal diperbaiki dan belum diuji ulang di server. OTP/Fonnte, pengesahan berkas, serta mutasi master belum dibuktikan. Rincian: `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
+
+## Putaran khusus pendaftar setelah fresh seed — 27 November 2026
+
+Situs uji memakai tiga akun dari `LiveTestSeeder`; tidak ada identitas, sandi, nomor telepon, atau OTP yang disalin ke laporan. Akun DRAFT dipakai untuk pengisian; dua akun SUBMITTED hanya diperiksa tanpa mengubah datanya.
+
+- PASS: login/logout pendaftar; dashboard DRAFT naik dari 14% menjadi 100% setelah biodata, alamat, ayah/ibu, pendidikan, program Reguler, dan empat dokumen dummy lengkap. Jumlah saudara 0 diterima pada server live.
+- PASS: pilihan wilayah bertingkat sampai kelurahan tersimpan. Tombol salin alamat untuk ayah dan ibu menyalin wilayah, RT/RW, serta kode pos. RT/RW dengan nol di depan tetap tampil benar di tinjau.
+- PASS: empat PNG sintetis yang jelas berlabel bukan dokumen asli berhasil diunggah; statusnya menunggu pemeriksaan. Pratinjau privat berhasil dibuka oleh pemilik berkas.
+- PASS: PDF draf dibuat dan diunduh. `pdfinfo` menunjukkan dua halaman A4; pemeriksaan visual kedua halaman menunjukkan watermark DRAFT, data sensitif tersamar, foto dummy, dan status berkas tanpa bagian terpotong.
+- PASS: pendaftar mendapat 403 pada `/admin/dashboard`. Akun pendaftar kedua mendapat 404 saat membuka pratinjau dokumen akun pertama. Setelah logout, dashboard pendaftar dialihkan ke login.
+- PASS: NIK dengan panjang salah pada form lupa password ditolak dengan pesan validasi 16 digit; tidak ada OTP dikirim.
+- PASS: akun SUBMITTED yang belum lengkap ditolak saat mencoba membuat PDF final, disertai daftar persyaratan yang kurang.
+- FAIL teks: tinjau DRAFT menyatakan nomor diperoleh saat submit, bertentangan dengan keputusan nomor setelah pengesahan. Teks dikoreksi lokal; verifikasi server setelah rilis masih pending.
+- FAIL bahasa: acuan usia pada dashboard/form biodata tampil `01 July 2026`. Format diterjemahkan ke bahasa Indonesia di kode lokal; verifikasi server masih pending.
+- GAP fixture: dua akun SUBMITTED hasil seeder hanya sekitar 43% lengkap tanpa dokumen; satu sudah memiliki nomor dari data awal. Kondisi ini membatasi pembuktian alur submit → verifikasi → pengesahan → PDF final dan tidak boleh dianggap sebagai hasil alur normal aplikasi.
+- BELUM DIUJI: registrasi baru, OTP aktivasi/pemulihan, resend, ganti sandi pertama, submit final pada akun DRAFT, dan PDF final setelah pengesahan. Akun seeder memakai nomor dummy lain; nomor uji pemilik belum terhubung ke akun. Submit memerlukan pernyataan kebenaran data pada halaman tinjau, sehingga agen tidak menyetujuinya untuk data sintetis.
+
+Data UAT tersimpan di situs uji: akun pertama tetap DRAFT dengan empat dokumen menunggu pemeriksaan. Pengujian hanya mencakup portal pendaftar dan dua pemeriksaan batas akses.
+
+Gate checkout setelah koreksi lokal: `php artisan test --compact` 399 test (383 passed, 16 skipped, 1.825 assertions); Pint, Vite build, Composer audit, npm audit (0 vulnerability), dan `git diff --check` lulus. APP_KEY sementara hanya dipakai pada proses test.

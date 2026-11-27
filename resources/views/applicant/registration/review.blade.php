@@ -215,7 +215,7 @@
                     <p class="mt-2 text-sm leading-relaxed text-neutral-700">{{ $consentStatement }}</p>
                     <p class="mt-1 text-xs text-neutral-500">Versi pernyataan: {{ $consentVersion }}</p>
                     <div class="mt-4 rounded-xl border border-amber-200 bg-white p-4 text-sm leading-relaxed text-amber-900">
-                        <strong>Perhatian:</strong> Setelah tombol ditekan, pendaftaran akan berstatus SUBMITTED dan memperoleh nomor registrasi. Data masih dapat diperbarui selama periode pendaftaran terbuka, dan setiap perubahan akan dicatat.
+                        <strong>Perhatian:</strong> Setelah tombol ditekan, pendaftaran akan berstatus SUBMITTED. Nomor registrasi diterbitkan setelah berkas disahkan panitia. Data masih dapat diperbarui selama periode pendaftaran terbuka, dan setiap perubahan akan dicatat.
                     </div>
 
                     <form method="POST" action="{{ route('applicant.registration.submit') }}" class="mt-5 space-y-4">

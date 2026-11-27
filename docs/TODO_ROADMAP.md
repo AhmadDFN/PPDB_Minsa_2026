@@ -23,6 +23,11 @@ Checklist lengkap dan stop conditions berada di [`docs/phases/PHASE-11-LAUNCH-RE
 
 ### P1 — Applicant acceptance
 
+- [x] UAT live akun DRAFT: enam bagian formulir, wilayah bertingkat/salin alamat, empat unggahan dummy, pratinjau privat, PDF draf dua halaman, dan batas akses dasar lulus pada 27 November 2026.
+- [ ] Verifikasi di server setelah rilis: tanggal acuan usia berbahasa Indonesia dan tinjau menyebut nomor baru setelah pengesahan.
+- [ ] Rapikan fixture UAT SUBMITTED agar data dan dokumen koheren sebelum uji PDF final/pengesahan; jangan menganggap nomor legacy dari seed sebagai hasil alur normal.
+- [ ] Uji OTP aktivasi dan lupa password melalui nomor uji pemilik yang terhubung ke akun pendaftar, tanpa mencatat kode atau mengirim ke nomor dummy seeder.
+- [ ] Selesaikan uji submit final dan PDF resmi dengan data uji yang dapat disetujui pemilik melalui pernyataan pada formulir.
 - [ ] Uji registrasi, OTP, resend/recovery, sibling support, mandatory password change, dan session isolation.
 - [ ] Uji enam formulir pada 360/390/768 px tanpa overflow/console error.
 - [ ] Uji cascading wilayah, salin alamat, peta offline, GPS opt-in, Haversine, fallback manual, dan no-coordinate-storage.

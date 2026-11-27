@@ -6,6 +6,10 @@
 **Dokumentasi Versi**: 1.7.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
+> **UAT khusus pendaftar — 27 November 2026:** Akun DRAFT seeder berhasil menyimpan enam bagian formulir, empat dokumen dummy, pratinjau privat, dan PDF draf dua halaman; dashboard mencapai 100%. Batas akses `/admin` dan dokumen lintas akun menolak permintaan dengan 403/404. Dua fixture SUBMITTED hanya sekitar 43% lengkap tanpa dokumen, sehingga PDF final ditolak dan alur pengesahan belum terbukti. Teks nomor pada tinjau serta bahasa tanggal acuan usia dikoreksi lokal. OTP, submit final, dan ganti sandi pertama belum diuji. Detail `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+
+> **Gate UAT pendaftar:** 399 test (383 passed, 16 skipped, 1.825 assertions); Pint, Vite build, Composer audit, npm audit (0 vulnerability), dan diff check lulus. Koreksi UI masih memerlukan verifikasi pada server setelah rilis.
+
 > **Perbaikan kontras — 27 November 2026:** Palet pilihan pemilik diterapkan pada tiga halaman pendaftar, dengan teks/badge pada banner gelap diperbaiki dan preview dashboard sintetis diperiksa. UAT seluruh status dan audit aksesibilitas penuh masih pending; rincian Phase 11.
 
 > **Next Atelier — 27 November 2026:** Redesign lokal landing, login, dan dashboard pendaftar menerapkan arahan skill baru. Kartu peserta fiktif diganti informasi periode riil; countdown tidak memakai tanggal cadangan tanpa periode aktif. UAT visual dashboard dan rekonsiliasi konten landing masih pending. Rincian Phase 11.

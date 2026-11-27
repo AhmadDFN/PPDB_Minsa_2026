@@ -43,7 +43,7 @@ class ApplicantProfileService
         $refDate = $targetPeriod?->age_reference_date ?? Carbon::now();
 
         $calc = $applicant->calculateAgeAt($refDate);
-        $calc['reference_date'] = $targetPeriod?->age_reference_date?->format('d F Y') ?? Carbon::now()->format('d F Y');
+        $calc['reference_date'] = $refDate->locale('id')->translatedFormat('d F Y');
 
         return $calc;
     }
