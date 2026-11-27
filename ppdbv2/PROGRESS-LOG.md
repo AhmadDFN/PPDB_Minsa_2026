@@ -25,6 +25,7 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 - Memperbaiki teks gelap pada badge/status dan tombol di latar gelap. Kontras pasangan utama: putih/`#0B132B` 18,38:1, `#5BC0BE`/`#0B132B` 8,52:1, putih/`#1C2541` 15,10:1, `#3A506B`/putih 8,27:1.
 - Landing dan dashboard diperiksa secara visual di browser lokal, termasuk dashboard dengan data sintetis dan viewport 390 px tanpa overflow. Preview sementara dihapus; seluruh variasi status dan audit aksesibilitas penuh belum diuji.
 - `php artisan test`: 392 test (377 passed, 15 skipped, 1.800 assertions). Pint, Vite build, audit Composer/npm dan `git diff --check` lulus.
+- Commit `bf21153` dipush dan auto-deploy terverifikasi: landing, login, dan aset `app-yJ1IhNNW.css` merespons HTTP 200; halaman publik merujuk aset baru.
 
 ### [2026-11-27] Next Atelier — Landing, Login dan Dashboard
 - Kedua lampiran pemilik identik (SHA-256 sama); satu salinan disimpan sebagai `ppdbv2/skills/ppdb-next-atelier/SKILL.md`.
