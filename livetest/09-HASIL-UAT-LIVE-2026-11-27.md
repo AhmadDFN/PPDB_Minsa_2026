@@ -81,3 +81,13 @@ Data UAT tersimpan di situs uji: akun pertama tetap DRAFT dengan empat dokumen m
 Gate checkout setelah koreksi lokal: `php artisan test --compact` 399 test (383 passed, 16 skipped, 1.825 assertions); Pint, Vite build, Composer audit, npm audit (0 vulnerability), dan `git diff --check` lulus. APP_KEY sementara hanya dipakai pada proses test.
 
 Koreksi dan laporan UAT dipush ke `origin/main` pada commit `8c7de86`. Pembacaan berkas Hostinger setelah push masih menunjukkan kode tanggal dan teks tinjau lama; push belum berarti deployment. Verifikasi UI live untuk dua koreksi tersebut menunggu deployment terpisah.
+
+## Uji ulang khusus pendaftar — 27 November 2026 sekitar 20.57 WIB
+
+- PASS: koreksi tanggal acuan usia `01 Juli 2026` dan teks nomor setelah pengesahan terlihat pada dashboard/tinjau situs uji. Pembacaan kedua berkas Hostinger juga cocok dengan commit `8c7de86`; deployment terjadi setelah pemeriksaan awal di atas.
+- PASS: NIK sintetis yang tidak terdaftar pada lupa password mendapat pesan umum tanpa membuka identitas akun. Pengisian kode dummy pada layar berikutnya kembali ke form dengan pesan sesi pemulihan tidak ditemukan. Tidak ada OTP nyata dikirim.
+- PASS: satu dokumen Akta dummy diganti dengan berkas sintetis; halaman menunjukkan sukses, kelengkapan tetap 4/4, dan riwayat penggantian (1) memuat alasan serta tautan pratinjau/unduh revisi.
+- PASS lokal: suite terarah `PasswordRecoveryTest`, `FonnteOtpDeliveryTest`, dan `tests/Feature/Applicant` menghasilkan 108 test, 107 passed, 1 skipped, 495 assertions. Pengiriman provider pada suite menggunakan simulasi, bukan WhatsApp nyata.
+- BELUM DIUJI: penerimaan OTP pemulihan/aktivasi di HP pemilik. Akun aktif seeder masih terhubung ke nomor dummy lain; tidak ada akun pendaftar yang diketahui terhubung ke nomor uji pemilik. Alur ganti sandi setelah OTP dan submit final belum dibuktikan.
+
+Gate akhir uji ulang: `php artisan test --compact` 399 test (383 passed, 16 skipped, 1.825 assertions); Pint, Vite build, Composer audit, npm audit (0 vulnerability), dan `git diff --check` lulus. APP_KEY sementara hanya dipakai pada proses test.

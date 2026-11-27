@@ -12,6 +12,8 @@
 
 > **Push UAT pendaftar:** commit `8c7de86` berhasil dipush ke `origin/main`. Berkas aplikasi di Hostinger masih memuat teks dan format tanggal lama saat dibaca setelah push; deployment serta verifikasi live koreksi belum terjadi.
 
+> **Uji ulang pendaftar sekitar 20.57 WIB:** Koreksi tanggal `01 Juli 2026` dan teks nomor setelah pengesahan kini terlihat di situs uji dan berkas Hostinger. Penggantian satu dokumen dummy berhasil, riwayat revisi (1) tampil, kelengkapan tetap 4/4. Pemulihan NIK tak terdaftar memberi pesan umum dan menolak OTP dummy tanpa sesi; tidak ada pengiriman OTP nyata. Suite terarah 107 passed, 1 skipped, 495 assertions. Detail `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+
 > **Perbaikan kontras — 27 November 2026:** Palet pilihan pemilik diterapkan pada tiga halaman pendaftar, dengan teks/badge pada banner gelap diperbaiki dan preview dashboard sintetis diperiksa. UAT seluruh status dan audit aksesibilitas penuh masih pending; rincian Phase 11.
 
 > **Next Atelier — 27 November 2026:** Redesign lokal landing, login, dan dashboard pendaftar menerapkan arahan skill baru. Kartu peserta fiktif diganti informasi periode riil; countdown tidak memakai tanggal cadangan tanpa periode aktif. UAT visual dashboard dan rekonsiliasi konten landing masih pending. Rincian Phase 11.
