@@ -17,6 +17,8 @@ Dokumen ini disusun sebagai panduan menyeluruh pelaksanaan **Live Test** pada Si
 
 ---
 
+Panduan lima akun pendaftar baru dengan draft kosong: [08-LOGIN-LIMA-DUMMY.md](./08-LOGIN-LIMA-DUMMY.md). Akun dan kredensialnya hanya tersedia pada lingkungan tempat seeder dijalankan.
+
 ## 2. Memahami Kendala OTP WhatsApp Fonnte & Solusinya
 
 ### Skema Live Test Default: Login Akun Dummy

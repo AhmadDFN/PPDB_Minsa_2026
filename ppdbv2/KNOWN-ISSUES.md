@@ -105,3 +105,19 @@ Dokumen ini berfungsi sebagai **penampung error dan hal yang belum bisa dikerjak
 - **Hipotesis & Rencana Solusi:**
   - ...
 -->
+
+### [ISS-010] Header Login dan Registrasi Overflow pada Tablet 768 px
+- **Tanggal Dicatat:** 2026-11-26
+- **Fase / Task Terkait:** Live smoke test revisi form calon siswa
+- **Status:** `OPEN` — Terlihat pada produksi saat pengukuran browser; belum diperbaiki
+- **Rute Terdampak:** `/login`, `/daftar`
+- **Gejala:** Pada viewport 768×1024, `document.documentElement.scrollWidth` dan `document.body.scrollWidth` bernilai 825 px. Elemen navigasi header kanan mencapai x=825 px dan halaman menampilkan horizontal scrollbar. Pada viewport 360×800 (scroll width 345 px) dan 390×844 (375 px), overflow tidak ditemukan.
+- **Reproduksi:** Buka salah satu rute di atas, set viewport 768×1024, lalu ukur `document.documentElement.scrollWidth`.
+- **Rencana:** Audit breakpoint navigasi publik (`hidden md:flex`) dan ukuran minimum grup tombol/link. Perbaiki agar grup navigasi berpindah ke menu mobile atau dapat menyesuaikan lebar pada tablet; verifikasi ulang 360/390/768 px.
+- **Bukti:** `livetest/07-HASIL-LIVE-SMOKE-PRODUKSI-2026-11-26.md`.
+
+### [ISS-011] Composer Audit Menemukan Advisory Symfony
+- **Tanggal:** 2026-11-27
+- **Status:** OPEN — perlu audit dampak dan pembaruan dependensi.
+- **Hasil:** `composer audit` gagal: lima advisory pada `symfony/http-kernel` (PKSA-k1tg-4k6j-w4xf), `symfony/mailer` (PKSA-vqxj-j8fm-1q3k, PKSA-9r8k-3vgs-8f3v), dan `symfony/routing` (PKSA-pbtx-4qgh-mmkh, PKSA-2vy6-qchn-f13r). Tingkat severity tidak tercantum pada hasil JSON.
+- **Tindak lanjut:** periksa versi perbaikan dan kompatibilitas Laravel, perbarui dependensi, lalu jalankan ulang audit dan test penuh sebelum push.

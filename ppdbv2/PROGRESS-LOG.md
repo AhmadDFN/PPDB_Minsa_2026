@@ -20,6 +20,11 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Lima akun pendaftar dummy lokal
+- Seeder `BlankApplicantLiveTestSeeder` membuat lima akun aktif dengan nama, NIK dummy, nomor HP dummy dan password acak; profil, program dan dokumen kosong, status DRAFT. Seeder dibatasi pada local/testing dan menolak menimpa akun atau kredensial.
+- Kredensial berada di file privat yang diabaikan Git; panduan: `livetest/08-LOGIN-LIMA-DUMMY.md`. Lima akun dibuat dan diverifikasi pada SQLite lokal. Belum tersedia di server publik.
+- Verifikasi: full suite 389 test (374 passed, 15 skipped, 1.784 assertions); Pint dan Vite build lulus; npm audit 0 vulnerabilities. Composer audit gagal, lima advisory pada tiga paket Symfony (ISS-011). Git diff --check lulus. Audit Composer belum lulus; temuan tetap terbuka pada ISS-011.
+
 ### [2026-11-27] Perbaikan Migrasi Wilayah MariaDB
 - **Status:** Perbaikan disiapkan; belum dideploy dan belum divalidasi pada server MariaDB.
 - **Temuan:** Log pemilik menunjukkan `migrate:fresh --seed` menghapus tabel lalu gagal pada foreign key `ar_parent_fk`. Indeks unik fluent dibuat Laravel setelah foreign key, sehingga kolom referensi belum terindeks ketika constraint dipasang.
@@ -27,6 +32,12 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 - **Pengujian lokal:** `php artisan test` lulus (389 test: 374 passed, 15 skipped, 1.784 assertions); Pint, Vite build, npm audit (0 vulnerability), dan `git diff --check` lulus. Uji urutan SQL tidak menggantikan pengujian MariaDB aktual.
 - **Pemulihan:** Jangan ulangi `migrate:fresh`. Verifikasi backup dan dampak hilangnya data terlebih dahulu; periksa status migrasi serta struktur dan isi tabel `administrative_regions` yang mungkin tertinggal sebagian. Tentukan pemulihan bersama pemilik sebelum tindakan destruktif atau deployment. Seeder belum berjalan karena migrasi gagal.
 - **Audit:** `composer audit` menemukan lima advisory pada `symfony/http-kernel`, `symfony/mailer`, dan `symfony/routing`; tindak lanjut terpisah diperlukan.
+
+### [2026-11-26] Live Smoke Test Publik Produksi — Parsial
+- **Status:** Beranda, `/login`, `/admin/login`, `/daftar`, dan redirect rute terlindungi dapat diperiksa tanpa autentikasi; tidak ada data yang dikirim atau dibuat.
+- **Hasil:** Login dan registrasi tidak overflow pada 360×800 (scroll width 345 px) dan 390×844 (375 px). Pada 768×1024, kedua halaman overflow ke 825 px akibat header navigasi (ISS-010). Halaman registrasi tidak menampilkan console error saat diamati.
+- **Batasan:** Tidak login/submit menggunakan akun dummy karena akun khusus produksi belum terverifikasi tersedia; OTP/WA, PDF/QR, IDOR lintas akun dan UAT peta terautentikasi belum dijalankan. Beranda juga memuat pernyataan seleksi/pengumuman yang perlu ditinjau terhadap batas lingkup proyek.
+- **Bukti:** `livetest/07-HASIL-LIVE-SMOKE-PRODUKSI-2026-11-26.md`.
 
 ### [2026-11-26] Revisi Form Data Calon Siswa — Implementasi, Test, Commit & Push
 - **Status:** Commit `6814d47` telah dipush ke `origin/main` (26 November 2026). Tidak ada deployment; verifikasi staging/production dan acceptance manual tetap pending.

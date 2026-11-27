@@ -24,6 +24,10 @@
 
 ---
 
+> **Live Smoke Test Publik — 26 November 2026:** Beranda dan halaman login/registrasi merespons; rute pendaftar tanpa autentikasi dialihkan ke login. Pada 360/390 px tidak ditemukan overflow di login/registrasi, tetapi pada 768 px keduanya melebar sampai 825 px (ISS-010). Akun dummy belum diverifikasi tersedia di produksi, sehingga tidak ada login, submit, upload, atau perubahan record. Detail: `livetest/07-HASIL-LIVE-SMOKE-PRODUKSI-2026-11-26.md`.
+
+> **27 November 2026:** Lima akun dummy draft kosong telah dibuat dan diperiksa pada database lokal menggunakan `BlankApplicantLiveTestSeeder`; kredensial acak disimpan privat dan tidak tersedia otomatis di server publik. Panduan: `livetest/08-LOGIN-LIMA-DUMMY.md`.
+
 ## 1. STATUS FASE SAAT INI
 
 | Parameter | Nilai Faktual |
@@ -35,7 +39,7 @@
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
 | **Commit Baseline Sebelum Hotfix** | `550d0e2` |
-| **Revisi Form Calon Siswa** | **PARTIAL / LOCAL ONLY — belum siap rilis** |
+| **Revisi Form Calon Siswa** | **PARTIAL — pushed; live smoke test menemukan tablet overflow, end-to-end masih pending** |
 
 ---
 
