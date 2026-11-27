@@ -16,6 +16,10 @@ Pedoman wajib dan instruksi permanen coding agent/developer di repositori ini. S
   - **TIDAK ADA** pembatasan kuota pendaftaran pada sistem.
 - **Referensi Detail**: `docs/PROJECT_BLUEPRINT.md`, `docs/BUSINESS_REQUIREMENTS.md`, `docs/PROJECT_STATUS.md`.
 
+### Klasifikasi lingkungan menurut pemilik (27 November 2026)
+
+`ahmaddanyfn.biz.id` adalah **situs uji yang boleh direset**, meskipun aplikasi di sana memakai `APP_ENV=production`. Panel resmi milik MIN 1 Kota Madiun akan berada di lingkungan lain dan belum diluncurkan. Hasil UAT, akun seeder, serta data dummy pada situs uji bukan bukti kesiapan panel resmi. Perlakukan domain resmi nanti sebagai lingkungan terpisah; jangan menerapkan keputusan reset atau kredensial uji ke sana.
+
 ---
 
 ## 2. TECHNOLOGY STACK

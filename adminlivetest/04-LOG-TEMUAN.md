@@ -89,3 +89,9 @@ Catat blocker dan temuan yang masih terbuka ke Phase 11; status lintas proyek ke
 - AL-005: fallback nama institusi diperbarui ke PPDB. Nilai yang telah disimpan di database live harus diperbarui melalui pengaturan superadmin.
 - AL-006: editor lokal menampilkan template tersimpan atau default dan placeholder; verifikasi pengiriman Fonnte live tetap pending.
 - AL-008: tamu pada rute admin diarahkan ke login admin. Seluruh perbaikan masih memerlukan deployment dan uji ulang live.
+
+## Keputusan pemilik tentang AL-004 dan lingkungan uji
+
+- Pada 27 November 2026 pemilik menetapkan `ahmaddanyfn.biz.id` sebagai situs **uji yang dapat direset**, meski aplikasinya menggunakan mode `production`. Panel resmi MIN nanti berada di lingkungan lain.
+- Penggunaan akun seeder dan kredensial uji pada domain ini diterima sementara untuk memperlancar UAT. AL-004 tetap tercatat sebagai temuan keamanan **wajib ditutup sebelum panel resmi diluncurkan**, bukan penghalang untuk melanjutkan pengujian pada domain ini.
+- Jangan memindahkan database, akun, atau sandi uji ke panel resmi. Siapkan rahasia baru, verifikasi izin, dan uji login pada lingkungan resmi sebelum dibuka bagi pengguna.
