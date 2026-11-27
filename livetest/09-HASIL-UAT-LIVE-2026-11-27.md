@@ -79,3 +79,5 @@ Situs uji memakai tiga akun dari `LiveTestSeeder`; tidak ada identitas, sandi, n
 Data UAT tersimpan di situs uji: akun pertama tetap DRAFT dengan empat dokumen menunggu pemeriksaan. Pengujian hanya mencakup portal pendaftar dan dua pemeriksaan batas akses.
 
 Gate checkout setelah koreksi lokal: `php artisan test --compact` 399 test (383 passed, 16 skipped, 1.825 assertions); Pint, Vite build, Composer audit, npm audit (0 vulnerability), dan `git diff --check` lulus. APP_KEY sementara hanya dipakai pada proses test.
+
+Koreksi dan laporan UAT dipush ke `origin/main` pada commit `8c7de86`. Pembacaan berkas Hostinger setelah push masih menunjukkan kode tanggal dan teks tinjau lama; push belum berarti deployment. Verifikasi UI live untuk dua koreksi tersebut menunggu deployment terpisah.
