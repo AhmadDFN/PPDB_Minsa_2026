@@ -26,6 +26,7 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 - Kartu contoh yang menampilkan nama/nomor peserta fiktif diganti kartu periode dari database; kondisi tanpa periode menampilkan keadaan kosong. Countdown tidak lagi menggunakan tanggal fallback ketika tidak ada periode aktif. Rute, field, autentikasi, navigasi, dan pengendali form tidak diubah.
 - Browser lokal: landing/login desktop dan 320 px ditinjau tanpa overflow; dialog persyaratan terbuka dan tidak tercatat error console saat diperiksa. UAT visual dashboard terautentikasi, variasi status, aksesibilitas lengkap, dan E2E belum dilakukan. Foto asli madrasah tidak tersedia pada aset lokal.
 - Pengujian: 392 test (377 passed, 15 skipped, 1.800 assertions); Pint, Vite build, Composer audit, npm audit, Blade view cache dan `git diff --check` lulus. Uji periode fokus: 2 test, 7 assertions.
+- Commit `7846038` dipush ke `origin/main`; setelah auto-deploy Hostinger, landing, `/login`, dan aset `app-B-5YIpp-.css` merespons HTTP 200 dengan penanda Next Atelier. Dashboard terautentikasi belum diperiksa live.
 - Ketidaksesuaian konten landing lama mengenai seleksi/pengumuman dan penyerahan fisik masih memerlukan keputusan pemilik; konten tersebut tidak disahkan atau diubah dalam pekerjaan desain ini. Gate desain frontend sebelumnya belum lulus; belum dinyatakan lulus pada desain baru.
 
 ### [2026-11-27] Skill Calm Academic untuk Antarmuka Pendaftar
