@@ -92,6 +92,8 @@ Hasil live berikutnya: satu pesan uji superadmin diterima di HP pemilik, namun U
 
 Perbaikan lokal AL-011: parser respons Fonnte menerima `id` array sebagaimana dokumentasi resmi; reproduksi otomatis lulus. Verifikasi respons sukses live menunggu satu pengiriman baru yang disetujui pada putaran lain.
 
+Setelah push `4040f07`, berkas adapter di Hostinger sudah memuat parser baru. Pengiriman ulang tidak dilakukan.
+
 Jangan menyatakan launching siap jika salah satu kondisi ini belum tertutup:
 
 - format nomor masih memiliki dua generator/kontrak;

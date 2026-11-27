@@ -46,7 +46,7 @@ Checklist lengkap dan stop conditions berada di [`docs/phases/PHASE-11-LAUNCH-RE
 - [ ] **P1 komunikasi:** contoh isi dan placeholder editor telah terlihat di live; lanjutkan uji Fonnte/OTP pemulihan dengan penerima uji (AL-006).
 - [ ] **P1 audit superadmin (AL-009):** tampilkan audit komunikasi pada `/admin/audit-logs`, termasuk filter/ringkasan, tanpa token atau isi pesan; uji regresi dan verifikasi live.
 - [x] **P1 kirim uji superadmin (AL-010):** form live tersedia; satu pesan uji dikirim dan pemilik mengonfirmasi masuk ke WhatsApp. Respons panel tidak konsisten (AL-011).
-- [ ] **P1 respons gateway (AL-011):** parser ID array sesuai dokumentasi Fonnte dan teks status aman sudah diperbaiki lokal serta diuji; pastikan versi baru terpasang dan verifikasi respons sukses live pada pengiriman terpisah yang disetujui. Jangan mengirim ulang pesan uji hari ini.
+- [ ] **P1 respons gateway (AL-011):** parser ID array sesuai dokumentasi Fonnte dan teks status aman sudah diperbaiki, diuji, serta terlihat pada berkas Hostinger; verifikasi respons sukses live pada pengiriman terpisah yang disetujui. Jangan mengirim ulang pesan uji hari ini.
 - [x] **UAT superadmin 20.26 WIB:** login/logout, branding dan petunjuk default, simpan ulang template, serta unduhan CSV berhasil. Audit komunikasi dan kirim uji tercatat sebagai gap; mutasi akun/role/master masih menunggu uji terpisah.
 - [ ] **P2 branding:** nilai aktif live dan login pendaftar sudah menampilkan `PPDB`; petunjuk default statis yang masih `PPDBM` diperbaiki lokal dan menunggu uji ulang sesudah rilis (AL-005).
 - [x] **P3 UX staf:** setelah logout, akses rute admin tanpa sesi menuju `/admin/login`; sudah diverifikasi live (AL-008).

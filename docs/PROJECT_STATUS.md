@@ -66,6 +66,8 @@
 
 > **Gate akhir perbaikan AL-011:** `php artisan test --compact` dengan APP_KEY sementara proses uji: 399 test, 383 passed, 16 skipped, 1.825 assertions. Pint, Vite build, Composer audit, npm audit (0 vulnerabilities), dan `git diff --check` lulus. Uji respons Fonnte live pascaperbaikan belum dilakukan agar tidak mengirim pesan kedua tanpa permintaan baru.
 
+> **Verifikasi deployment AL-011:** setelah push `4040f07`, berkas adapter di Hostinger dibaca dan parser `id` array yang baru sudah tersedia. Ini membuktikan kode telah terpasang, bukan hasil pengiriman baru. Konfirmasi penerimaan pemilik berlaku untuk pesan tunggal sebelum perbaikan.
+
 > **Keputusan pemilik — 27 November 2026:** Format nomor pendaftaran/antrean resmi ditetapkan menjadi **`YYNNNN`** (contoh `270001`), sequence global per tahun penerimaan dan diterbitkan atomik saat pengesahan panitia setelah dokumen wajib `APPROVED`. Modul wawancara resmi menjadi bagian PPDB; sistem mengelola batch, tahap, kriteria, role, nilai, rekap, koreksi ber-audit, dan ekspor. Seleksi akhir, perankingan, pengumuman, dan daftar ulang tetap di luar sistem. Rencana launch lengkap: `docs/phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md`.
 
 > **Quality gate checkout — 27 November 2026:** Dengan `APP_KEY` sementara hanya untuk proses test (tanpa mengubah file rahasia), `php artisan test` lulus **376 test, 16 skipped, 1.795 assertions** dalam 91,8 detik. `vendor/bin/pint --test`, `npm.cmd run build`, dan `git diff --check` lulus; `npm.cmd audit` menemukan 0 vulnerability. `composer audit` masih gagal dengan 5 advisory Symfony dan menjadi blocker launch sampai diperbarui serta diverifikasi ulang.
