@@ -109,7 +109,7 @@ Dokumen ini berfungsi sebagai **penampung error dan hal yang belum bisa dikerjak
 ### [ISS-010] Header Login dan Registrasi Overflow pada Tablet 768 px
 - **Tanggal Dicatat:** 2026-11-26
 - **Fase / Task Terkait:** Live smoke test revisi form calon siswa
-- **Status:** `OPEN` — Terlihat pada produksi saat pengukuran browser; belum diperbaiki
+- **Status:** `IN_PROGRESS` — Perbaikan lokal diuji pada viewport 768 px; verifikasi pada produksi masih pending
 - **Rute Terdampak:** `/login`, `/daftar`
 - **Gejala:** Pada viewport 768×1024, `document.documentElement.scrollWidth` dan `document.body.scrollWidth` bernilai 825 px. Elemen navigasi header kanan mencapai x=825 px dan halaman menampilkan horizontal scrollbar. Pada viewport 360×800 (scroll width 345 px) dan 390×844 (375 px), overflow tidak ditemukan.
 - **Reproduksi:** Buka salah satu rute di atas, set viewport 768×1024, lalu ukur `document.documentElement.scrollWidth`.

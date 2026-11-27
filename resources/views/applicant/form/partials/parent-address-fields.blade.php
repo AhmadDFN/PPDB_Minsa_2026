@@ -1,5 +1,5 @@
 <div class="space-y-4" data-parent-address-group="{{ $prefix }}">
-    <button type="button" class="btn btn-outline min-h-11" data-copy-address="{{ $prefix }}">Salin dari Alamat Siswa</button>
+    <button type="button" class="btn btn-outline min-h-11" data-copy-address="{{ $prefix }}" data-student-regions="{{ json_encode(['province' => $studentAddress?->province_code, 'city' => $studentAddress?->city_code, 'kecamatan' => $studentAddress?->district_code, 'kelurahan' => $studentAddress?->village_code]) }}" data-student-region-names="{{ json_encode(['province' => $studentAddress?->province, 'city' => $studentAddress?->city, 'kecamatan' => $studentAddress?->kecamatan, 'kelurahan' => $studentAddress?->kelurahan]) }}">Salin dari Alamat Siswa</button>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <x-forms.input name="{{ $prefix }}_residence" label="Domisili" type="text" :value="old($prefix.'_residence', $record?->residence)" :required="$required" data-parent-address="residence" :data-parent="$prefix" :data-student-address="$studentAddress?->city" />
         <x-forms.input name="{{ $prefix }}_address_line" label="Jalan / alamat lengkap" type="text" :value="old($prefix.'_address_line', $record?->address_line)" :required="$required" data-parent-address="address_line" :data-parent="$prefix" :data-student-address="$studentAddress?->address_line" />

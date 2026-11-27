@@ -351,7 +351,7 @@
                     const regionName = document.querySelector(`[data-region-group="student"] [data-region-name="${input.dataset.parentAddress}"]`);
                     input.value = studentInput?.value || regionName?.value || input.dataset.studentAddress || '';
                 });
-                await window.copyStudentRegionToParent(prefix);
+                await window.copyStudentRegionToParent(prefix, JSON.parse(button.dataset.studentRegions || '{}'), JSON.parse(button.dataset.studentRegionNames || '{}'));
             });
         });
 

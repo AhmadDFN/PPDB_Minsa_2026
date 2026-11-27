@@ -28,6 +28,8 @@
 
 > **27 November 2026:** Lima akun dummy draft kosong telah dibuat dan diperiksa pada database lokal menggunakan `BlankApplicantLiveTestSeeder`; kredensial acak disimpan privat dan tidak tersedia otomatis di server publik. Panduan: `livetest/08-LOGIN-LIMA-DUMMY.md`.
 
+> **UAT live 27 November 2026:** Akun uji mencapai PDF draf dan progres 86%; login ulang ditolak sehingga upload dan PDF final pending. Perbaikan lokal jumlah saudara dan salin wilayah orang tua sedang diverifikasi; lihat `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`. Composer audit masih menemukan lima advisory (ISS-011).
+
 ## 1. STATUS FASE SAAT INI
 
 | Parameter | Nilai Faktual |

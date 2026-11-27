@@ -46,6 +46,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const groups = [...document.querySelectorAll('[data-region-group]')];
+            const groupReady = new Map();
             const labels = ['province', 'city', 'kecamatan', 'kelurahan'];
 
             const selectOf = (group, level) => group.querySelector(`[data-region-level="${level}"]`);
@@ -118,22 +119,27 @@
                         }
                     });
                 });
-                populate(group, 0, null, true).catch((error) => { group.dataset.error = error.message; });
+                groupReady.set(group, populate(group, 0, null, true).catch((error) => { group.dataset.error = error.message; }));
             });
 
-            window.copyStudentRegionToParent = async (targetName) => {
+            window.copyStudentRegionToParent = async (targetName, storedCodes = {}, storedNames = {}) => {
                 const target = groups.find((group) => group.dataset.regionGroup === targetName);
                 const source = groups.find((group) => group.dataset.regionGroup === 'student');
-                if (!target || !source) return;
+                if (!target) return;
+                await groupReady.get(target);
                 let parentCode = null;
                 for (let i = 0; i < labels.length; i++) {
-                    const sourceSelect = selectOf(source, labels[i]);
+                    const sourceSelect = source ? selectOf(source, labels[i]) : null;
                     const targetSelect = selectOf(target, labels[i]);
                     const items = await getChildren(target, parentCode);
                     setOptions(targetSelect, items, `Pilih ${labels[i]}`);
-                    targetSelect.value = sourceSelect.value;
+                    const code = sourceSelect?.value || storedCodes[labels[i]];
+                    const name = storedNames[labels[i]];
+                    const match = items.find((item) => code ? item.code === code : name && item.name.toLocaleLowerCase('id') === name.toLocaleLowerCase('id'));
+                    targetSelect.value = match?.code || '';
                     nameOf(target, labels[i]).value = targetSelect.selectedOptions[0]?.textContent ?? '';
                     parentCode = targetSelect.value || null;
+                    if (!parentCode) break;
                 }
             };
         });

@@ -207,6 +207,28 @@ class ApplicantBiodataTest extends TestCase
         $this->assertNotNull($applicant->fresh()->nisn_unavailable_reason);
     }
 
+    public function test_siblings_count_accepts_zero_and_twenty_but_rejects_twenty_one(): void
+    {
+        [$user, $applicant] = $this->createApplicantUser();
+        $data = [
+            'full_name' => $applicant->full_name,
+            'gender' => 'L',
+            'birth_place' => $applicant->birth_place,
+            'birth_date' => $applicant->birth_date->format('Y-m-d'),
+            'nisn_unavailable' => '1',
+            'child_order' => 1,
+        ];
+
+        foreach ([0, 20] as $count) {
+            $this->actingAs($user)->post(route('applicant.biodata.update'), $data + ['siblings_count' => $count])
+                ->assertSessionHasNoErrors();
+            $this->assertSame($count, $applicant->fresh()->siblings_count);
+        }
+
+        $this->actingAs($user)->post(route('applicant.biodata.update'), $data + ['siblings_count' => 21])
+            ->assertSessionHasErrors('siblings_count');
+    }
+
     public function test_cannot_update_another_applicants_biodata(): void
     {
         [$userA, $applicantA] = $this->createApplicantUser(['nik' => '3573010101190001']);

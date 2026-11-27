@@ -20,7 +20,7 @@
             </a>
 
             {{-- Desktop Navigation Links (>= md / 768px) --}}
-            <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold text-neutral-700 shrink-0" aria-label="Navigasi Utama">
+            <nav class="hidden lg:flex items-center gap-6 lg:gap-8 text-sm font-semibold text-neutral-700 shrink-0" aria-label="Navigasi Utama">
                 <a href="{{ url('/') }}" class="transition-colors hover:text-primary-600 {{ request()->is('/') ? 'text-primary-700 font-bold' : '' }}">
                     Beranda
                 </a>
@@ -36,7 +36,7 @@
             </nav>
 
             {{-- Right CTA / Auth Buttons (>= md / 768px) --}}
-            <div class="hidden md:flex items-center gap-3 shrink-0">
+            <div class="hidden lg:flex items-center gap-3 shrink-0">
                 @auth
                     @if (auth()->user()->isAdmin())
                         <a
@@ -95,7 +95,7 @@
             </div>
 
             {{-- Mobile Menu Hamburger Button (< md / 768px) --}}
-            <div class="flex md:hidden items-center shrink-0">
+            <div class="flex lg:hidden items-center shrink-0">
                 <button
                     type="button"
                     id="mobile-menu-button"
@@ -120,7 +120,7 @@
     {{-- Mobile Menu Dropdown Panel (< md / 768px) --}}
     <div
         id="mobile-menu-panel"
-        class="hidden md:hidden border-t border-neutral-200/90 bg-white/98 backdrop-blur-md px-4 pt-3 pb-6 space-y-2 shadow-xl"
+        class="hidden lg:hidden border-t border-neutral-200/90 bg-white/98 backdrop-blur-md px-4 pt-3 pb-6 space-y-2 shadow-xl"
     >
         <a href="{{ url('/') }}" class="block px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-800 hover:bg-primary-50 hover:text-primary-700 transition">
             Beranda PPDB

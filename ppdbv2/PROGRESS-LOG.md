@@ -20,6 +20,12 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] UAT live dan perbaikan form
+- UAT akun dummy sebelumnya mencapai biodata, alamat, orang tua, pendidikan, program dan pembuatan PDF draf; rincian di `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+- Login ulang akun live ditolak, sehingga unggahan dummy, final submit, PDF final dan QR belum diuji dalam sesi ini.
+- Perbaikan lokal: validasi jumlah saudara menerima 0–20 sesuai petunjuk, salin wilayah orang tua membaca kode atau nama alamat siswa yang tersimpan. Feature test batas jumlah saudara dan browser lokal untuk salin wilayah historis lulus; perlu uji ulang di server live.
+- Navigasi publik pada 768 px diperbaiki dan diuji lokal: lebar konten login/registrasi 753 px; uji live masih pending (ISS-010). Full suite 390 test: 375 passed, 15 skipped, 1.790 assertions. Pint, Vite build dan npm audit lulus; Composer audit masih menemukan lima advisory pada tiga paket Symfony (ISS-011).
+
 ### [2026-11-27] Lima akun pendaftar dummy lokal
 - Seeder `BlankApplicantLiveTestSeeder` membuat lima akun aktif dengan nama, NIK dummy, nomor HP dummy dan password acak; profil, program dan dokumen kosong, status DRAFT. Seeder dibatasi pada local/testing dan menolak menimpa akun atau kredensial.
 - Kredensial berada di file privat yang diabaikan Git; panduan: `livetest/08-LOGIN-LIMA-DUMMY.md`. Lima akun dibuat dan diverifikasi pada SQLite lokal. Belum tersedia di server publik.
