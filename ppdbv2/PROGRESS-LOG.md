@@ -20,6 +20,11 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Submit dan PDF final live
+- Akun uji dummy berhasil submit dan membuat serta mengunduh PDF final dua halaman A4; gambar dummy, NIK tersamar dan QR tampak pada PDF. Pemindaian QR dan IDOR live belum diuji.
+- Perbaikan lokal teks halaman tinjau dan format tanggal null pada PDF; `RegistrationPdfTest` 9 passed/96 assertions. Composer audit masih melaporkan lima advisory (ISS-011).
+- Bukti dan batas pengujian: `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+
 ### [2026-11-27] UAT live dan perbaikan form
 - UAT akun dummy sebelumnya mencapai biodata, alamat, orang tua, pendidikan, program dan pembuatan PDF draf; rincian di `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 - Login ulang akun live ditolak, sehingga unggahan dummy, final submit, PDF final dan QR belum diuji dalam sesi ini.

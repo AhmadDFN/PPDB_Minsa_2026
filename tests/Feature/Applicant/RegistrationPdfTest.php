@@ -76,6 +76,8 @@ class RegistrationPdfTest extends TestCase
                 $this->assertSame(PdfDocumentType::DRAFT, $type);
                 $this->assertSame($expectedMask, $documentData['applicant']['nik']);
                 $this->assertNull($documentData['consent']);
+                $this->assertNull($documentData['verified_at']);
+                $this->assertNull($documentData['submitted_at']);
                 $this->assertNull($verificationUrl);
 
                 return true;
@@ -148,6 +150,7 @@ class RegistrationPdfTest extends TestCase
             ->once()
             ->withArgs(function (PdfDocumentType $type, array $documentData, ?string $verificationUrl) use ($expectedNik, $data): bool {
                 $this->assertSame(PdfDocumentType::FINAL, $type);
+                $this->assertStringEndsWith(' WIB', $documentData['verified_at']);
                 $this->assertSame(NikManager::mask($expectedNik), $documentData['applicant']['nik']);
                 $this->assertSame($data['applicant']->student_phone, $documentData['applicant']['student_phone']);
                 $this->assertSame('Consent historis yang disetujui.', $documentData['consent']['statement_text']);

@@ -20,3 +20,20 @@ Target: ahmaddanyfn.biz.id. Akun dummy disediakan pemilik; kredensial dan identi
 
 - Navigasi publik diperbaiki: browser lokal pada login dan registrasi dengan viewport 768 px mencatat scrollWidth 753 px dan menu ringkas tampil; uji ulang di live masih pending.
 - Full suite: 390 test, 375 passed, 15 skipped, 1.790 assertions. Pint, build Vite, npm audit, view cache, dan diff check lulus. Composer audit: lima advisory pada tiga paket.
+
+## Lanjutan live 27 November
+
+- Sesi akun dummy kembali aktif; biodata, alamat, orang tua, pendidikan, dan program disimpan ulang.
+- Empat gambar dummy berlabel UAT diunggah; dashboard dokumen menunjukkan 4/4. Kesiapan di halaman tinjau menunjukkan lengkap.
+- Server live masih menolak jumlah saudara 0 setelah commit dipush; deployment versi baru belum terbukti.
+- Submit final belum dilakukan karena halaman meminta persetujuan pernyataan orang tua/wali; menunggu persetujuan tindakan pada saat submit. PDF final dan QR belum diuji.
+
+## Submit dan PDF final live
+
+- PASS: persetujuan pemilik diberikan; pendaftaran dummy terkirim dan status SUBMITTED ditampilkan, empat dokumen dummy tetap terdaftar.
+- PASS: PDF final dibuat dan diunduh; pdfinfo menunjukkan 2 halaman A4. Pemeriksaan visual kedua halaman menunjukkan foto dummy, QR, NIK tersamar, status dokumen dan pernyataan; tidak ada watermark draft yang terlihat.
+- FAIL: sebelum pengesahan, baris tanggal pengesahan hanya menampilkan WIB. Penyebab adalah penggabungan string dengan tanggal null; diperbaiki di kode lokal dan diuji pada renderer payload.
+- FAIL: halaman tinjau setelah submit menyatakan PDF akan tersedia pada Fase 7, padahal dashboard dapat membuat PDF final. Teks diperbaiki di kode lokal.
+- PENDING: scan QR aktual dan isi respons halaman verifikasi publik, IDOR lintas akun, OTP/WhatsApp, pemeriksaan foto asli dan uji ulang perubahan pada server setelah deployment. QR yang terlihat saja belum membuktikan bisa dipindai.
+- PASS: RegistrationPdfTest 9 test, 96 assertions; Pint, build, npm audit dan view cache lulus. Composer audit masih melaporkan lima advisory pada tiga paket (ISS-011).
+- Full suite akhir: 390 test, 375 passed, 15 skipped, 1.793 assertions.

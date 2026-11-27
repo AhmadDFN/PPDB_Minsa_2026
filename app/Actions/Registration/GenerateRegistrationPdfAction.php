@@ -247,7 +247,7 @@ class GenerateRegistrationPdfAction
             'document_type' => $type,
             'registration_number' => $registration->registration_number ?: 'Belum diterbitkan',
             'queue_sequence' => $registration->queue_sequence,
-            'verified_at' => $registration->verified_at?->copy()->locale('id')->translatedFormat('d F Y, H:i').' WIB',
+            'verified_at' => $registration->verified_at ? $registration->verified_at->copy()->locale('id')->translatedFormat('d F Y, H:i').' WIB' : null,
             'interview_batch' => $registration->interviewBatch ? [
                 'name' => $registration->interviewBatch->name,
                 'interview_date' => $registration->interviewBatch->interview_date?->copy()->locale('id')->translatedFormat('l, d F Y'),
@@ -257,7 +257,7 @@ class GenerateRegistrationPdfAction
             ] : null,
             'data_revision' => (int) $registration->data_revision,
             'generated_at' => now()->locale('id')->translatedFormat('d F Y, H:i').' WIB',
-            'submitted_at' => $registration->submitted_at?->copy()->locale('id')->translatedFormat('d F Y, H:i').' WIB',
+            'submitted_at' => $registration->submitted_at ? $registration->submitted_at->copy()->locale('id')->translatedFormat('d F Y, H:i').' WIB' : null,
             'period_name' => $period?->name ?: 'Belum ditentukan',
             'academic_year' => $period?->academic_year ?: 'Belum ditentukan',
             'period_start_date' => $period?->start_date?->copy()->locale('id')->translatedFormat('d F Y'),

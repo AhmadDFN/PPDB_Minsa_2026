@@ -60,7 +60,7 @@
                     </div>
                 </dl>
                 <p class="mt-5 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm leading-relaxed text-blue-900">
-                    Dokumen pendaftaran final untuk diunduh dan dicetak akan tersedia pada Fase 7. Setelah tersedia, cetak dokumen tersebut dan serahkan bersama dokumen fisik ke loket PTSP MIN 1 Kota Madiun.
+                    Buat dan unduh bukti pendaftaran PDF melalui dasbor, lalu cetak dan serahkan ke loket PTSP MIN 1 Kota Madiun.
                 </p>
             </x-ui.card>
         @else
