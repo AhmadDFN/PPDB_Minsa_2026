@@ -100,3 +100,10 @@ Pemilik mengizinkan satu pesan uji ke nomor pribadinya dan akan mengonfirmasi pe
 | Audit aktivitas | **TEMUAN AL-009**: perubahan template berhasil, tetapi daftar audit tetap hanya menampilkan perubahan pengaturan sebelumnya. Kode menyimpan audit komunikasi di tabel terpisah yang belum digabung oleh `AdminActivityLogService`. |
 
 Tidak ada akun, role, token, periode, data pendaftar, atau kredensial yang diubah. Satu-satunya mutasi adalah penyimpanan ulang empat template tanpa perubahan isi. Uji penerimaan pesan menunggu jalur kirim uji terkontrol di panel superadmin atau uji OTP pendaftar pada sesi yang memang mencakup pendaftar.
+
+## Satu pengiriman pesan uji superadmin — 27 November 2026, sekitar 20.34 WIB
+
+- Form `Kirim Pesan Uji` dari commit `6b42d09` terlihat di Communication Center situs uji dengan gateway legacy environment aktif. Satu permintaan dikirim ke nomor pribadi yang diizinkan pemilik; nomor tidak dicantumkan di dokumen ini.
+- Panel menampilkan `Gateway belum menerima pesan uji`, tetapi pemilik mengonfirmasi pesan uji **masuk ke WhatsApp**. Dengan demikian, **penerimaan di HP PASS**, sedangkan interpretasi respons gateway oleh panel **FAIL/tidak konsisten** (AL-011). Tidak ada pengiriman ulang.
+- Teks kegagalan yang terlalu pasti diperbaiki lokal menjadi ajakan memeriksa HP sebelum mengulangi. Penyebab teknis spesifik belum dapat dipastikan dari UI; jangan mengklaim API Fonnte menolak pesan atau OTP pemulihan sudah lulus. Sesi superadmin ditutup melalui logout.
+- Analisis lanjutan menemukan bug parser yang dapat mereproduksi gejala: Fonnte mendokumentasikan `id` sukses sebagai array, sedangkan adapter lama mengoper array ke properti `?string` lalu mengembalikan error. Perbaikan dan tes dibuat lokal; belum ada respons mentah live yang membuktikan bug itu satu-satunya penyebab pada pengiriman ini.

@@ -127,10 +127,23 @@ class CommunicationCenterTest extends TestCase
 
         $this->actingAs($this->admin('superadmin'))
             ->post(route('admin.communication.test-message.send'), ['phone' => '0895352882228'])
-            ->assertRedirect()->assertSessionHas('error');
+            ->assertRedirect()->assertSessionHas('error', 'Gateway WhatsApp belum dikonfigurasi atau belum aktif.');
 
         Http::assertNothingSent();
         $this->assertSame('credential_unavailable', CommunicationAuditLog::query()->where('event', 'test_message_requested')->firstOrFail()->metadata['error_code']);
+    }
+
+    public function test_test_message_tells_operator_to_check_phone_when_provider_does_not_confirm(): void
+    {
+        config(['services.fonnte.token' => 'private-device-token']);
+        Http::fake(['https://api.fonnte.com/send' => Http::response(['status' => false])]);
+
+        $this->actingAs($this->admin('superadmin'))
+            ->post(route('admin.communication.test-message.send'), ['phone' => '0895352882228'])
+            ->assertRedirect()
+            ->assertSessionHas('error', 'Gateway belum mengonfirmasi pengiriman. Periksa HP tujuan sebelum mengulangi pesan uji.');
+
+        Http::assertSentCount(1);
     }
 
     public function test_store_validates_device_and_encrypts_credential(): void
@@ -261,6 +274,21 @@ class CommunicationCenterTest extends TestCase
         $result = app(FonnteProvider::class)->sendMessage('token', '628123456789', 'message');
 
         $this->assertTrue($result->accepted);
+        Http::assertSentCount(1);
+    }
+
+    public function test_fonnte_accepts_documented_array_message_id_without_reporting_failure(): void
+    {
+        Http::fake(['https://api.fonnte.com/send' => Http::response([
+            'status' => true,
+            'id' => ['80367170'],
+            'process' => 'pending',
+        ])]);
+
+        $result = app(FonnteProvider::class)->sendMessage('token', '628123456789', 'message');
+
+        $this->assertTrue($result->accepted);
+        $this->assertSame('80367170', $result->providerMessageId);
         Http::assertSentCount(1);
     }
 

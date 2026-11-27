@@ -99,7 +99,11 @@ class CommunicationChannelController
             return back()->with('error', 'Status pengiriman belum pasti karena koneksi terputus. Periksa HP sebelum mengulangi.');
         }
 
-        return back()->with('error', 'Gateway belum menerima pesan uji. Periksa konfigurasi dan koneksi Fonnte.');
+        if ($result->errorCode === 'credential_unavailable' || $result->errorCode === 'active_channel_unavailable') {
+            return back()->with('error', 'Gateway WhatsApp belum dikonfigurasi atau belum aktif.');
+        }
+
+        return back()->with('error', 'Gateway belum mengonfirmasi pengiriman. Periksa HP tujuan sebelum mengulangi pesan uji.');
     }
 
     public function store(Request $request): RedirectResponse

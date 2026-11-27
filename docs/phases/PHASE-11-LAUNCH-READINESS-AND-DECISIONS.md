@@ -88,6 +88,10 @@ Login/logout, redirect tamu admin, branding PPDB, penyimpanan template, dan undu
 
 Tindak lanjut lokal AL-010: aksi kirim uji superadmin ditambahkan dan diuji otomatis; bukti live menunggu deployment dan satu pengiriman yang diizinkan pemilik.
 
+Hasil live berikutnya: satu pesan uji superadmin diterima di HP pemilik, namun UI menyatakan gateway belum menerima (AL-011). Pengiriman fisik lulus; penafsiran respons gateway dan OTP pemulihan belum lulus. Tidak ada pesan kedua.
+
+Perbaikan lokal AL-011: parser respons Fonnte menerima `id` array sebagaimana dokumentasi resmi; reproduksi otomatis lulus. Verifikasi respons sukses live menunggu satu pengiriman baru yang disetujui pada putaran lain.
+
 Jangan menyatakan launching siap jika salah satu kondisi ini belum tertutup:
 
 - format nomor masih memiliki dua generator/kontrak;

@@ -82,8 +82,11 @@ class FonnteProvider implements WhatsAppProviderInterface
             }
 
             $accepted = $this->isTruthy($data['status'] ?? false);
+            $rawId = $data['id'] ?? $data['message_id'] ?? null;
+            $firstId = is_array($rawId) ? ($rawId[0] ?? null) : $rawId;
+            $messageId = is_string($firstId) || is_int($firstId) ? (string) $firstId : null;
 
-            return new SendMessageResult($accepted, $accepted ? 'accepted' : 'rejected', $data['id'] ?? $data['message_id'] ?? null, $accepted ? null : 'provider_rejected');
+            return new SendMessageResult($accepted, $accepted ? 'accepted' : 'rejected', $messageId, $accepted ? null : 'provider_rejected');
         } catch (ConnectionException) {
             return new SendMessageResult(false, 'ambiguous', null, 'connection_timeout');
         } catch (Throwable) {
