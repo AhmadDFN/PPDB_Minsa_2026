@@ -22,6 +22,7 @@
             <p class="text-xs text-gray-500 mt-1">Gunakan Device Token. Account Token dan manajemen perangkat berada di luar scope.</p>
             <form method="POST" action="{{ route('admin.communication.channels.store') }}" class="mt-5 grid gap-4 md:grid-cols-3">
                 @csrf
+                <input type="hidden" name="provider_code" value="fonnte" />
                 <label class="text-xs font-semibold text-gray-700">Nama konfigurasi<input name="channel_name" required placeholder="Fonnte Utama" class="mt-1 w-full rounded-lg border-gray-300 text-sm" /></label>
                 <label class="text-xs font-semibold text-gray-700">Device Token<input name="device_token" type="password" required autocomplete="new-password" class="mt-1 w-full rounded-lg border-gray-300 text-sm" /></label>
                 <div class="flex items-end"><button class="w-full rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-700">Validasi &amp; Simpan</button></div>
@@ -71,7 +72,7 @@
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <h2 class="text-base font-bold text-gray-900">Template Isi Chat WhatsApp</h2>
-                    <p class="mt-1 text-xs text-gray-500">Hanya Superadmin yang dapat mengubah template. Placeholder harus menggunakan format <code>@{{ placeholder }}</code>.</p>
+                    <p class="mt-1 text-xs text-gray-500">Template tersimpan ditampilkan di bawah; jika belum ada, sistem memakai contoh bawaan. Gunakan placeholder persis seperti daftar pada setiap pesan, tanpa spasi di dalam kurung.</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('admin.communication.message-templates.update') }}" class="mt-5 space-y-5">
@@ -84,6 +85,7 @@
                 ])
                 @foreach ($templateFields as $key => $label)
                     <label class="block text-xs font-semibold text-gray-700">{{ $label }}
+                        <span class="mt-1 block font-normal text-gray-600">Variabel tersedia: @foreach ($templatePlaceholders[$key] as $placeholder)<code class="mr-1">&#123;&#123;{{ $placeholder }}&#125;&#125;</code>@endforeach</span>
                         <textarea name="{{ $key }}" rows="12" required class="mt-1 w-full rounded-lg border-gray-300 text-sm font-mono leading-relaxed">{{ old($key, $messageTemplates[$key] ?? '') }}</textarea>
                     </label>
                 @endforeach

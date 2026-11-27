@@ -17,7 +17,10 @@ class InterviewAccountSeeder extends Seeder
      */
     public function run(): void
     {
-        $defaultPassword = env('DEFAULT_ADMIN_PASSWORD', 'Minsatama2026!');
+        $defaultPassword = env('DEFAULT_ADMIN_PASSWORD');
+        if (! is_string($defaultPassword) || $defaultPassword === '') {
+            throw new \RuntimeException('DEFAULT_ADMIN_PASSWORD wajib ditetapkan sebelum menjalankan seeder.');
+        }
         $hashedPassword = Hash::make($defaultPassword);
 
         // 1. Admin PPDB (3 accounts)

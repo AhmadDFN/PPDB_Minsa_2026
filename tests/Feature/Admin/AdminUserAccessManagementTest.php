@@ -33,7 +33,7 @@ class AdminUserAccessManagementTest extends TestCase
         $this->actingAs($superadmin)->get(route('admin.admin-users.index'))->assertOk()->assertDontSee('applicant@example.test');
         $this->actingAs($admin)->get(route('admin.admin-users.index'))->assertForbidden();
         $this->app['auth']->logout();
-        $this->get(route('admin.admin-users.index'))->assertRedirect(route('login'));
+        $this->get(route('admin.admin-users.index'))->assertRedirect(route('admin.login'));
     }
 
     public function test_superadmin_can_create_pending_admin_with_fixed_role(): void

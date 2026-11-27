@@ -33,7 +33,7 @@ class AuthorizationAndMiddlewareTest extends TestCase
     {
         $response = $this->get(route('admin.dashboard'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_applicant_cannot_access_admin_dashboard(): void

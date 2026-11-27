@@ -140,7 +140,7 @@ class AdminDashboardTest extends TestCase
     {
         $response = $this->get(route('admin.dashboard'));
 
-        $response->assertRedirect(route('login'));
+        $response->assertRedirect(route('admin.login'));
     }
 
     public function test_dashboard_displays_accurate_aggregated_statistics_for_active_period(): void

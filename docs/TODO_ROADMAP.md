@@ -1,13 +1,76 @@
 # TODO ROADMAP â€” PPDB MINSATAMA
 ## Peta Jalan Pengembangan dan Rencana Tugas Berkelanjutan
 
+## PHASE 11 — LAUNCH READINESS (27 NOVEMBER 2026)
+
+Keputusan pemilik: nomor resmi `YYNNNN` (contoh `270001`), sequence global per tahun penerimaan, diterbitkan saat pengesahan panitia; modul wawancara resmi menjadi bagian PPDB. Seleksi akhir, perankingan, pengumuman, dan daftar ulang tetap di luar scope.
+
+Checklist lengkap dan stop conditions berada di [`docs/phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md`](phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md).
+
+### P0 — Contract and data safety
+
+- [ ] Hapus generator, validator, query, UI, PDF, CSV, seeder, dan test legacy `YYNNN`/`PPDB/...`; gunakan satu kontrak `YYNNNN`.
+- [ ] Tambahkan regression test sequence `270001`, `270002`, batas 9999, lintas program/periode, retry, duplicate approval, concurrency, dan rollback.
+- [ ] Audit dan pulihkan MariaDB pascainsiden `administrative_regions` tanpa `migrate:fresh`; periksa backup, tabel parsial, FK, dan migration status.
+- [ ] Jalankan migration additive pada target setelah bukti backup dan persetujuan pemilik.
+
+### P0 — Production configuration
+
+- [ ] Verifikasi `APP_DEBUG=false`, HTTPS/`APP_URL`, storage privat, permission, cache, queue/cron, dan APP environment.
+- [ ] Verifikasi `gd`, upload 10M, post 16M, memory 256M, execution 60 detik, dan batas web server.
+- [ ] Verifikasi Fonnte device/token/kuota, timeout, graceful degradation, serta pemisahan pesan OTP dan password sementara.
+- [ ] Verifikasi live OTP lupa password menggunakan kanal Fonnte aktif setelah deployment yang disetujui; jangan mencatat token atau OTP.
+
+### P1 — Applicant acceptance
+
+- [ ] Uji registrasi, OTP, resend/recovery, sibling support, mandatory password change, dan session isolation.
+- [ ] Uji enam formulir pada 360/390/768 px tanpa overflow/console error.
+- [ ] Uji cascading wilayah, salin alamat, peta offline, GPS opt-in, Haversine, fallback manual, dan no-coordinate-storage.
+- [ ] Uji dokumen 5 MB, MIME, replacement, revision history, private storage, dan IDOR.
+- [ ] Uji foto asli/latar biru sesuai keputusan operasional.
+- [ ] Uji draft/final PDF, watermark, snapshot, tanggal, masking, fingerprint, dan scan QR fisik.
+
+### P1 — Staff and interview acceptance
+
+- [ ] Uji role/permission applicant, admin, superadmin, interviewer stage 1/2/3 dan seluruh 403 boundary.
+- [ ] Uji dashboard, applicant detail, filter/search `YYNNNN`, NIK HMAC, pagination, reports, CSV, dan IDOR.
+- [ ] Uji document verification, reopen, expiry, audit, and replacement workflow.
+- [ ] Uji master period/program/requirements, system settings, admin lifecycle, Communication Center, template, dan audit viewer.
+- [ ] Uji batch/stage/criteria, sequential gate, score lock, correction audit, recap, CSV export, dan role isolation wawancara.
+- [ ] Tutup checklist live admin/superadmin; angka lama 2 PASS, 13 PARTIAL, 1 BLOCKED, 2 belum diuji adalah historis sebelum fresh seed. Gunakan hasil putaran baru pada `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
+- [ ] Lanjutkan putaran superadmin dari sesi browser uji setelah login oleh pemilik; verifikasi pengaturan, akun staf, komunikasi, master wawancara, audit, dan UI responsif tanpa mengubah konfigurasi live atau mengirim WA ke penerima nyata.
+- [ ] Cocokkan akun superadmin live yang pernah berhasil login dengan inventaris seeder; gunakan kredensial aktif dari penyimpanan privat. Seeder `firstOrCreate` tidak memulihkan sandi akun yang ada. Jangan menjalankan `LiveTestSeeder` pada produksi untuk memperoleh akses.
+- [ ] Tindak lanjuti AL-004: pastikan kredensial yang pernah ada dalam dokumen Git tidak digunakan di server live; rotasi yang terpengaruh dan periksa log akses. Dokumen baru telah menghapus nilai terbuka, tetapi riwayat Git tetap perlu penanganan terpisah.
+- [ ] **P0 keamanan:** nilai bawaan seeder superadmin/admin terbukti berhasil login di web live setelah fresh seed. Rotasi seluruh akun staf seed, hapus default statis dari seeder, simpan rahasia di luar Git, dan periksa log akses (AL-004).
+- [ ] **P1 UAT:** siapkan dokumen dummy pada fixture SUBMITTED setelah fresh seed, lalu uji verifikasi, pengesahan/nomor `YYNNNN`, PDF/QR, audit, dan WhatsApp hanya ke penerima uji terkendali (AL-007).
+- [ ] **P1 komunikasi:** deploy/recheck editor template yang menampilkan contoh isi dan placeholder, lalu uji Fonnte/OTP pemulihan dengan penerima uji (AL-006).
+- [ ] **P2 branding:** selaraskan nilai nama institusi live dari `PPDBM` menjadi `PPDB` sesuai keputusan pemilik dan verifikasi seluruh tampilan/pesan (AL-005).
+- [ ] **P3 UX staf:** setelah logout, akses rute admin tanpa sesi harus menuju `/admin/login`, lalu ulangi uji ADM-01 (AL-008).
+
+### P1 — Operational readiness
+
+- [ ] Uji backup database/storage dan restore pada environment terisolasi.
+- [ ] Audit log privacy, rate limiting, CSRF, XSS, SQLi, upload abuse, session, authorization, dan QR privacy.
+- [ ] Sinkronkan landing/manual dengan scope resmi dan jam PTSP 07.00 – 15.00 WIB.
+
+### Final gates
+
+- [ ] `php artisan test`
+- [ ] `vendor/bin/pint --test`
+- [ ] `npm.cmd run build`
+- [ ] `composer audit`
+- [ ] `npm.cmd audit`
+- [ ] `git diff --check`
+- [ ] Browser smoke/UAT semua role
+- [ ] Approval owner atas launch checklist
+
 ## Rekonsiliasi Admin/Superadmin (20 November 2026)
 
 - [ ] Periksa semua variasi status dashboard dan lakukan audit aksesibilitas lengkap setelah perbaikan palet/kontras; preview sintetis keadaan draft telah dilakukan.
 
 - [ ] Next Atelier: uji dashboard pendaftar terautentikasi dan semua variasi status, aksesibilitas dan alur E2E; selesaikan rekonsiliasi konten landing sebelum menganggap desain tervalidasi penuh.
 
-- [ ] Calm Academic: selesaikan UAT visual dashboard pendaftar, pemeriksaan aksesibilitas/responsif lengkap, dan rekonsiliasi konten landing dengan pemilik; lihat `ppdbv2/PROGRESS-LOG.md`.
+- [ ] Calm Academic: selesaikan UAT visual dashboard pendaftar, pemeriksaan aksesibilitas/responsif lengkap, dan rekonsiliasi konten landing dengan pemilik; lihat Phase 11.
 
 Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md`](blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md). Gap prioritas: verifikasi dokumen, master data, ekspor redacted, lifecycle akun admin, dan audit viewer. Jangan menandai permission seeder sebagai fitur selesai.
 
@@ -263,7 +326,9 @@ Persetujuan Fase 5 telah diberikan. Hasil dan pengujian dicatat di `docs/phases/
 
 **Status Fase 10.3: SELESAI (100% TERUJI OTOMATIS: 256 TESTS PASSED, 1217 ASSERTIONS).** Nol duplikasi user, nol plaintext OTP/NIK bocor. Pint & Vite compliant.
 
-### Fase 10.4 — Simplifikasi Registrasi, Auto-Generated Password, Nomor 5-Digit (YYNNN) & Dynamic Branding
+### Fase 10.4 — Simplifikasi Registrasi, Auto-Generated Password, Nomor Legacy (SUPERSEDED) & Dynamic Branding
+
+> Bagian nomor `YYNNN` di bawah adalah catatan historis. Keputusan pemilik 27 November 2026 menggantinya dengan `YYNNNN` yang diterbitkan saat pengesahan panitia. Tugas koreksi aktif berada di Phase 11.
 - [x] **[P0 - Kritis] Simplifikasi Formulir Registrasi Akun Baru**:
   - *Deskripsi*: Mengubah `/daftar` hanya menerima 4 field (`nik`, `full_name`, `phone`, `consent`). Menghapus input kata sandi, konfirmasi kata sandi, dan input biodata siswa. Biodata dialihkan ke Langkah 1 dashboard.
 - [x] **[P0 - Kritis] Penghapusan Pembuatan Kata Sandi Manual Pasca-OTP**:

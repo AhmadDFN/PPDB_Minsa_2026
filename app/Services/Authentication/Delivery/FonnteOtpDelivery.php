@@ -24,7 +24,8 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
     {
         $token = config('services.fonnte.token');
 
-        if (empty($token) || ! is_string($token)) {
+        $databaseChannel = app(CommunicationChannelService::class);
+        if (! $databaseChannel->databaseModeEnabled() && (empty($token) || ! is_string($token))) {
             Log::error('Fonnte OTP delivery failed: FONNTE_TOKEN is not configured.', [
                 'user_id' => $user->id,
                 'purpose' => $purpose,
@@ -53,7 +54,6 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
 
         $message = self::buildMessage($otp, $purpose, $user);
 
-        $databaseChannel = app(CommunicationChannelService::class);
         if ($databaseChannel->databaseModeEnabled()) {
             return $databaseChannel->sendMessage($normalizedPhone, $message)->accepted;
         }
@@ -155,7 +155,8 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
     ): bool {
         $token = config('services.fonnte.token');
 
-        if (empty($token) || ! is_string($token)) {
+        $databaseChannel = app(CommunicationChannelService::class);
+        if (! $databaseChannel->databaseModeEnabled() && (empty($token) || ! is_string($token))) {
             Log::error('Fonnte temporary password delivery failed: FONNTE_TOKEN is not configured.', [
                 'user_id' => $user->id,
             ]);
@@ -182,7 +183,6 @@ class FonnteOtpDelivery implements OtpDeliveryInterface
 
         $message = self::buildTemporaryPasswordMessage($temporaryPassword, $registrationNumber, $user->getMaskedNik(), $isResend);
 
-        $databaseChannel = app(CommunicationChannelService::class);
         if ($databaseChannel->databaseModeEnabled()) {
             return $databaseChannel->sendMessage($normalizedPhone, $message)->accepted;
         }

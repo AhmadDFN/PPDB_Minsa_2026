@@ -99,7 +99,7 @@ php artisan db:seed
 
 Kredensial bawaan Superadmin (setelah seeding):
 - **Email**: `superadmin@minsatama.sch.id`
-- **Kata Sandi**: `SuperadminMinsatama2026!`
+- **Kata Sandi**: `[KREDENSIAL-DIHAPUS]`
 - **Portal Masuk**: `http://localhost:8000/admin/login`
 
 ---

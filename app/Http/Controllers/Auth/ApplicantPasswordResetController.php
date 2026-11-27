@@ -177,7 +177,11 @@ class ApplicantPasswordResetController extends Controller
         }
 
         $otpService->hitSendRateLimiter($throttleKey, 300);
-        $otpService->generateAndSend($user, OtpPurpose::PASSWORD_RESET);
+        try {
+            $otpService->generateAndSend($user, OtpPurpose::PASSWORD_RESET);
+        } catch (\RuntimeException) {
+            return back()->with('error', 'Kode OTP belum dapat dikirim. Silakan coba lagi atau hubungi panitia.');
+        }
 
         return back()->with('success', 'Kode OTP baru telah berhasil dikirimkan.');
     }

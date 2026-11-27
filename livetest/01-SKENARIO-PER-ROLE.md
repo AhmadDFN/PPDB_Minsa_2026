@@ -12,13 +12,13 @@ Dokumen ini menguraikan skenario langkah demi langkah (*step-by-step test journe
 - **Aktor**: Wali Murid Calon Siswa (Budi Santoso).
 - **Halaman Masuk**: `/login`
 - **Kredensial**:
-  - NIK: `3577022003990001`
-  - Password: `Pendaftar2026!`
+  - NIK: `[NIK-DUMMY-DIHAPUS]`
+  - Password: `[KREDENSIAL-DIHAPUS]`
 
 ### Langkah Pengujian:
 1. **Login Calon Siswa**:
    - Buka `/login`.
-   - Masukkan NIK `3577022003990001` dan Password `Pendaftar2026!`.
+   - Masukkan NIK `[NIK-DUMMY-DIHAPUS]` dan Password `[KREDENSIAL-DIHAPUS]`.
    - Klik **"Masuk ke Akun Calon Siswa"**.
    - **Ekspektasi**: Pengguna **langsung diarahkan ke `/pendaftar/dashboard`**. Tidak ada paksaan ganti password di awal. Terdapat tombol *"Ganti Kata Sandi (Opsional)"* di navbar dan banner hero.
 2. **Periksa Dasbor Pendaftar**:
@@ -52,12 +52,12 @@ Dokumen ini menguraikan skenario langkah demi langkah (*step-by-step test journe
 - **Halaman Masuk**: `/admin/login`
 - **Kredensial**:
   - Email: `admin1@minsatama.sch.id`
-  - Password: `Minsatama2026!`
+  - Password: `[KREDENSIAL-DIHAPUS]`
 
 ### Langkah Pengujian:
 1. **Login Panitia**:
    - Buka `/admin/login`.
-   - Masukkan email `admin1@minsatama.sch.id` dan password `Minsatama2026!`.
+   - Masukkan email `admin1@minsatama.sch.id` dan password `[KREDENSIAL-DIHAPUS]`.
    - Klik Masuk.
    - **Ekspektasi**: Berhasil masuk ke `/admin/dashboard`.
 2. **Pantau Dasbor Dinamis**:
@@ -86,12 +86,12 @@ Dokumen ini menguraikan skenario langkah demi langkah (*step-by-step test journe
 - **Aktor**: Calon Siswa Terverifikasi (Ahmad Dany Pratama).
 - **Halaman Masuk**: `/login`
 - **Kredensial**:
-  - NIK: `3577022003990003`
-  - Password: `Pendaftar2026!`
+  - NIK: `[NIK-DUMMY-DIHAPUS]`
+  - Password: `[KREDENSIAL-DIHAPUS]`
 
 ### Langkah Pengujian:
 1. **Login Calon Siswa**:
-   - Masuk di `/login` dengan NIK `3577022003990003` dan password `Pendaftar2026!`.
+   - Masuk di `/login` dengan NIK `[NIK-DUMMY-DIHAPUS]` dan password `[KREDENSIAL-DIHAPUS]`.
 2. **Cek Tampilan Dasbor**:
    - Badge nomor pendaftaran resmi menampilkan **`270001`**.
    - Status menampilkan **`Sudah Terkirim & Terverifikasi`**.
@@ -112,7 +112,7 @@ Dokumen ini menguraikan skenario langkah demi langkah (*step-by-step test journe
 - **Halaman Masuk**: `/admin/login`
 - **Kredensial**:
   - Email: `admin@minsatama.sch.id`
-  - Password: `SuperAdminM1Madiun2026!`
+  - Password: `[KREDENSIAL-DIHAPUS]`
 
 ### Langkah Pengujian:
 1. **Login Superadmin**:

@@ -8,6 +8,7 @@ use App\Models\CommunicationChannel;
 use App\Models\CommunicationChannelCredential;
 use App\Models\CommunicationSetting;
 use App\Models\User;
+use App\Services\Authentication\Delivery\FonnteOtpDelivery;
 use App\Services\Communication\CommunicationChannelService;
 use App\Services\Communication\CommunicationCredentialService;
 use App\Services\Communication\CommunicationMessageTemplateService;
@@ -36,7 +37,7 @@ class CommunicationCenterTest extends TestCase
         $this->actingAs($this->admin('admin_ppdb'))->get(route('admin.communication.index'))->assertForbidden();
         $this->actingAs(User::factory()->applicant()->create())->get(route('admin.communication.index'))->assertForbidden();
         Auth::logout();
-        $this->get(route('admin.communication.index'))->assertRedirect(route('login'));
+        $this->get(route('admin.communication.index'))->assertRedirect(route('admin.login'));
     }
 
     public function test_sensitive_channel_actions_are_server_side_superadmin_only(): void
@@ -46,6 +47,18 @@ class CommunicationCenterTest extends TestCase
         $this->actingAs($admin)->post(route('admin.communication.channels.store'), [
             'provider_code' => 'fonnte', 'channel_name' => 'Blocked', 'device_token' => 'not-allowed-token',
         ])->assertForbidden();
+    }
+
+    public function test_template_editor_displays_stored_values_placeholders_and_fonnte_provider(): void
+    {
+        CommunicationSetting::singleton()->update(['otp_password_reset_template' => 'Kode pemulihan {{otp}}']);
+
+        $this->actingAs($this->admin('superadmin'))->get(route('admin.communication.index'))
+            ->assertOk()
+            ->assertSee('Kode pemulihan {{otp}}')
+            ->assertSee('&#123;&#123;otp_validity_minutes&#125;&#125;', false)
+            ->assertSee('name="provider_code" value="fonnte"', false)
+            ->assertDontSee('device-token-test-123456');
     }
 
     public function test_superadmin_can_update_message_templates_and_unknown_placeholders_are_rejected(): void
@@ -126,6 +139,17 @@ class CommunicationCenterTest extends TestCase
 
         $this->assertTrue($result->accepted);
         Http::assertSent(fn ($request) => $request->url() === 'https://api.fonnte.com/send' && $request->header('Authorization')[0] === 'database-token');
+    }
+
+    public function test_database_channel_sends_recovery_otp_without_legacy_token(): void
+    {
+        $channel = $this->channel('database-token', true);
+        CommunicationSetting::query()->create(['id' => 1, 'active_channel_id' => $channel->id, 'database_provider_mode_enabled' => true]);
+        config(['services.fonnte.token' => null]);
+        Http::fake(['https://api.fonnte.com/send' => Http::response(['status' => true])]);
+
+        $this->assertTrue(app(FonnteOtpDelivery::class)->send('08123456789', '123456', 'password_reset', User::factory()->applicant()->create()));
+        Http::assertSent(fn ($request) => $request->header('Authorization')[0] === 'database-token' && str_contains($request['message'], '123456'));
     }
 
     public function test_settings_singleton_is_idempotent(): void

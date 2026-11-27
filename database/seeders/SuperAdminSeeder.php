@@ -19,7 +19,10 @@ class SuperAdminSeeder extends Seeder
     public function run(): void
     {
         $email = env('SUPERADMIN_EMAIL', 'admin@minsatama.sch.id');
-        $password = env('SUPERADMIN_PASSWORD', 'SuperAdminM1Madiun2026!');
+        $password = env('SUPERADMIN_PASSWORD');
+        if (! is_string($password) || $password === '') {
+            throw new \RuntimeException('SUPERADMIN_PASSWORD wajib ditetapkan sebelum menjalankan seeder.');
+        }
 
         $admin = User::firstOrCreate(
             ['email' => $email],

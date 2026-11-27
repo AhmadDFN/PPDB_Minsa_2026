@@ -93,7 +93,7 @@ class RegistrationSimplificationAndGeneratedPasswordTest extends TestCase
         $response->assertSessionHasErrors(['nik', 'full_name', 'phone', 'consent']);
     }
 
-    public function test_successful_registration_creates_pending_user_and_assigns_5_digit_registration_number(): void
+    public function test_successful_registration_creates_pending_user_without_registration_number(): void
     {
         $nik = '3573010101200001';
         $phone = '081234567890';
@@ -120,7 +120,7 @@ class RegistrationSimplificationAndGeneratedPasswordTest extends TestCase
 
         $registration = Registration::where('applicant_id', $applicant->id)->first();
         $this->assertNotNull($registration);
-        $this->assertSame('27001', $registration->registration_number);
+        $this->assertNull($registration->registration_number);
         $this->assertSame(RegistrationStatus::DRAFT, $registration->status);
 
         $otp = ArrayOtpDelivery::latestOtpFor($phone);

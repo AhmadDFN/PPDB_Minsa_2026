@@ -2,17 +2,17 @@
 ## Sumber Kebenaran Tunggal Progres Pengembangan Sistem
 ### Sistem Informasi PPDB MIN 1 Kota Madiun (Tahun Ajaran 2026/2027)
 
-**Terakhir Diperbarui**: 26 November 2026
-**Dokumentasi Versi**: 1.6.0
+**Terakhir Diperbarui**: 27 November 2026
+**Dokumentasi Versi**: 1.7.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
-> **Perbaikan kontras — 27 November 2026:** Palet pilihan pemilik diterapkan pada tiga halaman pendaftar, dengan teks/badge pada banner gelap diperbaiki dan preview dashboard sintetis diperiksa. UAT seluruh status dan audit aksesibilitas penuh masih pending; rincian `ppdbv2/PROGRESS-LOG.md`.
+> **Perbaikan kontras — 27 November 2026:** Palet pilihan pemilik diterapkan pada tiga halaman pendaftar, dengan teks/badge pada banner gelap diperbaiki dan preview dashboard sintetis diperiksa. UAT seluruh status dan audit aksesibilitas penuh masih pending; rincian Phase 11.
 
-> **Next Atelier — 27 November 2026:** Redesign lokal landing, login, dan dashboard pendaftar menerapkan arahan skill baru. Kartu peserta fiktif diganti informasi periode riil; countdown tidak memakai tanggal cadangan tanpa periode aktif. UAT visual dashboard dan rekonsiliasi konten landing masih pending. Rincian `ppdbv2/PROGRESS-LOG.md`.
+> **Next Atelier — 27 November 2026:** Redesign lokal landing, login, dan dashboard pendaftar menerapkan arahan skill baru. Kartu peserta fiktif diganti informasi periode riil; countdown tidak memakai tanggal cadangan tanpa periode aktif. UAT visual dashboard dan rekonsiliasi konten landing masih pending. Rincian Phase 11.
 
-> **Calm Academic — 27 November 2026:** Tema visual lokal diterapkan pada landing, login pendaftar dan dashboard pendaftar. Landing/login diperiksa pada browser; UAT visual dashboard terautentikasi dan review konten landing masih pending. Konten lama tentang seleksi/pengumuman serta penyerahan fisik memerlukan rekonsiliasi terhadap aturan proyek. Detail `ppdbv2/PROGRESS-LOG.md`.
+> **Calm Academic — 27 November 2026:** Tema visual lokal diterapkan pada landing, login pendaftar dan dashboard pendaftar. Landing/login diperiksa pada browser; UAT visual dashboard terautentikasi dan review konten landing masih pending. Konten lama tentang seleksi/pengumuman serta penyerahan fisik memerlukan rekonsiliasi terhadap aturan proyek. Detail Phase 11.
 
-> **Insiden migrasi wilayah — 27 November 2026:** Log yang diberikan menunjukkan `migrate:fresh --seed` menghapus tabel sebelum migrasi `administrative_regions` gagal. Urutan indeks unik dan foreign key diperbaiki secara lokal; validasi MariaDB, pemeriksaan tabel parsial, backup/pemulihan data, dan deployment masih pending. Audit Composer juga menemukan lima advisory pada tiga paket Symfony. Lihat `ppdbv2/KNOWN-ISSUES.md` ISS-011 dan `ppdbv2/PROGRESS-LOG.md`.
+> **Insiden migrasi wilayah — 27 November 2026:** Log yang diberikan menunjukkan `migrate:fresh --seed` menghapus tabel sebelum migrasi `administrative_regions` gagal. Urutan indeks unik dan foreign key diperbaiki secara lokal; validasi MariaDB, pemeriksaan tabel parsial, backup/pemulihan data, dan deployment masih pending. Audit Composer juga menemukan lima advisory pada tiga paket Symfony. Lihat Phase 11.
 
 > **Rekonsiliasi Admin/Superadmin — 20 November 2026:** Blueprint dan governance dokumentasi tersedia di `docs/blueprints/`. Audit kode aktual menemukan dashboard, applicant management, reopen, dan branding settings telah tersedia; verifikasi dokumen, ekspor, master periode/program/persyaratan, lifecycle akun admin, serta audit viewer belum memiliki UI/controller lengkap. Permission di seeder tidak dihitung sebagai implementasi. Fase blueprint ini tidak mengubah kode, database, `.env`, akun, deployment, commit, atau push.
 
@@ -36,22 +36,48 @@
 
 > **UAT live 27 November 2026:** Akun dummy berhasil submit dan mengunduh PDF final dua halaman di server live; QR fisik dan IDOR live masih pending. Perbaikan lokal jumlah saudara dan salin wilayah orang tua sedang diverifikasi; lihat `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`. Lima advisory Composer ditangani melalui pembaruan dependensi; audit lokal terbaru bersih (ISS-012), verifikasi versi server masih pending.
 
-> **Rekonsiliasi UAT 27 November 2026:** Perbaikan jumlah saudara, salin wilayah, navbar tablet, pesan PDF, dan tanggal PDF telah dikomit. Pesan tinjau terbaru terlihat di server; verifikasi live terhadap perbaikan lain masih pending. Composer audit bersih setelah pembaruan delapan paket; full suite 375 passed, 15 skipped, 1.793 assertions. Rincian: `ppdbv2/PROGRESS-LOG.md` dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+> **Rekonsiliasi UAT 27 November 2026:** Perbaikan jumlah saudara, salin wilayah, navbar tablet, pesan PDF, dan tanggal PDF telah dikomit. Pesan tinjau terbaru terlihat di server; verifikasi live terhadap perbaikan lain masih pending. Composer audit bersih setelah pembaruan delapan paket; full suite 375 passed, 15 skipped, 1.793 assertions. Rincian Phase 11 dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 
-> **Rencana live test admin/superadmin — 27 November 2026:** Dokumen persiapan, 18 skenario, checklist dan log temuan tersedia di `adminlivetest/`. Pengujian live parsial telah dilakukan: 2 PASS, 13 PARTIAL, 1 BLOCKED dan 2 belum diuji; perubahan status hanya pada dokumen dummy. Rincian `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
+> **Rencana live test admin/superadmin — 27 November 2026:** Dokumen persiapan, 18 skenario, checklist dan log temuan tersedia di `adminlivetest/`. Putaran sebelum reset menghasilkan 2 PASS, 13 PARTIAL, 1 BLOCKED dan 2 belum diuji; angka ini historis setelah fresh seed pemilik. Rincian putaran baru di `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
+
+> **Pra-uji superadmin — 27 November 2026, 19.14 WIB:** Halaman `/admin/login` live terbuka pada sesi baru yang saat itu belum terautentikasi. Akses berhasil pada putaran sesudahnya. Rincian `adminlivetest/03-CHECKLIST-DAN-HASIL.md` dan `04-LOG-TEMUAN.md`.
+
+> **Klarifikasi akun uji — 27 November 2026:** Akun superadmin memang pernah login sukses pada UAT live sebelumnya. `LiveTestSeeder` memanggil `SuperAdminSeeder` dan `InterviewAccountSeeder`, tetapi kedua seeder akun memakai `firstOrCreate`, sehingga eksekusi ulang tidak mengembalikan sandi lama. Inventaris akun dan cara melanjutkan pengujian tanpa menyimpan sandi di Git kini ada di `livetest/02-KREDENSIAL-DAN-AKUN-UJI.md`. Belum ada akun baru yang dibuat atau seeder yang dijalankan pada server.
+
+> **Regresi lokal setelah klarifikasi akun:** Test E2E diselaraskan dengan nomor setelah pengesahan dan PDF final yang menunggu nomor. Suite dengan `APP_KEY` sementara khusus proses test: 394 total, 378 passed, 16 skipped, 1.804 assertions. Pint, Vite build, npm audit, dan diff check lulus. `composer audit` pada paket terpasang masih melaporkan 5 advisory/3 paket; periksa sinkronisasi vendor dengan lock sebelum menyatakan gate keamanan bersih.
+
+> **UAT live baru setelah fresh seed pemilik — 27 November 2026:** Superadmin dan admin PPDB berhasil login/logout di web; admin biasa mendapat 403 pada pengaturan, komunikasi, akun staf, dan audit. Tiga pendaftar pada dashboard cocok dengan daftar; filter DRAFT/reset bekerja. Branding masih `PPDBM`, empat template chat kosong, dan Fonnte masih mode legacy environment tanpa channel database. Dua pendaftaran SUBMITTED tidak memiliki dokumen, sehingga verifikasi/pengesahan belum diuji dan tidak ada pesan WhatsApp dikirim. Kredensial bawaan seeder yang terlacak Git terbukti bekerja di web live: rotasi dan penghapusan default statis wajib sebelum peluncuran. Pemilik menyatakan menjalankan `migrate:fresh --seed`; agen tidak menjalankan atau memverifikasi perintah/backup. Rincian `adminlivetest/03-CHECKLIST-DAN-HASIL.md` dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+
+> **Perbaikan lokal temuan UAT:** Redirect tamu admin menuju login admin; nama institusi bawaan memakai PPDB; seeder staf mewajibkan `SUPERADMIN_PASSWORD` dan `DEFAULT_ADMIN_PASSWORD` dari environment. Editor komunikasi dan perbaikan pengiriman OTP tersedia di working tree. Konfigurasi branding tersimpan dan sandi akun live tidak otomatis berubah; rotasi akun serta uji ulang server tetap diperlukan setelah deployment.
+
+> **Keputusan pemilik — 27 November 2026:** Format nomor pendaftaran/antrean resmi ditetapkan menjadi **`YYNNNN`** (contoh `270001`), sequence global per tahun penerimaan dan diterbitkan atomik saat pengesahan panitia setelah dokumen wajib `APPROVED`. Modul wawancara resmi menjadi bagian PPDB; sistem mengelola batch, tahap, kriteria, role, nilai, rekap, koreksi ber-audit, dan ekspor. Seleksi akhir, perankingan, pengumuman, dan daftar ulang tetap di luar sistem. Rencana launch lengkap: `docs/phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md`.
+
+> **Quality gate checkout — 27 November 2026:** Dengan `APP_KEY` sementara hanya untuk proses test (tanpa mengubah file rahasia), `php artisan test` lulus **376 test, 16 skipped, 1.795 assertions** dalam 91,8 detik. `vendor/bin/pint --test`, `npm.cmd run build`, dan `git diff --check` lulus; `npm.cmd audit` menemukan 0 vulnerability. `composer audit` masih gagal dengan 5 advisory Symfony dan menjadi blocker launch sampai diperbarui serta diverifikasi ulang.
+
+> **Koreksi audit Phase 11:** `composer audit --locked` tidak menemukan advisory; audit dependensi terpasang sebelumnya menemukan 5 advisory. Sinkronisasi instalasi dengan lock dan audit ulang masih diperlukan. Audit kode juga menemukan generator lima digit masih dipanggil saat registrasi/aktivasi, sedangkan pengesahan memanggil generator enam digit. Waktu penerbitan nomor perlu dikonfirmasi pemilik: keputusan sebelumnya secara eksplisit menetapkan format `YYNNNN` tetapi tidak menyebut waktunya secara terpisah.
+
+> **Konfirmasi dan implementasi lokal Phase 11:** Pemilik mengonfirmasi nomor diterbitkan setelah pengesahan berkas. Registrasi baru dan aktivasi tidak lagi membuat nomor lebih awal; nomor lama pada pendaftaran existing tidak dihapus oleh perubahan ini. Test registrasi terarah: 11 passed, 89 assertions. Rekonsiliasi data lama, generator legacy, dan verifikasi menyeluruh masih pending.
+
+> **Regresi setelah perubahan:** Full suite gagal: 375 passed, 1 failed, 16 skipped, 1.778 assertions. Test E2E lama masih mengharapkan nomor `27001` saat submit; alurnya perlu diperbarui untuk mencakup pengesahan dan PDF final sebelum gate dapat ditutup. Pint lulus.
+
+> **Perbaikan Fonnte dan pemulihan password — lokal:** Editor template menampilkan isi tersimpan atau default beserta variabel yang tersedia; form kanal menyertakan provider Fonnte. Pengiriman OTP/password melalui kanal database tidak lagi mensyaratkan token environment legacy. Kegagalan pengiriman ulang OTP ditangani dengan pesan aman. Uji lokal gateway tersimulasi lulus; pengiriman WhatsApp live belum diverifikasi.
+
+> **Pembersihan dokumentasi — 27 November 2026:** `dokumentasi-gemini/` dan catatan kerja lama `ppdbv2/` telah dihapus setelah dikonsolidasikan ke `ppdbv2/PPDB-MASTER-CURRENT-2026-11-27.md`. Skill desain aktif tetap dipertahankan.
 
 ## 1. STATUS FASE SAAT INI
 
 | Parameter | Nilai Faktual |
 |---|---|
-| **Fase Berjalan Saat Ini** | **REKONSILIASI STATUS & LIVE ACCEPTANCE HOSTINGER** |
+| **Fase Berjalan Saat Ini** | **PHASE 11 — LAUNCH READINESS & DECISIONS** |
 | **Status Teknis Hotfix 10.5.1** | **SELESAI (100% TERUJI OTOMATIS: 286 TESTS PASSED, 1386 ASSERTIONS, PINT & VITE COMPLIANT)** |
-| **Status UAT Sekolah** | **APPLICANT LIVE TEST PASS WITH BLOCKER; ADMIN/SUPERADMIN LIVE TEST PENDING** |
+| **Status UAT Sekolah** | **PENDAFTAR PARSIAL; ADMIN/SUPERADMIN PARSIAL SETELAH FRESH SEED, BELUM SIAP LAUNCH** |
 | **Status Lingkungan Staging** | **ONLINE/TESTED DI HOSTINGER: https://ahmaddanyfn.biz.id** |
 | **Status Gerbang Produksi (aaPanel VPS)** | **HOLD (DILARANG DEPLOY SEBELUM PERSETUJUAN EKSPLISIT PEMILIK)** |
 | **Status Logo Resmi Madrasah** | **INTEGRATED (`public/images/logo-minsatama.png` seragam di seluruh portal & PDF)** |
 | **Commit Baseline Sebelum Hotfix** | `550d0e2` |
-| **Revisi Form Calon Siswa** | **PARTIAL — pushed; live smoke test menemukan tablet overflow, end-to-end masih pending** |
+| **Revisi Form Calon Siswa** | **PARTIAL — UAT map/GPS, foto asli, QR fisik, MariaDB, dan live acceptance masih pending** |
+| **Nomor Pendaftaran** | **YYNNNN — canonical terbaru, diterbitkan saat pengesahan panitia** |
+| **Modul Wawancara** | **RESMI PPDB — acceptance live masih pending** |
 
 ---
 
@@ -97,9 +123,10 @@
 | 10.1 | **Admin Dashboard Real Data & Resilient Navigation** | Controller dashboard data riil, UI dashboard informatif (5 metrik, hero periode, tabel pendaftar terbaru, quick actions), sidebar aman bebas 404 | **SELESAI** | `AdminDashboardController` + Blade view riil, 12 feature tests baru, 215 tests passed, 0 failed, Pint & Vite compliant |
 | 10.2 | **Integrasi Gateway WhatsApp Fonnte API** | Driver `FonnteOtpDelivery`, normalisasi nomor Indonesia, validasi status Fonnte, penanganan error/timeout, template aktivasi & pemulihan, 20 test cases otomatis | **SELESAI** | 235 tests passed (100%), 1150 assertions, panduan operasional `FONNTE-WHATSAPP-INTEGRATION-GUIDE.md`, siap uji manual pemilik proyek |
 | 10.3 | **Pending Registration Recovery & NIK Reuse** | Mekanisme recovery pendaftaran tertunda, verifikasi identitas, update nomor WA, invalidasi OTP lama, zero-duplicate guarantee, 20 test cases otomatis | **SELESAI** | 256 tests passed (100%), 1217 assertions, laporan komprehensif `PHASE-10.3-IMPLEMENTATION-REPORT.md`, siap deploy |
-| 10.4 | **Simplifikasi Registrasi, Auto-Password, No. 5-Digit & Dynamic Branding** | Formulir 4 input tanpa password/biodata, temporary password otomatis via WA, wajib ganti password di awal login, no reg 5-digit `YYNNN` lintas program maks 999, settings branding Superadmin | **SELESAI** | 265 tests passed (100%), 1302 assertions, laporan komprehensif `PHASE-10.4-IMPLEMENTATION-REPORT.md`, siap deploy |
-| 10.5 | **Admin Dashboard Dinamis & Manajemen Data Pendaftar** | Dashboard metrik riil (global & periode), daftar pendaftar paginasi 15/hal, multi-search (nama, reg YYNNN, NIK 16 digit via HMAC hash), filter (periode, program, status), detail pendaftar 11 seksi kartu info, hitung umur dinamis runtime, pratinjau & unduh berkas privat dengan proteksi IDOR lintas pendaftar, audit logs aktivitas terkini | **SELESAI** | 279 tests passed (100%), 1365 assertions, 14 feature tests baru di `ApplicantManagementTest`, laporan komprehensif `PHASE-10.5-IMPLEMENTATION-REPORT.md`, siap deploy |
+| 10.4 | **Simplifikasi Registrasi, Auto-Password, Nomor `YYNNNN` & Dynamic Branding** | Formulir 4 input tanpa password/biodata, temporary password otomatis via WA, wajib ganti password di awal login, nomor antrean `YYNNNN` global maks 9999 saat pengesahan, settings branding Superadmin | **IMPLEMENTASI LEGACY PERLU HARDENING** | Jalur `YYNNN` lama dan generator legacy masih harus dihapus/diuji ulang; lihat Phase 11 |
+| 10.5 | **Admin Dashboard Dinamis & Manajemen Data Pendaftar** | Dashboard metrik riil (global & periode), daftar pendaftar paginasi 15/hal, multi-search (nama, reg `YYNNNN`, NIK 16 digit via HMAC hash), filter (periode, program, status), detail pendaftar 11 seksi kartu info, hitung umur dinamis runtime, pratinjau & unduh berkas privat dengan proteksi IDOR lintas pendaftar, audit logs aktivitas terkini | **SELESAI — HARDENING NOMOR DI PHASE 11** | 279 tests passed (100%), 1365 assertions, 14 feature tests baru di `ApplicantManagementTest`, laporan komprehensif `PHASE-10.5-IMPLEMENTATION-REPORT.md`, siap deploy |
 | 10.5.1 | **Hotfix Pemulihan Basis Data & Runtime Recovery** | Menangani kegagalan HTTP 500 akibat tabel `system_settings` belum termigrasi di Hostinger, degradasi anggun aman tanpa mencemari cache, identifikasi 5 migrasi pending non-destruktif, audit keamanan `APP_DEBUG=false` | **SELESAI** | 286 tests passed (100%), 1386 assertions, 7 feature tests baru di `SystemSettingRecoveryTest`, panduan migrasi komprehensif `HOTFIX-10.5.1-PRODUCTION-DATABASE-RECOVERY.md` |
+| 11 | **Launch Readiness & Keputusan Terkini** | Konsistensi `YYNNNN`, verifikasi MariaDB, acceptance admin/superadmin/pewawancara, UAT QR/GPS/foto, backup/restore, quality gates, dan checklist launch | **BERJALAN** | `docs/phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md` |
 
 ---
 

@@ -105,8 +105,8 @@ class SystemSetting extends Model
      */
     public static function getInstitutionName(): string
     {
-        $name = self::get('institution_display_name', 'PPDBM MIN 1 KOTA MADIUN');
+        $name = self::get('institution_display_name', 'PPDB MIN 1 KOTA MADIUN');
 
-        return ! empty($name) ? $name : 'PPDBM MIN 1 KOTA MADIUN';
+        return ! empty($name) ? $name : 'PPDB MIN 1 KOTA MADIUN';
     }
 }

@@ -43,3 +43,15 @@ Target: ahmaddanyfn.biz.id. Akun dummy disediakan pemilik; kredensial dan identi
 - Commit a3f1361 menangani jumlah saudara, penyalinan wilayah, dan navbar tablet. Commit b12a7e5 memperbaiki pesan Fase 7 dan tanggal PDF null. Teks pengganti pada halaman tinjau telah terlihat di server live pada pemeriksaan ulang.
 - Delapan paket diperbarui melalui Composer untuk menutup lima advisory; audit terbaru tidak menemukan advisory (ISS-012). Penggunaan versi baru pada server masih perlu dipastikan setelah deployment.
 - Suite setelah pembaruan: 390 test, 375 passed, 15 skipped, 1.793 assertions; Pint, Vite build, npm audit dan Composer audit lulus.
+
+## Putaran superadmin setelah fresh seed — 27 November 2026
+
+Pemilik menyatakan telah menjalankan `migrate:fresh --seed` dan seeder uji pada web. Agen tidak menjalankan perintah itu; server menunjukkan tiga pendaftar uji. Detail hasil dan isu ada di `adminlivetest/03-CHECKLIST-DAN-HASIL.md` serta `04-LOG-TEMUAN.md`.
+
+- PASS: akun superadmin dan admin PPDB dari seeder berhasil login/logout; akses dashboard setelah logout dialihkan ke login.
+- PASS batas akses yang dicoba: admin PPDB menerima 403 pada pengaturan, komunikasi, akun staf, dan audit.
+- PARTIAL: dashboard menunjukkan total 3 pendaftar, 2 terkirim, 1 draf, cocok dengan daftar; filter DRAFT menghasilkan satu dan reset kembali tiga. Validasi database independen belum dilakukan.
+- FAIL: branding live masih `PPDBM`, bukan `PPDB` resmi; keempat template pesan di Communication Center kosong tanpa contoh/placeholder. Kanal database belum ada dan halaman menunjukkan konfigurasi Fonnte legacy environment.
+- BLOCKED: dua fixture SUBMITTED tidak memiliki dokumen; uji verifikasi dan pengesahan belum aman. Tidak ada nomor baru, perubahan konfigurasi, atau pesan WhatsApp yang dikirim agen.
+- Risiko keamanan: sandi bawaan yang terlacak pada source/Git berhasil dipakai login live setelah fresh seed. Rotasi dan penghapusan default statis diperlukan sebelum launch.
+- Versi server pada dashboard menampilkan Laravel 13.42.0; commit rilis yang terpasang belum dibuktikan. Perbaikan kode lokal Fonnte dan nomor tidak boleh dianggap sudah live.

@@ -10,7 +10,8 @@ Pedoman wajib dan instruksi permanen coding agent/developer di repositori ini. S
 - **Zona Waktu & Bahasa**: `Asia/Jakarta` (WIB). Antarmuka menggunakan **Bahasa Indonesia**.
 - **Jam Layanan PTSP**: Pelayanan loket fisik dan helpdesk verifikasi pukul **07.00 – 15.00 WIB** (hari kerja).
 - **Batasan Lingkup**:
-  - Sistem **BERAKHIR** saat pendaftar mencetak bukti pendaftaran PDF dan menyerahkannya ke loket PTSP madrasah.
+  - Sistem mencakup pendaftaran, verifikasi berkas, penomoran antrean, penjadwalan, dan pelaksanaan wawancara PPDB.
+  - Alur layanan pendaftar berlanjut sampai bukti pendaftaran dan proses wawancara selesai sesuai role/permission.
   - Sistem **TIDAK MENGELOLA** seleksi siswa, perankingan, pengumuman kelulusan/penolakan, maupun daftar ulang (*out-of-scope*).
   - **TIDAK ADA** pembatasan kuota pendaftaran pada sistem.
 - **Referensi Detail**: `docs/PROJECT_BLUEPRINT.md`, `docs/BUSINESS_REQUIREMENTS.md`, `docs/PROJECT_STATUS.md`.
@@ -48,7 +49,8 @@ Pedoman wajib dan instruksi permanen coding agent/developer di repositori ini. S
    - Password sementara dikirim via WhatsApp hanya setelah OTP berhasil diverifikasi.
    - Wajib ganti password pada login pertama (`must_change_password`).
    - OTP dan password sementara dikirim dalam pesan WhatsApp terpisah.
-   - Format nomor registrasi: **`YYNNN`** (sequence 001 tiap tahun penerimaan, sequence bersama seluruh program, unique business identifier, pertahankan internal PK/FK database).
+   - Format nomor registrasi/antrean resmi: **`YYNNNN`** (contoh `270001`, sequence global tiap tahun penerimaan, bersama seluruh program, maksimal 9.999, unique business identifier, pertahankan internal PK/FK database).
+   - Nomor `YYNNNN` diterbitkan secara atomik saat pendaftaran disahkan panitia setelah seluruh dokumen wajib `APPROVED`, lalu digunakan untuk pemetaan batch wawancara.
    - Nama institusi dapat diatur melalui konfigurasi Superadmin.
    - Pending registration recovery wajib mempertahankan akun dan nomor registrasi yang sama.
    *(Dilarang menandai poin di atas sebagai IMPLEMENTED sebelum kode dan pengujian membuktikannya).*

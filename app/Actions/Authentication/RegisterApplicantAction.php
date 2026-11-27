@@ -15,7 +15,6 @@ use App\Models\Applicant;
 use App\Models\Registration;
 use App\Models\User;
 use App\Services\Authentication\OtpService;
-use App\Services\Registration\RegistrationNumberGeneratorService;
 use App\Support\NikManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -26,8 +25,7 @@ use RuntimeException;
 class RegisterApplicantAction
 {
     public function __construct(
-        protected OtpService $otpService,
-        protected RegistrationNumberGeneratorService $numberGenerator
+        protected OtpService $otpService
     ) {}
 
     /**
@@ -116,7 +114,6 @@ class RegisterApplicantAction
                         ->first();
 
                     if (! $registration) {
-                        $regNumber = $this->numberGenerator->generateForPeriod($activePeriod);
                         $registration = Registration::create([
                             'applicant_id' => $applicant->id,
                             'admission_period_id' => $activePeriod->id,
@@ -195,7 +192,6 @@ class RegisterApplicantAction
 
             $regNumber = null;
             if ($activePeriod) {
-                $regNumber = $this->numberGenerator->generateForPeriod($activePeriod);
                 $registration = Registration::create([
                     'applicant_id' => $applicant->id,
                     'admission_period_id' => $activePeriod->id,

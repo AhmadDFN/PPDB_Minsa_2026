@@ -39,7 +39,8 @@ Untuk menjaga integritas dan ketepatan fungsi sistem, batas ruang lingkup didefi
 ✓ Manajemen verifikasi berkas dan pelaporan statistik oleh administrator.
 ========================================================================================
 (DI LUAR RUANG LINGKUP / OUT-OF-SCOPE)
-✗ Proses seleksi penerimaan siswa (akademik, pemetaan bakat/minat, atau tes baca Al-Qur'an).
+✗ Proses seleksi akhir, perankingan, dan keputusan penerimaan siswa.
+✓ Pelaksanaan wawancara PPDB, penilaian per tahap, rekap, koreksi ber-audit, dan ekspor operasional.
 ✗ Perankingan calon siswa berdasarkan usia, nilai, atau kriteria lain.
 ✗ Penetapan status kelulusan/diterima atau penolakan siswa oleh sistem.
 ✗ Pengumuman hasil penerimaan akhir dan alur daftar ulang (re-registration).
@@ -48,7 +49,7 @@ Untuk menjaga integritas dan ketepatan fungsi sistem, batas ruang lingkup didefi
 ```
 
 > [!IMPORTANT]
-> Sistem PPDB Minsatama **berakhir** saat wali murid menyelesaikan pengisian data pendaftaran, mengunduh bukti PDF final, dan menyerahkan berkas fisik bersama dokumen asli ke loket Pelayanan Terpadu Satu Pintu (PTSP) MIN 1 Kota Madiun. Proses seleksi dan keputusan akhir dilakukan secara terpisah oleh madrasah di luar sistem ini.
+> Sistem PPDB Minsatama mencakup pengisian pendaftaran, verifikasi berkas, penomoran, penjadwalan, dan pelaksanaan wawancara. Proses seleksi akhir, perankingan, pengumuman keputusan, dan daftar ulang dilakukan terpisah oleh madrasah di luar sistem ini.
 
 ---
 

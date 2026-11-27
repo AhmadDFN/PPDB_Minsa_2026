@@ -37,6 +37,9 @@ class CommunicationChannelController
             'databaseModeEnabled' => (bool) CommunicationSetting::query()->value('database_provider_mode_enabled'),
             'legacyConfigured' => is_string(config('services.fonnte.token')) && config('services.fonnte.token') !== '',
             'messageTemplates' => $this->templates->all(),
+            'templatePlaceholders' => collect(array_keys(CommunicationMessageTemplateService::defaults()))
+                ->mapWithKeys(fn (string $key): array => [$key => CommunicationMessageTemplateService::allowedPlaceholders($key)])
+                ->all(),
         ]);
     }
 

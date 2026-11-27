@@ -174,3 +174,18 @@
   4. *Benchmark Kinerja*: Memastikan dasbor bebas dari query N+1 (terukur <= 30 kueri) dan alokasi memori render PDF terkontrol.
 - **Konsekuensi**:
   Sistem mencapai tingkat kematangan teknis 100% lulus uji (203 tes, 1065 asersi). Tidak ada fitur bisnis di luar pendaftaran yang ditambahkan. Lingkup operasional PPDB tetap berakhir saat bukti pendaftaran diserahkan ke loket PTSP madrasah.
+
+---
+
+### ADR-013: Nomor YYNNNN dan Modul Wawancara Resmi
+
+- **Tanggal**: 27 November 2026
+- **Status**: DISETUJUI PEMILIK — IMPLEMENTASI/HARDENING PHASE 11
+- **Keputusan**:
+  1. Nomor pendaftaran/antrean resmi menggunakan format `YYNNNN`, contoh `270001`.
+  2. Counter global per tahun penerimaan dipakai bersama seluruh program dan dibatasi sampai 9.999.
+  3. Nomor diterbitkan atomik saat pendaftaran disahkan panitia setelah semua dokumen wajib berstatus `APPROVED`.
+  4. Modul wawancara adalah bagian resmi PPDB dan mengelola batch, tahap, kriteria, role pewawancara, nilai, rekap, koreksi ber-audit, dan ekspor.
+  5. Seleksi akhir, perankingan, pengumuman kelulusan/penolakan, dan daftar ulang tetap di luar sistem.
+- **Konsekuensi**:
+  Referensi `YYNNN` dan generator legacy harus dihapus atau dinonaktifkan secara backward-compatible pada Phase 11. Test, query, PDF, CSV, seeder, dan manual harus memakai kontrak `YYNNNN` tunggal.

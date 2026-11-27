@@ -32,10 +32,10 @@ Untuk mengatasi batasan di atas tanpa merusak fitur keamanan produksi, telah dis
 │  [STRATEGI 1: REKOMENDASI TERBAIK]                                     │
 │  Gunakan Akun Pre-Seeded (Bypass Registrasi Awal)                      │
 │  ────────────────────────────────────────────────                      │
-│  • Sudah tersedia akun NIK 3577022003990001 (DRAFT)                    │
-│  • Sudah tersedia akun NIK 3577022003990002 (SUBMITTED)                │
-│  • Sudah tersedia akun NIK 3577022003990003 (VERIFIED)                 │
-│  • AI langsung login di /login dengan NIK + Password Pendaftar2026!    │
+│  • Sudah tersedia akun NIK [NIK-DUMMY-DIHAPUS] (DRAFT)                    │
+│  • Sudah tersedia akun NIK [NIK-DUMMY-DIHAPUS] (SUBMITTED)                │
+│  • Sudah tersedia akun NIK [NIK-DUMMY-DIHAPUS] (VERIFIED)                 │
+│  • AI langsung login di /login dengan NIK + Password [KREDENSIAL-DIHAPUS]    │
 │  • TIDAK MEMERLUKAN WHATSAPP SAMA SEKALI.                              │
 │                                                                        │
 ├────────────────────────────────────────────────────────────────────────┤
@@ -45,10 +45,9 @@ Untuk mengatasi batasan di atas tanpa merusak fitur keamanan produksi, telah dis
 │  ───────────────────────────────────────────────────                   │
 │  • AI atau Anda mengisi form di /daftar memakai NO. WA RIIL ANDA       │
 │  • Pesan Fonnte masuk ke WhatsApp di ponsel fisik Anda                 │
-│  • Anda menyalin 6 digit kode OTP dan menempelkannya ke chat AI        │
-│  • AI memasukkan kode di /aktivasi                                     │
-│  • Password sementara masuk ke WhatsApp Anda, lalu diberikan ke AI     │
-│  • AI login di /login untuk membuktikan flow ujung-ke-ujung            │
+│  • Anda memasukkan OTP sendiri di /aktivasi browser uji               │
+│  • Anda memasukkan sandi sementara sendiri di /login                  │
+│  • Jangan kirim OTP atau sandi melalui chat                            │
 │                                                                        │
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
@@ -56,7 +55,7 @@ Untuk mengatasi batasan di atas tanpa merusak fitur keamanan produksi, telah dis
 │  Membaca Kode OTP Langsung dari Server                                 │
 │  ─────────────────────────────────────                                 │
 │  • Pada lingkungan lokal, OTP di-hash di tabel `otp_codes`             │
-│  • Dapat dibuatkan bypass log sementara di terminal jika diperlukan    │
+│  • Periksa status pengiriman tersanitasi; jangan bocorkan nilai OTP    │
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -75,7 +74,7 @@ Ini adalah skema yang digunakan untuk live test fitur aplikasi. Tidak perlu memb
    ```
 2. Gunakan akun dummy pada `02-KREDENSIAL-DAN-AKUN-UJI.md`.
 3. Uji alur sesuai peran pada `01-SKENARIO-PER-ROLE.md`.
-4. Reset kondisi data uji dengan menjalankan ulang `LiveTestSeeder` bila diperlukan.
+4. Periksa dampak sebelum mengulang seeder; jangan gunakan pada produksi.
 
 Pendaftaran akun baru dan integrasi OTP Fonnte hanya diuji manual oleh pemilik proyek menggunakan nomor WhatsApp milik sendiri.
 
@@ -89,8 +88,8 @@ Jika Anda ingin AI melakukan live test secara mandiri menggunakan browser:
    ```
 2. AI langsung mengarahkan browser ke:
    - Halaman Masuk: `http://localhost:8000/login` atau `https://ahmaddanyfn.biz.id/login`
-   - NIK: `3577022003990001`
-   - Kata Sandi: `Pendaftar2026!`
+   - NIK: `[NIK-DUMMY-DIHAPUS]`
+   - Kata Sandi: `[KREDENSIAL-DIHAPUS]`
 3. AI menguji seluruh fitur inti:
    - Kelengkapan 5 modul formulir.
    - Unggah berkas dokumen (KK, Akta, Pas Foto).
@@ -99,7 +98,7 @@ Jika Anda ingin AI melakukan live test secara mandiri menggunakan browser:
    - Pengecekan status pendaftaran yang terkunci.
 4. AI berpindah browser ke `/admin/login`:
    - Email: `admin1@minsatama.sch.id`
-   - Kata Sandi: `Minsatama2026!`
+   - Kata Sandi: `[KREDENSIAL-DIHAPUS]`
    - Membuka data siswa Budi Santoso / Siti Rahmawati, lalu menekan **"Sahkan Berkas & Terbitkan Nomor"**.
 
 *Dengan cara ini, 95% alur sistem teruji secara live dan tuntas tanpa ketergantungan pada nomor handphone.*
@@ -119,7 +118,7 @@ Jika Anda ingin membuktikan bahwa integrasi Fonnte di server produksi benar-bena
 2. **Langkah 2 (Terima OTP di Handphone Anda)**:
    - Dalam 2–5 detik, bot WhatsApp MINSATAMA akan mengirim pesan ke nomor Anda:
      > *"Kode verifikasi pendaftaran PPDB MIN 1 Kota Madiun Anda adalah: **123456**. Kode berlaku selama 5 menit..."*
-   - Beritahukan 6 digit kode tersebut di chat ("kodenya 123456").
+   - Masukkan 6 digit kode sendiri di browser uji; jangan membagikannya lewat chat.
 3. **Langkah 3 (Verifikasi OTP)**:
    - Kode dimasukkan pada halaman `/aktivasi`.
    - Klik **"Verifikasi Akun"**.
@@ -131,7 +130,7 @@ Jika Anda ingin membuktikan bahwa integrasi Fonnte di server produksi benar-bena
      > *• Password: AbCd1234Xy*  
      > *• Nomor Pendaftaran: — (Menunggu Pengesahan Berkas)*  
      > *Password ini dapat diganti di dasbor pendaftar."*
-   - Beritahukan kata sandi tersebut di chat ("passwordnya AbCd1234Xy").
+   - Masukkan kata sandi sendiri di browser uji; jangan membagikannya lewat chat.
 5. **Langkah 5 (Masuk ke Dasbor)**:
    - Masuk di `/login` dengan NIK dan kata sandi sementara tersebut.
    - Pendaftar langsung masuk ke `/pendaftar/dashboard`.

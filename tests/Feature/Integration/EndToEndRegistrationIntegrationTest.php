@@ -313,10 +313,22 @@ class EndToEndRegistrationIntegrationTest extends TestCase
 
         $registration->refresh();
         $this->assertSame(RegistrationStatus::SUBMITTED, $registration->status);
-        $this->assertSame('27001', $registration->registration_number);
+        $this->assertNull($registration->registration_number);
         $this->assertNotNull($registration->submitted_at);
 
-        // 13. Generate Final PDF
+        // 13. Bukti final menunggu pengesahan berkas dan penerbitan nomor
+        $this->actingAs($user)->post(route('applicant.registration.pdf.final'))
+            ->assertSessionHas('error', 'Bukti PDF final hanya dapat dibuat setelah pendaftaran disahkan panitia dan diterbitkan nomor urut.');
+
+        RegistrationDocument::query()->where('registration_id', $registration->id)->update([
+            'verification_status' => DocumentVerificationStatus::APPROVED,
+        ]);
+        $admin = User::factory()->admin()->create();
+        app(ApproveAndAssignQueueNumberAction::class)->execute($registration, $admin);
+        $registration->refresh();
+        $this->assertSame('270001', $registration->registration_number);
+
+        // 14. Generate Final PDF
         $finalPdfResponse = $this->actingAs($user)->post(route('applicant.registration.pdf.final'));
         $finalPdfResponse->assertRedirect(route('applicant.dashboard'))
             ->assertSessionHas('success', 'Bukti PDF final berhasil dibuat.');
@@ -328,13 +340,13 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         $this->assertSame(1, $finalVersion->version_number);
         $this->assertNotNull($finalVersion->verification_token_hash);
 
-        // 14. Download Final PDF
+        // 15. Download Final PDF
         $downloadResponse = $this->actingAs($user)->get(route('applicant.registration.pdf.download', $finalVersion->id));
         $downloadResponse->assertOk();
         $downloadResponse->assertHeader('Content-Type', 'application/pdf');
         $this->assertStringStartsWith('%PDF-', $downloadResponse->getContent());
 
-        // 15. Verifikasi QR
+        // 16. Verifikasi QR
         // Reverse token check via database verification token hash match
         $allTokens = DB::table('registration_pdf_versions')
             ->where('id', $finalVersion->id)
@@ -348,7 +360,7 @@ class EndToEndRegistrationIntegrationTest extends TestCase
         ]));
         $invalidTokenResponse->assertNotFound();
 
-        // 16. Verifikasi konsistensi data
+        // 17. Verifikasi konsistensi data
         $this->assertGreaterThanOrEqual(1, $registration->data_revision);
         $this->assertSame($registration->data_revision, $finalVersion->data_revision);
         $this->assertTrue($registration->consent->is_agreed);

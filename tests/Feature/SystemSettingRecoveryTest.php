@@ -31,7 +31,7 @@ class SystemSettingRecoveryTest extends TestCase
     public function test_system_setting_reads_default_when_record_does_not_exist(): void
     {
         // Table exists, but no rows inserted yet
-        $this->assertSame('PPDBM MIN 1 KOTA MADIUN', SystemSetting::getInstitutionName());
+        $this->assertSame('PPDB MIN 1 KOTA MADIUN', SystemSetting::getInstitutionName());
         $this->assertNull(SystemSetting::get('unknown_key'));
         $this->assertSame('fallback_val', SystemSetting::get('unknown_key', 'fallback_val'));
     }
@@ -54,7 +54,7 @@ class SystemSettingRecoveryTest extends TestCase
 
         // SystemSetting::getInstitutionName() must NOT throw 500 QueryException
         $fallbackName = SystemSetting::getInstitutionName();
-        $this->assertSame('PPDBM MIN 1 KOTA MADIUN', $fallbackName);
+        $this->assertSame('PPDB MIN 1 KOTA MADIUN', $fallbackName);
 
         // SystemSetting::get() must return provided default
         $this->assertSame('custom_default', SystemSetting::get('some_key', 'custom_default'));
@@ -77,11 +77,11 @@ class SystemSettingRecoveryTest extends TestCase
     {
         $loginResponse = $this->get(route('login'));
         $loginResponse->assertOk();
-        $loginResponse->assertSee('PPDBM MIN 1 KOTA MADIUN');
+        $loginResponse->assertSee('PPDB MIN 1 KOTA MADIUN');
 
         $registerResponse = $this->get(route('register'));
         $registerResponse->assertOk();
-        $registerResponse->assertSee('PPDBM MIN 1 KOTA MADIUN');
+        $registerResponse->assertSee('PPDB MIN 1 KOTA MADIUN');
     }
 
     public function test_login_and_registration_pages_render_without_500_when_table_is_missing(): void
@@ -92,11 +92,11 @@ class SystemSettingRecoveryTest extends TestCase
 
         $loginResponse = $this->get(route('login'));
         $loginResponse->assertOk();
-        $loginResponse->assertSee('PPDBM MIN 1 KOTA MADIUN');
+        $loginResponse->assertSee('PPDB MIN 1 KOTA MADIUN');
 
         $registerResponse = $this->get(route('register'));
         $registerResponse->assertOk();
-        $registerResponse->assertSee('PPDBM MIN 1 KOTA MADIUN');
+        $registerResponse->assertSee('PPDB MIN 1 KOTA MADIUN');
     }
 
     public function test_admin_and_applicant_authentication_has_no_regression(): void

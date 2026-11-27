@@ -42,7 +42,7 @@
 
 ## Kegagalan yang ditemukan dan tindak lanjut
 
-1. PNG sebagai foto menyebabkan PDF final gagal saat PHP lokal tidak memiliki GD. UAT dilanjutkan dengan JPG. Catatannya di `ppdbv2/KNOWN-ISSUES.md` ISS-002.
+1. PNG sebagai foto menyebabkan PDF final gagal saat PHP lokal tidak memiliki GD. UAT dilanjutkan dengan JPG. Tindak lanjutnya tercatat di Phase 11.
 2. Test reopen gagal karena fixture belum menyediakan field baru dan profil historis lengkap. Fixture diperbarui, lalu suite tersebut lulus.
 3. Full suite sempat menemukan ekspektasi test lama yang meminta NIK utuh pada PDF final dan snapshot benchmark yang belum mempunyai field baru. Assertion kini memverifikasi masking, PDF menangani nilai historis yang kosong; full suite lulus.
 4. Browser menemukan overflow horizontal 316 px pada indikator langkah viewport tablet. Komponen diperbaiki dan pengukuran 390/768 px kembali tanpa overflow halaman.

@@ -77,7 +77,12 @@ final class CommunicationMessageTemplateService
 
     public function all(): array
     {
-        return array_map(fn (string $key): string => $this->template($key), array_keys(self::COLUMNS));
+        $templates = [];
+        foreach (array_keys(self::COLUMNS) as $key) {
+            $templates[$key] = $this->template($key);
+        }
+
+        return $templates;
     }
 
     public static function allowedPlaceholders(string $key): array

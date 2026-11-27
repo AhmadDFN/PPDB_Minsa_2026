@@ -11,7 +11,7 @@ Dokumen ini disusun sebagai panduan menyeluruh pelaksanaan **Live Test** pada Si
 |---|---|
 | **[README.md](./README.md)** | Ikhtisar sistem, strategi pengujian, penanganan kendala OTP Fonnte, dan peta rute live test. |
 | **[01-SKENARIO-PER-ROLE.md](./01-SKENARIO-PER-ROLE.md)** | Panduan skenario bertindak sebagai: Superadmin, Admin PPDB (Verifikator), Calon Siswa (DRAFT), Calon Siswa (SUBMITTED), dan Calon Siswa (VERIFIED). |
-| **[02-KREDENSIAL-DAN-AKUN-UJI.md](./02-KREDENSIAL-DAN-AKUN-UJI.md)** | Daftar lengkap akun uji deterministik (NIK, Email, Password, Peran), URL akses login, dan perintah seeder database. |
+| **[02-KREDENSIAL-DAN-AKUN-UJI.md](./02-KREDENSIAL-DAN-AKUN-UJI.md)** | Tata cara penyimpanan kredensial privat, akun uji, dan rute login tanpa nilai rahasia. |
 | **[03-PANDUAN-SOLUSI-FONNTE-OTP.md](./03-PANDUAN-SOLUSI-FONNTE-OTP.md)** | Penjelasan teknis kendala Fonnte WhatsApp (AI tidak menerima WA) beserta 3 strategi solusi: Akun Pre-Seeded, Kolaborasi Human-in-the-Loop, dan Inspeksi Database. |
 | **[04-CHECKLIST-FITUR-DAN-PENGUJIAN.md](./04-CHECKLIST-FITUR-DAN-PENGUJIAN.md)** | Lembar checklist pengujian step-by-step untuk seluruh fitur (16 modul fungsional & verifikasi UI responsif). |
 
@@ -56,9 +56,8 @@ Pengujian pendaftaran baru, OTP, dan pengiriman password sementara melalui Whats
    Jika Pemilik Proyek ingin menguji formulir `/daftar` secara live hingga pesan WhatsApp masuk:
    - Masukkan nomor WhatsApp riil milik Anda.
    - Pesan OTP Fonnte masuk ke ponsel fisik Anda dalam 2–5 detik.
-   - Anda memberikan 6 digit kode OTP tersebut di obrolan chat.
-   - AI memasukkan kode di `/aktivasi`.
-   - Kata sandi sementara masuk ke WhatsApp Anda, lalu diberikan ke AI untuk masuk ke `/login`.
+   - Masukkan OTP sendiri melalui browser uji yang diserahkan kepada Anda.
+   - Masukkan kata sandi sementara sendiri saat masuk ke `/login`; jangan kirim keduanya melalui chat.
 
 3. **Strategi C: Verifikasi Log Internal Server**  
    Pada lingkungan pengembangan, pengiriman pesan Fonnte dicatat ke log sistem/database sehingga status pesan tetap dapat diaudit.
@@ -69,18 +68,18 @@ Pengujian pendaftaran baru, OTP, dan pengiriman password sementara melalui Whats
 
 | Peran Live Test | Login Melalui | Kredensial Utama | Halaman Utama Setelah Masuk | Fokus Pengujian |
 |---|---|---|---|---|
-| **Super Administrator** | `/admin/login` | Email: `admin@minsatama.sch.id`<br>Pass: `SuperAdminM1Madiun2026!` | `/admin/dashboard` | Master Jadwal Batch Wawancara, Master Tahap & Poin Penilaian, Audit Log, Pengaturan Madrasah |
-| **Admin PPDB (Verifikator)** | `/admin/login` | Email: `admin1@minsatama.sch.id`<br>Pass: `Minsatama2026!` | `/admin/dashboard` | Metrik Dasbor Dinamis, Filter Pendaftar, Verifikasi Dokumen, Sahkan Berkas & Terbitkan Nomor |
-| **Calon Siswa (DRAFT)** | `/login` | NIK: `3577022003990001`<br>Pass: `Pendaftar2026!` | `/pendaftar/dashboard` | Pengisian Formulir 5 Langkah (Biodata, Alamat, Orang Tua, Pendidikan, Program), Unggah Berkas, Draf PDF |
-| **Calon Siswa (SUBMITTED)** | `/login` | NIK: `3577022003990002`<br>Pass: `Pendaftar2026!` | `/pendaftar/dashboard` | Tinjauan Status Terkirim Resmi, Formulir Terkunci, Banner Status Menunggu Pengesahan Berkas |
-| **Calon Siswa (VERIFIED)** | `/login` | NIK: `3577022003990003`<br>Pass: `Pendaftar2026!` | `/pendaftar/dashboard` | Nomor Pendaftaran Resmi `270001`, Jadwal Wawancara, Unduh PDF Bukti Final, Verifikasi QR Publik |
-| **Pewawancara (Pool Penguji)** | `/admin/login` | Email: `penguji1a@minsatama.sch.id`<br>Pass: `Minsatama2026!` | `/admin` / `/wawancara` | Isolasi hak akses (blind grading), verifikasi sequential gate antar-tahap wawancara |
+| **Super Administrator** | `/admin/login` | Email: `admin@minsatama.sch.id`<br>Pass: `[KREDENSIAL-DIHAPUS]` | `/admin/dashboard` | Master Jadwal Batch Wawancara, Master Tahap & Poin Penilaian, Audit Log, Pengaturan Madrasah |
+| **Admin PPDB (Verifikator)** | `/admin/login` | Email: `admin1@minsatama.sch.id`<br>Pass: `[KREDENSIAL-DIHAPUS]` | `/admin/dashboard` | Metrik Dasbor Dinamis, Filter Pendaftar, Verifikasi Dokumen, Sahkan Berkas & Terbitkan Nomor |
+| **Calon Siswa (DRAFT)** | `/login` | NIK: `[NIK-DUMMY-DIHAPUS]`<br>Pass: `[KREDENSIAL-DIHAPUS]` | `/pendaftar/dashboard` | Pengisian Formulir 5 Langkah (Biodata, Alamat, Orang Tua, Pendidikan, Program), Unggah Berkas, Draf PDF |
+| **Calon Siswa (SUBMITTED)** | `/login` | NIK: `[NIK-DUMMY-DIHAPUS]`<br>Pass: `[KREDENSIAL-DIHAPUS]` | `/pendaftar/dashboard` | Tinjauan Status Terkirim Resmi, Formulir Terkunci, Banner Status Menunggu Pengesahan Berkas |
+| **Calon Siswa (terverifikasi, jika fixture tersedia)** | `/login` | Identitas dan sandi tersimpan privat | `/pendaftar/dashboard` | Nomor Pendaftaran Resmi, Jadwal Wawancara, Unduh PDF Bukti Final, Verifikasi QR Publik |
+| **Pewawancara (Pool Penguji)** | `/admin/login` | Email: `penguji1a@minsatama.sch.id`<br>Pass: `[KREDENSIAL-DIHAPUS]` | `/admin` / `/wawancara` | Isolasi hak akses (blind grading), verifikasi sequential gate antar-tahap wawancara |
 
 ---
 
 ## 4. Cara Menyiapkan Database untuk Live Test
 
-Jalankan perintah berikut di terminal:
+Jalankan perintah berikut hanya pada lingkungan lokal/test terisolasi setelah memeriksa kondisi database. Jangan jalankan pada server produksi:
 
 ```bash
 # Terapkan seluruh migrasi tabel terbaru

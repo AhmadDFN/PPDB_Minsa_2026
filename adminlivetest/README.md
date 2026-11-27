@@ -1,8 +1,8 @@
 # Rencana Live Test Admin & Superadmin PPDB
 
-**Status:** rencana, belum dilaksanakan. **Tanggal:** 27 November 2026.
+**Status:** UAT live parsial; putaran setelah fresh seed berhasil login superadmin/admin dan menguji akses baca. **Tanggal:** 27 November 2026. Hasil aktual pada `03-CHECKLIST-DAN-HASIL.md`.
 **Target kandidat:** `https://ahmaddanyfn.biz.id` setelah lingkungan dan fixture dikonfirmasi.
-**Acuan:** `AGENTS.md`, `ppdbv2/AI-RULES.md`, `ppdbv2/blueprint-wawancara.md`, `ppdbv2/KNOWN-ISSUES.md`, `docs/PROJECT_STATUS.md`, `routes/web.php`, `RoleAndPermissionSeeder`, dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
+**Acuan:** `AGENTS.md`, `docs/PROJECT_STATUS.md`, `docs/phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md`, `routes/web.php`, `RoleAndPermissionSeeder`, dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 
 ## Peta dokumen
 

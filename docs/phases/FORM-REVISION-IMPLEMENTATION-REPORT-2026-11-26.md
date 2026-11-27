@@ -2,15 +2,15 @@
 
 **Tanggal:** 26 November 2026
 **Status:** PARTIAL — lokal saja, belum siap rilis
-**Ruang lingkup:** revisi dari `ppdbv2/workflow_update_form.md` dan lampiran pemilik.
+**Ruang lingkup:** revisi form calon siswa berdasarkan keputusan pemilik dan Phase 11 launch readiness.
 
 **Palet dan kontras 27 November 2026:** Dashboard menggunakan palet pilihan pemilik; banner dan badge diuji melalui preview sintetis tanpa data pendaftar riil. Variasi status dan audit aksesibilitas menyeluruh masih pending.
 
-**Next Atelier, 27 November 2026:** Tampilan banner dashboard pendaftar diperbarui tanpa perubahan kontrak form atau backend; UAT dashboard dan alur lengkap masih pending. Lihat `ppdbv2/PROGRESS-LOG.md`.
+**Next Atelier, 27 November 2026:** Tampilan banner dashboard pendaftar diperbarui tanpa perubahan kontrak form atau backend; UAT dashboard dan alur lengkap masih pending. Lihat Phase 11.
 
-**Catatan 27 November 2026 — Calm Academic:** Tema visual lokal dashboard pendaftar diisolasi dari form lainnya; UAT browser dashboard terautentikasi masih pending. Landing dan login ditinjau di browser lokal. Rincian di `ppdbv2/PROGRESS-LOG.md`.
+**Catatan 27 November 2026 — Calm Academic:** Tema visual lokal dashboard pendaftar diisolasi dari form lainnya; UAT browser dashboard terautentikasi masih pending. Landing dan login ditinjau di browser lokal. Rincian di Phase 11.
 
-**Catatan 27 November 2026:** Log server menunjukkan migrasi wilayah gagal karena foreign key diproses sebelum indeks unik. Deklarasi indeks diperbaiki secara lokal dan urutan SQL dicakup regression test; MariaDB server dan pemulihan tabel/data setelah `migrate:fresh` belum diverifikasi. Lihat ISS-011 di `ppdbv2/KNOWN-ISSUES.md`.
+**Catatan 27 November 2026:** Log server menunjukkan migrasi wilayah gagal karena foreign key diproses sebelum indeks unik. Deklarasi indeks diperbaiki secara lokal dan urutan SQL dicakup regression test; MariaDB server dan pemulihan tabel/data setelah `migrate:fresh` belum diverifikasi. Lihat Phase 11.
 
 ## Perubahan yang tersedia
 

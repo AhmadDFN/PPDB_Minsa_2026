@@ -85,12 +85,20 @@ Dokumen ini berisi seluruh aturan bisnis resmi yang telah disetujui oleh Pemilik
    - Pendaftar tetap diperkenankan mengubah data yang telah di-submit selama periode pendaftaran masih dibuka.
    - Setiap perubahan pada status submitted akan mencatat riwayat revisi dan menaikkan versi dokumen PDF bukti pendaftaran.
 7. **Nomor Registrasi Resmi**:
-   - Format nomor adalah `PPDB/{tahun-ajaran}/{kode-program}/{urutan-5-digit}`.
-   - Kode program yang sah adalah `REGULER` dan `UNGGULAN`.
-   - Urutan harus unik untuk setiap kombinasi tahun ajaran dan program, termasuk jika terdapat lebih dari satu periode pada tahun ajaran yang sama.
+   - Format nomor adalah `YYNNNN`, contoh `270001` untuk tahun penerimaan 2027.
+   - Sequence global per tahun penerimaan, dipakai bersama `REGULER` dan `UNGGULAN`, maksimal 9.999.
+   - Nomor diterbitkan atomik saat pendaftaran disahkan panitia setelah dokumen wajib `APPROVED`.
 8. **Persetujuan Submit**:
    - Sebelum submit, orang tua/wali menyetujui pernyataan versi `v1.0`: “Saya selaku orang tua/wali menyatakan bahwa seluruh data yang diisikan adalah benar dan dapat dipertanggungjawabkan.”
    - Versi dan pernyataan yang diterima disimpan bersama pendaftaran.
+
+---
+
+## 4A. MODUL WAWANCARA PPDB RESMI
+
+1. Sistem resmi mengelola batch/jadwal wawancara, tahap, kriteria, role pewawancara, sesi, nilai, rekap, koreksi ber-audit, dan ekspor CSV.
+2. Sequential gate wajib ditegakkan antartahap sesuai program dan status sesi.
+3. Penyelesaian wawancara tidak sama dengan kelulusan. Sistem tidak melakukan seleksi akhir, perankingan, pengumuman lulus/tolak, atau daftar ulang.
 
 ---
 
