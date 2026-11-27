@@ -116,8 +116,8 @@ Dokumen ini berfungsi sebagai **penampung error dan hal yang belum bisa dikerjak
 - **Rencana:** Audit breakpoint navigasi publik (`hidden md:flex`) dan ukuran minimum grup tombol/link. Perbaiki agar grup navigasi berpindah ke menu mobile atau dapat menyesuaikan lebar pada tablet; verifikasi ulang 360/390/768 px.
 - **Bukti:** `livetest/07-HASIL-LIVE-SMOKE-PRODUKSI-2026-11-26.md`.
 
-### [ISS-011] Composer Audit Menemukan Advisory Symfony
+### [ISS-012] Composer Audit Menemukan Advisory Symfony
 - **Tanggal:** 2026-11-27
-- **Status:** OPEN — perlu audit dampak dan pembaruan dependensi.
+- **Status:** RESOLVED secara lokal — dependensi diperbarui dan audit bersih; instalasi pada server belum diverifikasi.
 - **Hasil:** `composer audit` gagal: lima advisory pada `symfony/http-kernel` (PKSA-k1tg-4k6j-w4xf), `symfony/mailer` (PKSA-vqxj-j8fm-1q3k, PKSA-9r8k-3vgs-8f3v), dan `symfony/routing` (PKSA-pbtx-4qgh-mmkh, PKSA-2vy6-qchn-f13r). Tingkat severity tidak tercantum pada hasil JSON.
-- **Tindak lanjut:** periksa versi perbaikan dan kompatibilitas Laravel, perbarui dependensi, lalu jalankan ulang audit dan test penuh sebelum push.
+- **Perbaikan:** `composer update symfony/http-kernel symfony/mailer symfony/routing --with-all-dependencies` memperbarui delapan paket, termasuk Symfony ke 7.4.24. `composer audit` tidak menemukan advisory; suite penuh 375 passed, 15 skipped, 1.793 assertions. Periksa instalasi lock file pada server setelah deployment.

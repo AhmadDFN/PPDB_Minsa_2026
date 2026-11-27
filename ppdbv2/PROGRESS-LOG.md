@@ -20,21 +20,26 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Rekonsiliasi hasil UAT dan advisory
+- Form UAT: jumlah saudara 0–20, salin wilayah orang tua dan navigasi tablet diperbaiki pada `a3f1361`; masalah teks Fase 7 dan tanggal PDF null diperbaiki pada `b12a7e5`. Pesan tinjau terbaru telah terlihat pada server live. Perubahan lain masih perlu verifikasi live terpisah.
+- Advisory Composer: memperbarui delapan paket, termasuk `symfony/http-kernel`, `symfony/mailer`, dan `symfony/routing` ke 7.4.24. `composer audit`: tidak ada advisory; `npm audit`: 0 vulnerability. Isu advisory memakai ID ISS-012; ISS-011 dipertahankan untuk insiden migrasi.
+- Pengujian sesudah update: 390 tests, 375 passed, 15 skipped, 1.793 assertions; Pint dan build Vite lulus. UAT live sudah submit dan mengunduh PDF final; QR aktual, IDOR lintas akun, OTP dan pengujian GPS masih pending.
+
 ### [2026-11-27] Submit dan PDF final live
 - Akun uji dummy berhasil submit dan membuat serta mengunduh PDF final dua halaman A4; gambar dummy, NIK tersamar dan QR tampak pada PDF. Pemindaian QR dan IDOR live belum diuji.
-- Perbaikan lokal teks halaman tinjau dan format tanggal null pada PDF; `RegistrationPdfTest` 9 passed/96 assertions. Composer audit masih melaporkan lima advisory (ISS-011).
+- Perbaikan lokal teks halaman tinjau dan format tanggal null pada PDF; `RegistrationPdfTest` 9 passed/96 assertions. Composer audit masih melaporkan lima advisory (ISS-012).
 - Bukti dan batas pengujian: `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 
 ### [2026-11-27] UAT live dan perbaikan form
 - UAT akun dummy sebelumnya mencapai biodata, alamat, orang tua, pendidikan, program dan pembuatan PDF draf; rincian di `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 - Login ulang akun live ditolak, sehingga unggahan dummy, final submit, PDF final dan QR belum diuji dalam sesi ini.
 - Perbaikan lokal: validasi jumlah saudara menerima 0–20 sesuai petunjuk, salin wilayah orang tua membaca kode atau nama alamat siswa yang tersimpan. Feature test batas jumlah saudara dan browser lokal untuk salin wilayah historis lulus; perlu uji ulang di server live.
-- Navigasi publik pada 768 px diperbaiki dan diuji lokal: lebar konten login/registrasi 753 px; uji live masih pending (ISS-010). Full suite 390 test: 375 passed, 15 skipped, 1.790 assertions. Pint, Vite build dan npm audit lulus; Composer audit masih menemukan lima advisory pada tiga paket Symfony (ISS-011).
+- Navigasi publik pada 768 px diperbaiki dan diuji lokal: lebar konten login/registrasi 753 px; uji live masih pending (ISS-010). Full suite 390 test: 375 passed, 15 skipped, 1.790 assertions. Pint, Vite build dan npm audit lulus; Composer audit masih menemukan lima advisory pada tiga paket Symfony (ISS-012).
 
 ### [2026-11-27] Lima akun pendaftar dummy lokal
 - Seeder `BlankApplicantLiveTestSeeder` membuat lima akun aktif dengan nama, NIK dummy, nomor HP dummy dan password acak; profil, program dan dokumen kosong, status DRAFT. Seeder dibatasi pada local/testing dan menolak menimpa akun atau kredensial.
 - Kredensial berada di file privat yang diabaikan Git; panduan: `livetest/08-LOGIN-LIMA-DUMMY.md`. Lima akun dibuat dan diverifikasi pada SQLite lokal. Belum tersedia di server publik.
-- Verifikasi: full suite 389 test (374 passed, 15 skipped, 1.784 assertions); Pint dan Vite build lulus; npm audit 0 vulnerabilities. Composer audit gagal, lima advisory pada tiga paket Symfony (ISS-011). Git diff --check lulus. Audit Composer belum lulus; temuan tetap terbuka pada ISS-011.
+- Verifikasi: full suite 389 test (374 passed, 15 skipped, 1.784 assertions); Pint dan Vite build lulus; npm audit 0 vulnerabilities. Composer audit gagal, lima advisory pada tiga paket Symfony (ISS-012). Git diff --check lulus. Audit Composer belum lulus; temuan tetap terbuka pada ISS-012.
 
 ### [2026-11-27] Perbaikan Migrasi Wilayah MariaDB
 - **Status:** Perbaikan disiapkan; belum dideploy dan belum divalidasi pada server MariaDB.

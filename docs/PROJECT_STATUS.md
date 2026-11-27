@@ -28,7 +28,9 @@
 
 > **27 November 2026:** Lima akun dummy draft kosong telah dibuat dan diperiksa pada database lokal menggunakan `BlankApplicantLiveTestSeeder`; kredensial acak disimpan privat dan tidak tersedia otomatis di server publik. Panduan: `livetest/08-LOGIN-LIMA-DUMMY.md`.
 
-> **UAT live 27 November 2026:** Akun dummy berhasil submit dan mengunduh PDF final dua halaman di server live; QR fisik dan IDOR live masih pending. Perbaikan lokal jumlah saudara dan salin wilayah orang tua sedang diverifikasi; lihat `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`. Composer audit masih menemukan lima advisory (ISS-011).
+> **UAT live 27 November 2026:** Akun dummy berhasil submit dan mengunduh PDF final dua halaman di server live; QR fisik dan IDOR live masih pending. Perbaikan lokal jumlah saudara dan salin wilayah orang tua sedang diverifikasi; lihat `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`. Lima advisory Composer ditangani melalui pembaruan dependensi; audit lokal terbaru bersih (ISS-012), verifikasi versi server masih pending.
+
+> **Rekonsiliasi UAT 27 November 2026:** Perbaikan jumlah saudara, salin wilayah, navbar tablet, pesan PDF, dan tanggal PDF telah dikomit. Pesan tinjau terbaru terlihat di server; verifikasi live terhadap perbaikan lain masih pending. Composer audit bersih setelah pembaruan delapan paket; full suite 375 passed, 15 skipped, 1.793 assertions. Rincian: `ppdbv2/PROGRESS-LOG.md` dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 
 ## 1. STATUS FASE SAAT INI
 

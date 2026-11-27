@@ -152,3 +152,11 @@ Pemilik meminta eksekusi otonom seluruh revisi, testing, sinkronisasi dokumentas
 - [x] Sinkronisasi laporan progres, known issues, status project, dan hasil UAT.
 - [x] Review kode, commit Conventional Commit, dan push ke `origin/main`. *(Commit `6814d47`, berhasil 26 November 2026.)*
 - [ ] Deployment dan acceptance lingkungan staging/production. *(Belum dilakukan; perlu verifikasi MySQL/MariaDB dan UAT staging.)*
+
+## Rekonsiliasi UAT live — 27 November 2026
+
+- [x] Empat dokumen dummy diunggah, final submit berhasil, PDF final diunduh dan diperiksa dua halaman.
+- [x] Koreksi jumlah saudara, salin wilayah orang tua, navbar tablet, teks tinjau dan tanggal PDF dikerjakan pada commit a3f1361 dan b12a7e5. Pesan tinjau telah diverifikasi live.
+- [x] Advisory Composer ditangani pada lock file lokal; audit terbaru bersih (ISS-012).
+- [ ] Uji ulang salin wilayah, validasi saudara, navbar dan tanggal PDF pada server yang menjalankan versi terbaru; scan QR aktual, IDOR lintas akun, GPS dan WhatsApp tetap pending.
+- [ ] Verifikasi versi dependensi serta migrasi/backup pada lingkungan server; insiden migrasi ISS-011 belum ditutup.
