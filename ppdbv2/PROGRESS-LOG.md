@@ -20,6 +20,14 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Next Atelier — Landing, Login dan Dashboard
+- Kedua lampiran pemilik identik (SHA-256 sama); satu salinan disimpan sebagai `ppdbv2/skills/ppdb-next-atelier/SKILL.md`.
+- Menerapkan hero editorial berwarna ink, panel identitas pada login desktop, serta banner dashboard yang lebih tegas. Scope mengikuti tiga halaman yang disetujui sebelumnya; form lainnya dan admin tidak didesain ulang.
+- Kartu contoh yang menampilkan nama/nomor peserta fiktif diganti kartu periode dari database; kondisi tanpa periode menampilkan keadaan kosong. Countdown tidak lagi menggunakan tanggal fallback ketika tidak ada periode aktif. Rute, field, autentikasi, navigasi, dan pengendali form tidak diubah.
+- Browser lokal: landing/login desktop dan 320 px ditinjau tanpa overflow; dialog persyaratan terbuka dan tidak tercatat error console saat diperiksa. UAT visual dashboard terautentikasi, variasi status, aksesibilitas lengkap, dan E2E belum dilakukan. Foto asli madrasah tidak tersedia pada aset lokal.
+- Pengujian: 392 test (377 passed, 15 skipped, 1.800 assertions); Pint, Vite build, Composer audit, npm audit, Blade view cache dan `git diff --check` lulus. Uji periode fokus: 2 test, 7 assertions.
+- Ketidaksesuaian konten landing lama mengenai seleksi/pengumuman dan penyerahan fisik masih memerlukan keputusan pemilik; konten tersebut tidak disahkan atau diubah dalam pekerjaan desain ini. Gate desain frontend sebelumnya belum lulus; belum dinyatakan lulus pada desain baru.
+
 ### [2026-11-27] Skill Calm Academic untuk Antarmuka Pendaftar
 - Skill yang diberikan pemilik disimpan di `ppdbv2/skills/calm-academic-ppdb/SKILL.md`; cakupan yang diminta saat ini adalah landing, login pendaftar, dan dashboard pendaftar.
 - Pemilik menyetujui penerapan pada tiga halaman tersebut. Tema ivory/navy, permukaan terang, kontrol login, dan status dashboard diterapkan secara terisolasi; route, form, konten dan alur dipertahankan. Halaman admin dan form lainnya di luar cakupan.

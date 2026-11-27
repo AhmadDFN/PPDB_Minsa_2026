@@ -71,3 +71,50 @@
 @media (prefers-reduced-motion: reduce) {
     .calm-academic *, .calm-academic *::before, .calm-academic *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* NEXT ATELIER: editorial landing and a quiet, focused applicant product. */
+.calm-academic { --calm-ink: #182630; --calm-muted: #586b76; --calm-border: #d9dfdf; --calm-bg: #f3f2ee; }
+.calm-landing #beranda { background: #182630 !important; color: #fbfaf7; padding-top: 10rem; padding-bottom: 5rem; }
+.calm-landing #beranda > div > .grid { align-items: center; }
+.calm-landing #beranda h1 { color: #fbfaf7 !important; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.08; }
+.calm-landing #beranda h1 .text-gradient-neon { color: #c9a990 !important; -webkit-text-fill-color: #c9a990 !important; }
+.calm-landing #beranda .lg\:col-span-7 > p, .calm-landing #beranda .lg\:col-span-7 > p strong { color: #e3e9e9 !important; }
+.calm-landing #beranda .lg\:col-span-7 > .max-w-lg > div:first-child span { color: #dce5e5 !important; }
+.calm-landing #beranda .lg\:col-span-7 > .max-w-lg > div:first-child span:first-child { color: #e9d2bf !important; }
+.calm-landing #beranda .lg\:col-span-7 > .flex > [class*='bg-gradient'] { background: #fbfaf7 !important; color: #182630 !important; }
+.calm-landing #beranda .lg\:col-span-7 > .flex > [class*='bg-gradient'] * { color: inherit !important; }
+.atelier-period-wrap { width: 100%; display: flex; justify-content: center; }
+.atelier-period-card { width: min(100%, 440px); background: #fbfaf7; color: #25323b; border-radius: 24px; padding: clamp(1.5rem, 3vw, 2.25rem); box-shadow: 0 24px 60px rgb(0 0 0 / 16%); }
+.atelier-period-top { display: flex; align-items: center; gap: 14px; padding-bottom: 24px; border-bottom: 1px solid #d9dfdf; font-size: 12px; font-weight: 700; letter-spacing: .05em; line-height: 1.6; }
+.atelier-period-top img { object-fit: contain; }
+.atelier-period-content { padding: 48px 0; }
+.atelier-period-label, .atelier-eyebrow { color: #586b76; font-size: 12px; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; }
+.atelier-period-year { margin: 12px 0 0; font-size: clamp(2.7rem, 4vw, 4rem); line-height: 1; font-weight: 700; letter-spacing: -.05em; }
+.atelier-period-name { margin-top: 12px; font-size: 18px; font-weight: 600; }
+.atelier-period-date { margin-top: 12px; color: #586b76; font-size: 14px; }
+.atelier-period-footer { display: flex; justify-content: space-between; gap: 12px; padding-top: 20px; border-top: 1px solid #d9dfdf; font-size: 13px; }
+.calm-login .calm-login-content > .atelier-login-shell { width: min(100%, 1060px); max-width: none; display: grid; grid-template-columns: .95fr 1.05fr; border: 1px solid #d9dfdf; border-radius: 24px; overflow: hidden; background: #fff; box-shadow: 0 16px 50px rgb(24 38 48 / 8%); }
+.atelier-login-aside { display: flex; flex-direction: column; justify-content: space-between; gap: 4rem; min-width: 0; padding: clamp(2rem, 5vw, 4rem); background: #182630; color: #fbfaf7; }
+.atelier-logo-frame { width: 74px; height: 74px; display: grid; place-items: center; border-radius: 16px; background: #fff; padding: 9px; }
+.atelier-logo-frame img { width: 100%; height: 100%; object-fit: contain; }
+.atelier-login-aside .atelier-eyebrow { color: #d2b39d; }
+.atelier-login-title { max-width: 11ch; font-size: clamp(2.3rem, 4vw, 3.75rem); line-height: 1.1; letter-spacing: -.04em; font-weight: 700; margin-top: 1rem; }
+.atelier-login-caption { color: #d3dddd; font-size: 14px; line-height: 1.7; }
+.atelier-login-form { margin: auto; padding: clamp(1.5rem, 3vw, 3rem); }
+.calm-login .atelier-login-form [class*='shadow-lg'] { border: 0; box-shadow: none; padding: 0; }
+.calm-dashboard .atelier-dashboard-hero { background: #182630 !important; border-color: #182630 !important; padding: clamp(1.5rem, 3vw, 2.75rem); }
+.calm-dashboard .atelier-dashboard-hero h1, .calm-dashboard .atelier-dashboard-hero h1 span, .calm-dashboard .atelier-dashboard-hero > div > div > p { color: #fbfaf7 !important; }
+.calm-dashboard .atelier-dashboard-hero h1 { letter-spacing: -.035em; }
+.calm-dashboard .atelier-dashboard-hero h1 span { color: #e4c6b0 !important; }
+.calm-dashboard .atelier-dashboard-hero > div > div > p { line-height: 1.7; }
+.calm-dashboard .atelier-dashboard-hero .shrink-0 > div { background: #fbfaf7 !important; }
+.calm-dashboard main [class*='bg-emerald-600'] { background-color: #2b505b !important; }
+@media (max-width: 767px) {
+    .calm-landing #beranda { padding-top: 8rem; padding-bottom: 3rem; }
+    .calm-landing #beranda h1 { font-size: clamp(2.1rem, 9vw, 3.4rem); }
+    .atelier-period-content { padding: 30px 0; }
+    .calm-login .calm-login-content > .atelier-login-shell { display: block; border: 0; box-shadow: none; background: transparent; }
+    .atelier-login-aside { display: none; }
+    .atelier-login-form { padding: 0; }
+    .calm-login .atelier-login-form [class*='shadow-lg'] { border: 1px solid #d9dfdf; padding: 1.5rem; }
+}

@@ -1,6 +1,12 @@
 <x-layouts.app title="Masuk Calon Siswa — {{ \App\Models\SystemSetting::getInstitutionName() }}">
     <div class="calm-login-content min-h-[calc(100vh-16rem)] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
-        <div class="w-full max-w-md">
+        <div class="atelier-login-shell">
+        <aside class="atelier-login-aside" aria-label="Identitas madrasah">
+            <div class="atelier-logo-frame"><img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun"></div>
+            <div><p class="atelier-eyebrow">Portal Pendaftaran Peserta Didik Baru</p><p class="atelier-login-title">{{ \App\Models\SystemSetting::getInstitutionName() }}</p></div>
+            <p class="atelier-login-caption">Pelayanan Loket PTSP<br>Senin – Jumat, 07.00 – 15.00 WIB</p>
+        </aside>
+        <div class="atelier-login-form w-full max-w-md">
             <!-- Header Brand -->
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-20 h-20 mb-3">
@@ -127,6 +133,7 @@
                     </div>
                 </div>
             </x-ui.card>
+        </div>
         </div>
     </div>
 

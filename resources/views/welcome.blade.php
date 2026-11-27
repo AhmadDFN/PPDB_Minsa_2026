@@ -264,10 +264,11 @@
           </p>
 
           <!-- Live Countdown Timer -->
+          @if ($activePeriod?->end_date)
           <div class="max-w-lg mx-auto lg:mx-0">
             <div class="flex items-center justify-between text-xs text-slate-400 mb-2.5 px-1">
               <span class="uppercase tracking-wider font-semibold text-amber-400">Target Pelayanan &amp; Seleksi PPDB</span>
-              <span class="font-mono text-slate-300">{{ $activePeriod?->end_date?->translatedFormat('d M Y') ?? '08 Feb 2027' }}</span>
+              <span class="font-mono text-slate-300">{{ $activePeriod->end_date->translatedFormat('d M Y') }}</span>
             </div>
             <div class="grid grid-cols-4 gap-2.5 sm:gap-3.5">
               <div class="glass-panel rounded-2xl p-3 sm:p-4 text-center border border-emerald-500/20">
@@ -288,6 +289,7 @@
               </div>
             </div>
           </div>
+          @endif
 
           <!-- Tombol CTA Utama -->
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-1">
@@ -316,66 +318,28 @@
           </div>
         </div>
 
-        <!-- Kolom Kanan: Kartu Peserta Digital 3D Interaktif -->
-        <div class="lg:col-span-5 flex justify-center">
-          <div class="card-3d-wrapper w-full max-w-md animate-float">
-            <div id="studentIdCard" class="card-3d relative rounded-3xl p-6 sm:p-7 glass-panel border border-emerald-400/35 overflow-hidden shadow-2xl shadow-emerald-500/15">
-              <!-- Shimmer Overlay -->
-              <div class="card-shimmer absolute inset-0 pointer-events-none"></div>
-
-              <!-- Header Kartu -->
-              <div class="flex items-center justify-between pb-5 border-b border-white/10 relative z-10">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 p-0.5 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
-                    <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" class="w-full h-full object-contain bg-[#061019] rounded-[10px] p-0.5" />
-                  </div>
-                  <div>
-                    <div class="font-display font-bold text-sm text-white tracking-wide">KARTU PESERTA DIGITAL</div>
-                    <div class="text-[11px] text-emerald-400">PPDB MIN 1 KOTA MADIUN</div>
-                  </div>
-                </div>
-                <span class="px-2.5 py-1 rounded-lg bg-amber-400/15 border border-amber-400/30 text-amber-300 font-mono text-[11px] font-bold">
-                  TA {{ $activePeriod->academic_year ?? '2026/2027' }}
-                </span>
-              </div>
-
-              <!-- Isi Profil Kartu -->
-              <div class="py-6 flex items-center gap-4 relative z-10">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-400/40 flex flex-col items-center justify-center text-emerald-300 shrink-0">
-                  <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                  </svg>
-                  <span class="text-[9px] font-mono uppercase mt-1 text-cyan-300">E-PASS</span>
-                </div>
-
-                <div class="space-y-1.5 flex-1 min-w-0">
-                  <div class="text-[11px] uppercase tracking-wider text-slate-400">Nomor Registrasi Aplikasi</div>
-                  <div class="font-mono text-sm sm:text-base font-bold text-amber-400 tracking-wider truncate">MINSATAMA-UNG-{{ date('Y') }}-001</div>
-                  <div class="text-base sm:text-lg font-bold text-white truncate">Aisyah Humaira Putri</div>
-                  <div class="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/25">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>Terverifikasi Digital &bull; Paperless</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer Metadata Kartu & QR Simulasi -->
-              <div class="pt-4 border-t border-white/10 flex items-center justify-between gap-4 relative z-10">
-                <div class="space-y-1 text-xs">
-                  <div class="text-slate-400">Pilihan Program: <strong class="text-emerald-300">Program Unggulan</strong></div>
-                  <div class="text-slate-400">Berkas Fisik: <strong class="text-cyan-300">Tidak Diperlukan (0 Map)</strong></div>
-                </div>
-                <!-- Mini SVG QR Code -->
-                <div class="w-12 h-12 rounded-xl bg-white p-1.5 shrink-0 flex items-center justify-center">
-                  <svg class="w-full h-full text-slate-950" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 3h7v7H3V3zm2 2v3h3V5H5zm9-2h7v7h-7V3zm2 2v3h3V5h-3zM3 14h7v7H3v-7zm2 2v3h3v-3H5zm11-2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4 0h3v2h-3v-2zm-4 3h2v2h-2v-2zm3 0h4v2h-4v-2z" />
-                  </svg>
-                </div>
-              </div>
+        <!-- Informasi periode menggunakan data aktual, tanpa kartu peserta contoh. -->
+        <div class="lg:col-span-5 atelier-period-wrap">
+          <div class="atelier-period-card">
+            <div class="atelier-period-top">
+              <img src="{{ asset('images/logo-minsatama.png') }}" alt="Logo MIN 1 Kota Madiun" width="52" height="52">
+              <span>MIN 1 KOTA MADIUN<br>Portal PPDB</span>
             </div>
+            <div class="atelier-period-content">
+              <p class="atelier-period-label">Informasi periode</p>
+              @if ($activePeriod)
+                <p class="atelier-period-year">{{ $activePeriod->academic_year }}</p>
+                <p class="atelier-period-name">{{ $activePeriod->name }}</p>
+                @if ($activePeriod->start_date && $activePeriod->end_date)
+                  <p class="atelier-period-date">{{ $activePeriod->start_date->translatedFormat('d F Y') }} — {{ $activePeriod->end_date->translatedFormat('d F Y') }}</p>
+                @endif
+              @else
+                <p class="atelier-period-name">Belum ada periode aktif</p>
+              @endif
+            </div>
+            <div class="atelier-period-footer"><span>Pelayanan PTSP</span><strong>07.00 – 15.00 WIB</strong></div>
           </div>
         </div>
-
       </div>
 
       <!-- Highlight Keunggulan Singkat -->
@@ -1139,7 +1103,9 @@
 
     // 2. Live Countdown Timer
     function updateCountdown() {
-      const targetDate = new Date('{{ $activePeriod?->end_date?->format("Y-m-d\TH:i:sP") ?? "2027-02-08T07:00:00+07:00" }}').getTime();
+      const target = @json($activePeriod?->end_date?->format('Y-m-d\TH:i:sP'));
+      if (!target) return;
+      const targetDate = new Date(target).getTime();
       const now = new Date().getTime();
       const distance = Math.max(0, targetDate - now);
 

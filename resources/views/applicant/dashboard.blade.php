@@ -3,7 +3,7 @@
         {{-- =========================================================================
              FUTURISTIC COMMAND BANNER (Hero Station)
              ========================================================================= --}}
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/80 border border-slate-800 p-6 sm:p-8 shadow-2xl">
+        <div class="atelier-dashboard-hero relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/80 border border-slate-800 p-6 sm:p-8 shadow-2xl">
             {{-- Ambient radial background glow --}}
             <div class="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
