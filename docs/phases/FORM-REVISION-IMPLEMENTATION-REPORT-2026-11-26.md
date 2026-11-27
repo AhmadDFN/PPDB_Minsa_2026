@@ -4,6 +4,8 @@
 **Status:** PARTIAL — lokal saja, belum siap rilis
 **Ruang lingkup:** revisi dari `ppdbv2/workflow_update_form.md` dan lampiran pemilik.
 
+**Catatan 27 November 2026 — Calm Academic:** Tema visual lokal dashboard pendaftar diisolasi dari form lainnya; UAT browser dashboard terautentikasi masih pending. Landing dan login ditinjau di browser lokal. Rincian di `ppdbv2/PROGRESS-LOG.md`.
+
 **Catatan 27 November 2026:** Log server menunjukkan migrasi wilayah gagal karena foreign key diproses sebelum indeks unik. Deklarasi indeks diperbaiki secara lokal dan urutan SQL dicakup regression test; MariaDB server dan pemulihan tabel/data setelah `migrate:fresh` belum diverifikasi. Lihat ISS-011 di `ppdbv2/KNOWN-ISSUES.md`.
 
 ## Perubahan yang tersedia

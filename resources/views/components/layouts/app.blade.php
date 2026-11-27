@@ -15,7 +15,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="bg-neutral-50/60 text-neutral-800 antialiased min-h-screen flex flex-col font-sans selection:bg-primary-500 selection:text-white">
+<body class="bg-neutral-50/60 text-neutral-800 antialiased min-h-screen flex flex-col font-sans selection:bg-primary-500 selection:text-white {{ request()->routeIs('login') ? 'calm-academic calm-login' : '' }}">
     {{-- Skip to main content for accessibility --}}
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 btn btn-primary">
         Langsung ke konten utama

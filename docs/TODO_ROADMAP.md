@@ -3,6 +3,8 @@
 
 ## Rekonsiliasi Admin/Superadmin (20 November 2026)
 
+- [ ] Calm Academic: selesaikan UAT visual dashboard pendaftar, pemeriksaan aksesibilitas/responsif lengkap, dan rekonsiliasi konten landing dengan pemilik; lihat `ppdbv2/PROGRESS-LOG.md`.
+
 Roadmap target dan dependency disentralisasi di [`docs/blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md`](blueprints/ADMIN-SUPERADMIN-IMPLEMENTATION-ROADMAP.md). Gap prioritas: verifikasi dokumen, master data, ekspor redacted, lifecycle akun admin, dan audit viewer. Jangan menandai permission seeder sebagai fitur selesai.
 
 ## Phase 10.6 — Role-Based Dashboard

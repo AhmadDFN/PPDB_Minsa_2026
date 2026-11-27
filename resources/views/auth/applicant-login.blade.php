@@ -1,5 +1,5 @@
 <x-layouts.app title="Masuk Calon Siswa — {{ \App\Models\SystemSetting::getInstitutionName() }}">
-    <div class="min-h-[calc(100vh-16rem)] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
+    <div class="calm-login-content min-h-[calc(100vh-16rem)] flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md">
             <!-- Header Brand -->
             <div class="text-center mb-8">
@@ -137,6 +137,7 @@
             const isPassword = input.type === 'password';
             input.type = isPassword ? 'text' : 'password';
             btn.classList.toggle('text-primary-600', isPassword);
+            btn.setAttribute('aria-label', isPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi');
         }
     </script>
 </x-layouts.app>

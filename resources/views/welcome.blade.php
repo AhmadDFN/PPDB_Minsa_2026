@@ -11,11 +11,6 @@
   <link rel="icon" type="image/png" href="{{ asset('images/logo-minsatama.png') }}" />
   <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
 
-  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-
   <!-- Tailwind CSS & Vite Assets -->
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -119,7 +114,7 @@
     }
   </style>
 </head>
-<body class="cyber-grid selection:bg-emerald-400 selection:text-slate-950 antialiased">
+<body class="calm-academic calm-landing antialiased">
 
   <!-- Ambient Neon Glow Orbs -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
@@ -205,7 +200,7 @@
       </div>
 
       <!-- Mobile Hamburger Button -->
-      <button type="button" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Buka Menu Navigasi" class="lg:hidden p-2.5 rounded-xl glass-panel text-slate-200 hover:text-emerald-400 cursor-pointer">
+      <button type="button" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Buka Menu Navigasi" aria-expanded="false" aria-controls="mobileMenu" class="lg:hidden p-2.5 rounded-xl glass-panel text-slate-200 hover:text-emerald-400 cursor-pointer">
         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
@@ -1138,6 +1133,7 @@
       const menu = document.getElementById('mobileMenu');
       if (menu) {
         menu.classList.toggle('hidden');
+        document.getElementById('mobileMenuBtn')?.setAttribute('aria-expanded', String(!menu.classList.contains('hidden')));
       }
     }
 

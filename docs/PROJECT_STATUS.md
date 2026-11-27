@@ -6,6 +6,8 @@
 **Dokumentasi Versi**: 1.6.0
 **Penanggung Jawab Teknis**: Senior Software Engineer, Laravel Architect, QA Lead, Technical Writer & IT Operations Consultant
 
+> **Calm Academic — 27 November 2026:** Tema visual lokal diterapkan pada landing, login pendaftar dan dashboard pendaftar. Landing/login diperiksa pada browser; UAT visual dashboard terautentikasi dan review konten landing masih pending. Konten lama tentang seleksi/pengumuman serta penyerahan fisik memerlukan rekonsiliasi terhadap aturan proyek. Detail `ppdbv2/PROGRESS-LOG.md`.
+
 > **Insiden migrasi wilayah — 27 November 2026:** Log yang diberikan menunjukkan `migrate:fresh --seed` menghapus tabel sebelum migrasi `administrative_regions` gagal. Urutan indeks unik dan foreign key diperbaiki secara lokal; validasi MariaDB, pemeriksaan tabel parsial, backup/pemulihan data, dan deployment masih pending. Audit Composer juga menemukan lima advisory pada tiga paket Symfony. Lihat `ppdbv2/KNOWN-ISSUES.md` ISS-011 dan `ppdbv2/PROGRESS-LOG.md`.
 
 > **Rekonsiliasi Admin/Superadmin — 20 November 2026:** Blueprint dan governance dokumentasi tersedia di `docs/blueprints/`. Audit kode aktual menemukan dashboard, applicant management, reopen, dan branding settings telah tersedia; verifikasi dokumen, ekspor, master periode/program/persyaratan, lifecycle akun admin, serta audit viewer belum memiliki UI/controller lengkap. Permission di seeder tidak dihitung sebagai implementasi. Fase blueprint ini tidak mengubah kode, database, `.env`, akun, deployment, commit, atau push.

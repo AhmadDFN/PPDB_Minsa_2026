@@ -20,6 +20,14 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Skill Calm Academic untuk Antarmuka Pendaftar
+- Skill yang diberikan pemilik disimpan di `ppdbv2/skills/calm-academic-ppdb/SKILL.md`; cakupan yang diminta saat ini adalah landing, login pendaftar, dan dashboard pendaftar.
+- Pemilik menyetujui penerapan pada tiga halaman tersebut. Tema ivory/navy, permukaan terang, kontrol login, dan status dashboard diterapkan secara terisolasi; route, form, konten dan alur dipertahankan. Halaman admin dan form lainnya di luar cakupan.
+- Browser lokal: landing dan login ditinjau pada desktop dan 390 px; dialog persyaratan terbuka. Login 768 px serta landing 320 dan 390 px tidak menunjukkan overflow horizontal saat diukur. Menu mobile mengubah atribut `aria-expanded` saat dibuka. Dashboard terautentikasi belum ditinjau secara visual.
+- Tidak ditemukan aset foto sekolah dalam `public/images`; logo resmi dipertahankan. Konten lama landing tentang seleksi/pengumuman, ketiadaan berkas fisik, dan contoh kartu peserta perlu rekonsiliasi pemilik terhadap aturan proyek; konten tidak diubah dalam pekerjaan visual ini.
+- `php artisan test` lulus (390 test: 375 passed, 15 skipped, 1.793 assertions). Build Vite, Pint, audit Composer dan npm, serta `git diff --check` lulus. Validasi visual menyeluruh, aksesibilitas lengkap, dan UAT dashboard masih pending; pemilik meminta commit, push, dan deployment dengan catatan keterbatasan tersebut.
+- Gate `design-taste-frontend` belum lulus: 53 temuan dan 35 peringatan pada pemeriksaan ulang; sebagian terkait ketiadaan foto, struktur/konten lama, dan aturan generik yang bertentangan dengan pelestarian konten. Checker tambahan melaporkan Chrome tidak ditemukan. Overflow landing 320 px dan `aria-expanded` menu sudah diperbaiki dan diverifikasi terpisah; temuan lainnya memerlukan tindak lanjut.
+
 ### [2026-11-27] Live test admin dan superadmin — parsial
 - Panitia dan superadmin berhasil login; pencarian dan detail fixture, pratinjau berkas, approve/revisi/tolak, riwayat dan halaman laporan diperiksa. Hanya data dummy digunakan untuk perubahan status dokumen.
 - Tiga pewawancara masuk ke tahap masing-masing dan mendapat 403 saat mengakses rekap. Pendaftar mendapat 403 pada dashboard admin; panitia mendapat 403 pada pengaturan superadmin.
