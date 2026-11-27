@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Admin;
 
+use App\Models\CommunicationAuditLog;
 use App\Models\CommunicationChannel;
 use App\Models\CommunicationChannelCredential;
 use App\Models\CommunicationSetting;
@@ -82,6 +83,54 @@ class CommunicationCenterTest extends TestCase
         $this->actingAs($this->admin('admin_ppdb'))
             ->put(route('admin.communication.message-templates.update'), CommunicationMessageTemplateService::defaults())
             ->assertForbidden();
+    }
+
+    public function test_superadmin_test_message_uses_legacy_gateway_without_secrets_in_audit(): void
+    {
+        config(['services.fonnte.token' => 'private-device-token']);
+        Http::fake(['https://api.fonnte.com/send' => Http::response(['status' => true, 'id' => 'msg-1'])]);
+
+        $this->actingAs($this->admin('superadmin'))
+            ->post(route('admin.communication.test-message.send'), ['phone' => '0895352882228'])
+            ->assertRedirect()->assertSessionHas('success');
+
+        Http::assertSent(fn ($request) => $request['target'] === '62895352882228'
+            && str_contains($request['message'], 'Pesan uji sistem PPDB')
+            && ! str_contains($request['message'], 'OTP'));
+        Http::assertSentCount(1);
+
+        $audit = CommunicationAuditLog::query()->where('event', 'test_message_requested')->firstOrFail();
+        $this->assertSame('accepted', $audit->metadata['status']);
+        $this->assertStringNotContainsString('0895352882228', json_encode($audit->metadata));
+        $this->assertStringNotContainsString('private-device-token', json_encode($audit->metadata));
+    }
+
+    public function test_test_message_rejects_other_roles_and_invalid_phone_before_provider_call(): void
+    {
+        config(['services.fonnte.token' => 'private-device-token']);
+        Http::fake();
+
+        $this->actingAs($this->admin('admin_ppdb'))
+            ->post(route('admin.communication.test-message.send'), ['phone' => '0895352882228'])
+            ->assertForbidden();
+        $this->actingAs($this->admin('superadmin'))
+            ->post(route('admin.communication.test-message.send'), ['phone' => '123'])
+            ->assertSessionHasErrors('phone');
+
+        Http::assertNothingSent();
+    }
+
+    public function test_test_message_reports_unconfigured_gateway_without_sending(): void
+    {
+        config(['services.fonnte.token' => null]);
+        Http::fake();
+
+        $this->actingAs($this->admin('superadmin'))
+            ->post(route('admin.communication.test-message.send'), ['phone' => '0895352882228'])
+            ->assertRedirect()->assertSessionHas('error');
+
+        Http::assertNothingSent();
+        $this->assertSame('credential_unavailable', CommunicationAuditLog::query()->where('event', 'test_message_requested')->firstOrFail()->metadata['error_code']);
     }
 
     public function test_store_validates_device_and_encrypts_credential(): void

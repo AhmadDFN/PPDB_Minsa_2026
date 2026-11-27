@@ -45,7 +45,7 @@ Checklist lengkap dan stop conditions berada di [`docs/phases/PHASE-11-LAUNCH-RE
 - [ ] **P1 UAT:** siapkan dokumen dummy pada fixture SUBMITTED setelah fresh seed, lalu uji verifikasi, pengesahan/nomor `YYNNNN`, PDF/QR, audit, dan WhatsApp hanya ke penerima uji terkendali (AL-007).
 - [ ] **P1 komunikasi:** contoh isi dan placeholder editor telah terlihat di live; lanjutkan uji Fonnte/OTP pemulihan dengan penerima uji (AL-006).
 - [ ] **P1 audit superadmin (AL-009):** tampilkan audit komunikasi pada `/admin/audit-logs`, termasuk filter/ringkasan, tanpa token atau isi pesan; uji regresi dan verifikasi live.
-- [ ] **P1 kirim uji superadmin (AL-010):** sediakan pengiriman satu pesan uji tanpa rahasia ke penerima yang disetujui, dengan validasi nomor, rate limit, audit aman, dan status provider; uji sekali ke HP pemilik dan tunggu konfirmasi penerimaan manual. Belum ada pesan terkirim pada putaran 20.26 WIB.
+- [ ] **P1 kirim uji superadmin (AL-010):** aksi kirim uji sudah dibuat lokal dengan validasi nomor, rate limit, audit aman, dan status provider; verifikasi deployment, kirim sekali ke HP pemilik, lalu tunggu konfirmasi penerimaan manual. Belum ada pesan terkirim pada putaran 20.26 WIB.
 - [x] **UAT superadmin 20.26 WIB:** login/logout, branding dan petunjuk default, simpan ulang template, serta unduhan CSV berhasil. Audit komunikasi dan kirim uji tercatat sebagai gap; mutasi akun/role/master masih menunggu uji terpisah.
 - [ ] **P2 branding:** nilai aktif live dan login pendaftar sudah menampilkan `PPDB`; petunjuk default statis yang masih `PPDBM` diperbaiki lokal dan menunggu uji ulang sesudah rilis (AL-005).
 - [x] **P3 UX staf:** setelah logout, akses rute admin tanpa sesi menuju `/admin/login`; sudah diverifikasi live (AL-008).

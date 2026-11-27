@@ -172,6 +172,7 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
 
     Route::prefix('communication')->name('communication.')->group(function () {
         Route::get('/', [CommunicationChannelController::class, 'index'])->name('index');
+        Route::post('/test-message', [CommunicationChannelController::class, 'sendTestMessage'])->middleware('throttle:1,10')->name('test-message.send');
         Route::put('/message-templates', [CommunicationChannelController::class, 'updateMessageTemplates'])->name('message-templates.update');
         Route::post('/channels', [CommunicationChannelController::class, 'store'])->name('channels.store');
         Route::patch('/channels/{channel}', [CommunicationChannelController::class, 'update'])->name('channels.update');

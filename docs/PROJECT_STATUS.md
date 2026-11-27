@@ -58,6 +58,8 @@
 
 > **Gate checkout untuk catatan UAT ini:** `php artisan test --compact` dengan APP_KEY sementara hanya pada proses uji: 394 test, 378 passed, 16 skipped, 1.804 assertions. Pint, Vite build, Composer audit, npm audit (0 vulnerabilities), dan `git diff --check` lulus. Hasil ini membuktikan checkout lokal, bukan pengiriman Fonnte live.
 
+> **Tindak lanjut AL-010 lokal:** form kirim pesan uji dan endpoint khusus superadmin ditambahkan dengan validasi nomor, throttle satu permintaan/10 menit, audit aman, pesan tetap tanpa rahasia, dan pembeda antara respons gateway dengan penerimaan HP. Tes terarah Communication Center lulus 19/19, 63 asersi. Pengiriman live belum dilakukan pada saat catatan ini ditulis.
+
 > **Keputusan pemilik — 27 November 2026:** Format nomor pendaftaran/antrean resmi ditetapkan menjadi **`YYNNNN`** (contoh `270001`), sequence global per tahun penerimaan dan diterbitkan atomik saat pengesahan panitia setelah dokumen wajib `APPROVED`. Modul wawancara resmi menjadi bagian PPDB; sistem mengelola batch, tahap, kriteria, role, nilai, rekap, koreksi ber-audit, dan ekspor. Seleksi akhir, perankingan, pengumuman, dan daftar ulang tetap di luar sistem. Rencana launch lengkap: `docs/phases/PHASE-11-LAUNCH-READINESS-AND-DECISIONS.md`.
 
 > **Quality gate checkout — 27 November 2026:** Dengan `APP_KEY` sementara hanya untuk proses test (tanpa mengubah file rahasia), `php artisan test` lulus **376 test, 16 skipped, 1.795 assertions** dalam 91,8 detik. `vendor/bin/pint --test`, `npm.cmd run build`, dan `git diff --check` lulus; `npm.cmd audit` menemukan 0 vulnerability. `composer audit` masih gagal dengan 5 advisory Symfony dan menjadi blocker launch sampai diperbarui serta diverifikasi ulang.

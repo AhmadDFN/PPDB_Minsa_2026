@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\SendTestWhatsAppRequest;
 use App\Models\CommunicationChannel;
 use App\Models\CommunicationSetting;
 use App\Services\Communication\CommunicationAuditService;
 use App\Services\Communication\CommunicationConnectionService;
 use App\Services\Communication\CommunicationCredentialService;
 use App\Services\Communication\CommunicationMessageTemplateService;
+use App\Services\Communication\SendTestWhatsAppService;
 use App\Services\Communication\WhatsAppProviderRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +26,7 @@ class CommunicationChannelController
         private readonly CommunicationConnectionService $connections,
         private readonly CommunicationAuditService $audit,
         private readonly CommunicationMessageTemplateService $templates,
+        private readonly SendTestWhatsAppService $testMessages,
     ) {}
 
     public function index(): View
@@ -78,6 +81,25 @@ class CommunicationChannelController
         $this->audit->record('message_templates_updated', null, $request->user(), ['template_keys' => $keys]);
 
         return back()->with('success', 'Template pesan WhatsApp berhasil diperbarui.');
+    }
+
+    public function sendTestMessage(SendTestWhatsAppRequest $request): RedirectResponse
+    {
+        $result = $this->testMessages->send($request->validated('phone'));
+        $this->audit->record('test_message_requested', null, $request->user(), [
+            'status' => $result->status,
+            'error_code' => $result->errorCode,
+        ]);
+
+        if ($result->accepted) {
+            return back()->with('success', 'Pesan uji diterima gateway. Konfirmasi penerimaan di HP tetap diperlukan.');
+        }
+
+        if ($result->status === 'ambiguous') {
+            return back()->with('error', 'Status pengiriman belum pasti karena koneksi terputus. Periksa HP sebelum mengulangi.');
+        }
+
+        return back()->with('error', 'Gateway belum menerima pesan uji. Periksa konfigurasi dan koneksi Fonnte.');
     }
 
     public function store(Request $request): RedirectResponse

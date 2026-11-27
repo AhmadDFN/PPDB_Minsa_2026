@@ -18,6 +18,19 @@
         </div>
 
         <div class="bg-white rounded-xl border border-gray-200 shadow-xs p-6">
+            <h2 class="text-base font-bold text-gray-900">Kirim Pesan Uji</h2>
+            <p class="mt-1 text-sm text-gray-600">Kirim satu pesan biasa untuk memeriksa gateway aktif. Pesan tidak memuat OTP atau password. Respons gateway belum membuktikan pesan diterima di HP.</p>
+            <form method="POST" action="{{ route('admin.communication.test-message.send') }}" class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+                @csrf
+                <label class="flex-1 text-xs font-semibold text-gray-700">Nomor WhatsApp tujuan
+                    <input name="phone" type="tel" required inputmode="tel" autocomplete="off" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}" class="mt-1 w-full rounded-lg border-gray-300 text-sm" />
+                </label>
+                <button class="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-700">Kirim Pesan Uji</button>
+            </form>
+            @error('phone')<p class="mt-2 text-sm text-red-700">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 shadow-xs p-6">
             <h2 class="text-base font-bold text-gray-900">Tambah Channel Fonnte</h2>
             <p class="text-xs text-gray-500 mt-1">Gunakan Device Token. Account Token dan manajemen perangkat berada di luar scope.</p>
             <form method="POST" action="{{ route('admin.communication.channels.store') }}" class="mt-5 grid gap-4 md:grid-cols-3">

@@ -86,6 +86,8 @@
 
 Login/logout, redirect tamu admin, branding PPDB, penyimpanan template, dan unduhan CSV berhasil di situs uji. Audit komunikasi belum masuk ke Audit Aktivitas (AL-009). Panel superadmin belum menyediakan kirim pesan uji pada mode gateway Fonnte legacy (AL-010); izin pemilik untuk satu pesan ke HP pribadinya belum digunakan dan penerimaan belum terbukti. Lihat `adminlivetest/03-CHECKLIST-DAN-HASIL.md`.
 
+Tindak lanjut lokal AL-010: aksi kirim uji superadmin ditambahkan dan diuji otomatis; bukti live menunggu deployment dan satu pengiriman yang diizinkan pemilik.
+
 Jangan menyatakan launching siap jika salah satu kondisi ini belum tertutup:
 
 - format nomor masih memiliki dua generator/kontrak;
