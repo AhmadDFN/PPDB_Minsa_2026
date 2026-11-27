@@ -20,6 +20,11 @@ Dokumen ini mencatat seluruh pekerjaan, fitur yang telah diselesaikan, hasil pen
 
 ## Catatan Riwayat Pekerjaan (Terbaru di Atas)
 
+### [2026-11-27] Rencana Live Test Admin dan Superadmin
+- Menyusun panduan `adminlivetest/` berisi prasyarat fixture, 18 skenario per peran, checklist hasil, batas keamanan, dan template temuan/perbaikan.
+- Konflik blueprint wawancara dengan status/nomor pada AGENTS dicatat untuk keputusan pemilik; belum ada live test atau perubahan data/server yang dilakukan pada penyusunan rencana.
+- Verifikasi repository: 390 test (375 passed, 15 skipped, 1.793 assertions), Pint, Vite build, Composer audit, npm audit, dan git diff --check lulus.
+
 ### [2026-11-27] Rekonsiliasi hasil UAT dan advisory
 - Form UAT: jumlah saudara 0–20, salin wilayah orang tua dan navigasi tablet diperbaiki pada `a3f1361`; masalah teks Fase 7 dan tanggal PDF null diperbaiki pada `b12a7e5`. Pesan tinjau terbaru telah terlihat pada server live. Perubahan lain masih perlu verifikasi live terpisah.
 - Advisory Composer: memperbarui delapan paket, termasuk `symfony/http-kernel`, `symfony/mailer`, dan `symfony/routing` ke 7.4.24. `composer audit`: tidak ada advisory; `npm audit`: 0 vulnerability. Isu advisory memakai ID ISS-012; ISS-011 dipertahankan untuk insiden migrasi.

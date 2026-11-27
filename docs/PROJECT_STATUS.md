@@ -32,6 +32,8 @@
 
 > **Rekonsiliasi UAT 27 November 2026:** Perbaikan jumlah saudara, salin wilayah, navbar tablet, pesan PDF, dan tanggal PDF telah dikomit. Pesan tinjau terbaru terlihat di server; verifikasi live terhadap perbaikan lain masih pending. Composer audit bersih setelah pembaruan delapan paket; full suite 375 passed, 15 skipped, 1.793 assertions. Rincian: `ppdbv2/PROGRESS-LOG.md` dan `livetest/09-HASIL-UAT-LIVE-2026-11-27.md`.
 
+> **Rencana live test admin/superadmin — 27 November 2026:** Dokumen persiapan, 18 skenario, checklist dan log temuan tersedia di `adminlivetest/`. Status seluruh skenario BELUM DIUJI; penyusunan dokumen tidak mengubah data server.
+
 ## 1. STATUS FASE SAAT INI
 
 | Parameter | Nilai Faktual |
